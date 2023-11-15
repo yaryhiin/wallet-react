@@ -1,0 +1,65 @@
+.accounts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.accountStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #333;
+  border-radius: 10px;
+  width: 200px;
+  height: 200px;
+  margin: 0 10px;
+  cursor: pointer;
+  padding: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.accountStyle:hover {
+  background-color: #444;
+}
+
+.accIcon {
+  width: 60px;
+  height: 60px;
+  margin-top: 10px;
+}
+
+.accName {
+  font-size: 18px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.accBalance {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.accCurrency {
+  font-size: 16px;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.addAccBtn {
+  position: relative;
+  top: 22%;
+}
+
+@media (max-width: 600px) {
+  .accounts {
+    grid-template-columns: 1fr;
+  }
+
+  .accountStyle {
+    width: 100%;
+    margin: 0;
+  }
+}

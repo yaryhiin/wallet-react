@@ -1,0 +1,21 @@
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+  }
+
+.deleteAllBtn {
+  width: 120px;
+  height: 40px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: rgb(185, 0, 0);
+}
+
+.deleteAllBtn:hover {
+  background-color: rgb(240, 0, 0);
+}
