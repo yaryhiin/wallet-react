@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+
+import { updateAccountBalance} from './utils'
+
 import Accounts from './components/codes/Accounts'
 import Transactions from './components/codes/Transactions'
 import RecentTransactions from './components/codes/RecentTransactions'
@@ -21,13 +24,6 @@ function App() {
   const [selectedAccount, setSelectedAccount] = useState({})
   const [selectedTransaction, setSelectedTransaction] = useState({})
 
-  useEffect(() => {
-    const savedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];
-    const savedTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
-
-    setAccounts(savedAccounts);
-    setTransactions(savedTransactions);
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('accounts', JSON.stringify(accounts));
@@ -35,17 +31,10 @@ function App() {
   }, [accounts, transactions]);
 
   function income(transaction, accountWithMethod) {
-    const id = Math.floor(Math.random() * 10000) + 1
-    const newTransaction = { id, ...transaction }
-    setTransactions([...transactions, newTransaction])
+    const id = Math.floor(Math.random() * 10000) + 1 
+    setTransactions([...transactions, { id, ...transaction }])
 
-    accountWithMethod.balance += transaction.amount;
-    let updatedAccounts = [...accounts]
-    const index = updatedAccounts.findIndex((account) => account.id === accountWithMethod.id);
-    if (index !== -1) {
-      updatedAccounts[index].balance = accountWithMethod.balance
-    }
-    setAccounts(updatedAccounts);
+    setAccounts(updateAccountBalance(accounts, accountWithMethod.id, transaction.amount));
   }
 
   function expense(transaction, accountWithMethod) {
