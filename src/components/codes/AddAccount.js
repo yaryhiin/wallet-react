@@ -5,8 +5,8 @@ import cn from 'classnames'
 
 const AddAccount = ({ addAccount }) => {
 
-    const [accountCurrency, setAccountCurrency] = useState(["UAH", "PLN", "USD", "CAD"]);
-    const [accountIcon, setAccountIcon] = useState(["card_blue", "card_pink", "cash", "crypto", "bank", "euro", "usd"]);
+    const accountCurrency = ["UAH", "PLN", "USD", "CAD"];
+    const accountIcon = ["card_blue", "card_pink", "cash", "crypto", "bank", "euro", "usd"];
 
     const [errors, setErrors] = useState({});
 
