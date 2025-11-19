@@ -5,8 +5,8 @@ import cn from 'classnames';
 
 const AddTransaction = ({ addTransaction, type, accounts }) => {
 
-  const [incomeMethod, setIncomeMethod] = useState(["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle"]);
-  const [expenseMethod, setExpenseMethod] = useState(["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"]);
+  const incomeMethod = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle"];
+  const expenseMethod = ["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
 
   const options = type === "expense" ? expenseMethod : incomeMethod
 
