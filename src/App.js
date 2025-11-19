@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-import { updateAccountBalance} from './utils'
+import { updateAccountBalance } from './utils'
 
 import Accounts from './components/codes/Accounts'
 import Transactions from './components/codes/Transactions'
 import RecentTransactions from './components/codes/RecentTransactions'
 import Buttons from './components/codes/Buttons'
-import Income from './components/codes/Income'
-import Expense from './components/codes/Expense'
+import AddTransaction from './components/codes/AddTransaction'
 import Transfer from './components/codes/Transfer'
 import AddAccount from './components/codes/AddAccount'
 import ChangeAccount from './components/codes/ChangeAccount'
@@ -30,25 +29,11 @@ function App() {
     localStorage.setItem('transactions', JSON.stringify(transactions));
   }, [accounts, transactions]);
 
-  function income(transaction, accountWithMethod) {
-    const id = Math.floor(Math.random() * 10000) + 1 
+  function addTransaction(transaction, accountWithMethod) {
+    const id = Math.floor(Math.random() * 10000) + 1
     setTransactions([...transactions, { id, ...transaction }])
 
-    setAccounts(updateAccountBalance(accounts, accountWithMethod.id, transaction.amount));
-  }
-
-  function expense(transaction, accountWithMethod) {
-    const id = Math.floor(Math.random() * 10000) + 1
-    const newTransaction = { id, ...transaction }
-    setTransactions([...transactions, newTransaction])
-
-    accountWithMethod.balance -= transaction.amount;
-    let updatedAccounts = [...accounts]
-    const index = updatedAccounts.findIndex((account) => account.id === accountWithMethod.id);
-    if (index !== -1) {
-      updatedAccounts[index].balance = accountWithMethod.balance
-    }
-    setAccounts(updatedAccounts);
+    setAccounts(updateAccountBalance(accounts, accountWithMethod.id, transaction.amount ));
   }
 
   function transfer(from, to, amount, date, exchangeRate) {
@@ -175,15 +160,15 @@ function App() {
             <>
               <Accounts accounts={accounts} openAccount={openAccount} />
               <RecentTransactions transactions={transactions} accounts={accounts} openTransaction={openTransaction} />
-              <Buttons income={income} expense={expense} transfer={transfer} accounts={accounts} />
+              <Buttons accounts={accounts} />
               <DeleteAllBtn deleteAll={deleteAll} />
             </>
           } />
           <Route path='income' element={
-            <Income income={income} accounts={accounts} />
+            <AddTransaction addTransaction={addTransaction} type={"income"} accounts={accounts} />
           } />
           <Route path='expense' element={
-            <Expense expense={expense} accounts={accounts} />
+            <AddTransaction addTransaction={addTransaction} type={"expense"} accounts={accounts} />
           } />
           <Route path='transfer' element={
             <Transfer transfer={transfer} accounts={accounts} />

@@ -1,6 +1,6 @@
 import styles from '../styles/Transactions.module.css'
 import Transaction from './Transaction'
-import AllTransactions from './AllTransactions'
+import ViewAllTransactions from './ViewAllTransactions'
 
 const RecentTransactions = ({ transactions, accounts, openTransaction }) => {
   return (
@@ -8,7 +8,7 @@ const RecentTransactions = ({ transactions, accounts, openTransaction }) => {
       <div className={styles.transactions}>
         {transactions.slice(-3).reverse().map((transaction) => (<Transaction key={transaction.id} transaction={transaction} accounts={accounts} openTransaction={openTransaction} />))}
       </div>
-      {transactions.length > 3 && <AllTransactions />}
+      {transactions.length > 3 && <ViewAllTransactions />}
     </div>
   )
 }

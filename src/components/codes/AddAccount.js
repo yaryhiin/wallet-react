@@ -1,30 +1,45 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import styles from '../styles/AddAccount.module.css'
+import cn from 'classnames'
 
 const AddAccount = ({ addAccount }) => {
+
+    const [accountCurrency, setAccountCurrency] = useState(["UAH", "PLN", "USD", "CAD"]);
+    const [accountIcon, setAccountIcon] = useState(["card_blue", "card_pink", "cash", "crypto", "bank", "euro", "usd"]);
+
+    const [errors, setErrors] = useState({});
+
     const navigate = useNavigate();
     function home() {
         navigate('/');
     }
     const [name, setName] = useState('');
     const [balance, setBalance] = useState(0);
-    const [currency, setCurrency] = useState('UAH');
-    const [icon, setIcon] = useState('card_blue');
+    const [currency, setCurrency] = useState('');
+    const [icon, setIcon] = useState('');
 
     const onSubmit = (e) => {
         e.preventDefault();
-        if (name !== "") {
-            addAccount({ name, balance, currency, icon })
-            setName('');
-            setBalance();
-            setCurrency('');
-            setIcon('');
 
-            home();
-        } else {
-            alert("You forgot to write the name")
+        const newErrors = {};
+        if(!name) newErrors.name = true;
+        if (!balance || balance < 0) newErrors.balance = true;
+        if (!currency) newErrors.currency = true;
+        if (!icon) newErrors.icon = true;
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
         }
+
+        addAccount({ name, balance, currency, icon })
+        setName('');
+        setBalance();
+        setCurrency('');
+        setIcon('');
+
+        home();
     }
 
     const onBack = (e) => {
@@ -43,31 +58,24 @@ const AddAccount = ({ addAccount }) => {
             <div className={styles.inputsBox}>
                 <div className={styles.inputContainer}>
                     <p className={styles.inputText}>Account name</p>
-                    <input type="text" value={name} className={`${styles.input} ${styles.accName}`} required onChange={(e) => setName(e.target.value)} />
+                    <input type="text" value={!name ? '' : name} placeholder='Enter name' className={cn(styles.input, styles.accName, errors.name ? styles.error : '')} required onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className={styles.inputContainer}>
                     <p className={styles.inputText}>Balance</p>
-                    <input type="number" value={balance} className={`${styles.input} ${styles.accBal}`} required onChange={(e) => setBalance(parseInt(e.target.value) || 0)} />
+                    <input type="number" min="0" value={balance === 0 ? '' : balance} placeholder='Enter balance' className={cn(styles.input, styles.accBal, errors.balance ? styles.error : '')} required onChange={(e) => setBalance(parseInt(e.target.value) || 0)} />
                 </div>
                 <div className={styles.inputContainer}>
                     <p className={styles.inputText}>Currency</p>
-                    <select className={styles.accCur} required onChange={(e) => setCurrency(e.target.value)}>
-                        <option value="UAH">UAH</option>
-                        <option value="PLN">PLN</option>
-                        <option value="USD">USD</option>
-                        <option value="CAD">CAD</option>
+                    <select className={cn(styles.accCur, errors.currency ? styles.error : '')} value={currency} required onChange={(e) => setCurrency(e.target.value)}>
+                        <option value="" disabled>Select Currecny</option>
+                        {accountCurrency.map((currency, index) => <option key={index} value={currency}>{currency}</option>)}
                     </select>
                 </div>
                 <div className={styles.inputContainer}>
                     <p className={styles.inputText}>Icon</p>
-                    <select className={styles.accIcon} required onChange={(e) => setIcon(e.target.value)}>
-                        <option value="card_blue">Blue card</option>
-                        <option value="card_pink">Pink card</option>
-                        <option value="cash">Cash</option>
-                        <option value="crypto">Crypto</option>
-                        <option value="bank">Bank account</option>
-                        <option value="euro">Euro</option>
-                        <option value="usd">USD</option>
+                    <select className={cn(styles.accIcon, errors.icon ? styles.error : '')} value={icon} required onChange={(e) => setIcon(e.target.value)}>
+                        <option value="" disabled>Select Icon</option>
+                        {accountIcon.map((icon, index) => <option key={index} value={icon}>{icon}</option>)}
                     </select>
                 </div>
             </div>

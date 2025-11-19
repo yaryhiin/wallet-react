@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import styles from '../styles/AllTransactions.module.css'
+import styles from '../styles/ViewAllTransactions.module.css'
 
-const AllTransactions = () => {
+const ViewAllTransactions = () => {
   return (
     <Link to='transactions'>
       <div className={styles.viewBox}>
@@ -13,4 +13,4 @@ const AllTransactions = () => {
   )
 }
 
-export default AllTransactions
+export default ViewAllTransactions

@@ -11,8 +11,16 @@ const Transaction = ({ transaction, accounts, openTransaction }) => {
                         <p className={styles.transMethod}>{accounts.map((account) => account.id === transaction.method && account.name)}</p>
                     </div>
                     <div className={styles.rightDetails}>
-                        {transaction.type === 'income' ? <p className={styles.transAmountIncome}>{transaction.amount}</p> : <p className={styles.transAmountExpense}>-{transaction.amount}</p>}
-                        {transaction.type === 'income' ? <p className={styles.transCurrencyIncome}>{transaction.currency}</p> : <p className={styles.transCurrencyExpense}>{transaction.currency}</p>}
+                        {transaction.type === 'income' ?
+                            <>
+                                <p className={styles.transAmountIncome}>{transaction.amount}</p>
+                                <p className={styles.transCurrencyIncome}>{transaction.currency}</p>
+                            </>
+                            :
+                            <>
+                                <p className={styles.transAmountExpense}>{transaction.amount}</p>
+                                <p className={styles.transCurrencyExpense}>{transaction.currency}</p>
+                            </>}
                         <p className={styles.transDate}>{transaction.date}</p>
                     </div>
                 </div>
