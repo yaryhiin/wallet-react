@@ -21,7 +21,7 @@ Manage multiple accounts in different currencies, add income/expenses, transfer 
 
 <img width="674" height="812" alt="image" src="https://github.com/user-attachments/assets/02dc25dd-3dc0-4141-a549-22b0d6b74253" />
 
-
+Live Demo - https://wallet-react-yaryhin.netlify.app
 
 ---
 
@@ -35,8 +35,8 @@ Manage multiple accounts in different currencies, add income/expenses, transfer 
 ### Installation
 
 ```bash
-git clone https://github.com/yaryhiin/wallet-react
-cd money-tracker
+git clone https://github.com/yaryhiin/wallet-react.git
+cd wallet-react
 npm install
 npm start
 ```
