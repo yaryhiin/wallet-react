@@ -1,9 +1,10 @@
-import styles from '../styles/DeleteAllBtn.module.css'
+import styles from '../styles/DeleteAllBtn.module.scss'
+import cn from 'classnames';
 
 const DeleteAllBtn = ({deleteAll}) => {
   return (
     <div className={styles.buttonContainer}>
-        <button className={styles.deleteAllBtn} onClick={deleteAll}>Delete All</button>
+        <button className={cn(styles.deleteAllBtn, "button")} onClick={deleteAll}>Delete All</button>
     </div>
   )
 }

@@ -1,0 +1,11 @@
+@import './base/variables';
+@import './base/global';
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+}
+
+

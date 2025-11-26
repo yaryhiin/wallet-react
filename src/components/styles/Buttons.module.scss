@@ -1,0 +1,22 @@
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+  margin-top: 20px;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: 60px;
+  height: 60px;
+}
+
+.incomeBtn img,
+.expenseBtn img,
+.transferBtn img {
+  width: 30px;
+  height: 30px;
+}

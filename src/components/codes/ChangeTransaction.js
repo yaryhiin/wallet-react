@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import styles from '../styles/ChangeTransaction.module.css'
 
 const ChangeTransaction = ({ accounts, transaction, changeTransaction, deleteTransaction }) => {
     const navigate = useNavigate();
@@ -59,21 +58,27 @@ const ChangeTransaction = ({ accounts, transaction, changeTransaction, deleteTra
 
     return (
         <>
-            <div className={styles.incomeBox}>
-                <div className={styles.transChangeContainer}>
-                    <p className={styles.transChangeText}>Type</p>
-                    <select className={styles.transChangeType} value={type} required onChange={(e) => setType(e.target.value)}>
+            <div className="inputBox">
+                <div className="inputContainer">
+                    <p className="inputText">Type</p>
+                    <select className="input" value={type} required onChange={(e) => setType(e.target.value)}>
                         <option value="income">Income</option>
                         <option value="expense">Expense</option>
                     </select>
                 </div>
-                <div className={styles.transChangeContainer}>
-                    <p className={styles.transChangeText}>Amount</p>
-                    <input className={`${styles.transChange} ${styles.transChangeAmount}`} value={amount} type="number" required onChange={(e) => setAmount(parseInt(e.target.value) || 0)} />
+                <div className="inputContainer">
+                    <p className="inputText">Amount</p>
+                    <input
+                        className="input inputAmount"
+                        value={amount}
+                        type="number"
+                        required
+                        onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+                    />
                 </div>
-                <div className={styles.transChangeContainer}>
-                    <p className={styles.transChangeText}>Category</p>
-                    <select className={styles.transChangeCategory} value={category} required onChange={(e) => setCategory(e.target.value)} >
+                <div className="inputContainer">
+                    <p className="inputText">Category</p>
+                    <select className="input" value={category} required onChange={(e) => setCategory(e.target.value)}>
                         <option value="Salary">Salary</option>
                         <option value="Crypto">Crypto</option>
                         <option value="Interests">Interests</option>
@@ -89,25 +94,26 @@ const ChangeTransaction = ({ accounts, transaction, changeTransaction, deleteTra
                         <option value="Sport">Sport</option>
                         <option value="Health">Health</option>
                         <option value="Education">Education</option>
-                        <option value="Gifts">Gifts</option>
                         <option value="Charity">Charity</option>
                     </select>
                 </div>
-                <div className={styles.transChangeContainer}>
-                    <p className={styles.transChangeText}>Method</p>
-                    <select className={styles.transChangeMethod} value={method} required onChange={(e) => setMethod(parseInt(e.target.value))}>
-                        {accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}
+                <div className="inputContainer">
+                    <p className="inputText">Method</p>
+                    <select className="input" value={method} required onChange={(e) => setMethod(parseInt(e.target.value))}>
+                        {accounts.map((account) => (
+                            <option key={account.id} value={account.id}>{account.name}</option>
+                        ))}
                     </select>
                 </div>
-                <div className={styles.transChangeContainer}>
-                    <p className={styles.transChangeText}>Date</p>
-                    <input type="date" className={styles.transChangeDate} value={date} required onChange={(e) => setDate(e.target.value)} />
+                <div className="inputContainer">
+                    <p className="inputText">Date</p>
+                    <input type="date" className="input" value={date} required onChange={(e) => setDate(e.target.value)} />
                 </div>
             </div>
-            <div className={styles.buttonContainer}>
-                <button className={styles.backBtn} onClick={onBack}>Back</button>
-                <button className={styles.transChangeBtn} onClick={onSubmit}>Save</button>
-                <button className={styles.deleteTransBtn} onClick={onDelete}>Delete</button>
+            <div className="buttonContainer">
+                <button className="backBtn button" onClick={onBack}>Back</button>
+                <button className="saveBtn button" onClick={onSubmit}>Save</button>
+                <button className="deleteBtn button" onClick={onDelete}>Delete</button>
             </div>
         </>
     )

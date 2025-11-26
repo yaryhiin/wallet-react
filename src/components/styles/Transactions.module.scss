@@ -12,13 +12,12 @@
 }
 
 .transactionStyle {
-  background-color: #333;
   padding: 10px;
   margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
   border-radius: 8px;
   overflow: hidden;
+  width: 100%;
+  height: auto;
 }
 
 .transactionDetails {
@@ -31,7 +30,7 @@
   flex-direction: column;
   flex: 1;
   margin-left: 2%;
-  margin-top: 1%;
+  margin-top: 0;
 }
 
 .rightDetails {
@@ -40,10 +39,6 @@
   flex: 1;
   align-items: flex-end;
   margin-right: 2%;
-}
-
-.transactionStyle:hover {
-  background-color: #444;
 }
 
 .transName {
@@ -55,27 +50,27 @@
 .transMethod {
   font-size: 13px;
   color: #e7e7e7;
-  margin-top: 1%;
+  margin-top: 0;
 }
 
 .transAmountIncome {
   font-size: 20px;
   color: #00b300;
   font-weight: bolder;
-  margin-bottom: 5px;
+  margin-bottom: 0;
 }
 
 .transAmountExpense {
   font-size: 20px;
   color: #b30000;
   font-weight: bolder;
-  margin-bottom: 5px;
+  margin-bottom: 0;
 }
 
 .transCurrencyIncome,
 .transCurrencyExpense {
   font-size: 14px;
-  margin-bottom: 5px;
+  margin-bottom: 0;
 }
 
 .transDate {

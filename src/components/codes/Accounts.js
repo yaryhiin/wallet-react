@@ -1,4 +1,4 @@
-import styles from '../styles/Accounts.module.css'
+import styles from '../styles/Accounts.module.scss'
 import Account from './Account'
 import AddAccountBtn from './AddAccountBtn'
 

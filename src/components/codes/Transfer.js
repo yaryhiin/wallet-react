@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import styles from '../styles/Transfer.module.css'
 
 const Transfer = ({ transfer, accounts }) => {
 
@@ -46,36 +45,59 @@ const Transfer = ({ transfer, accounts }) => {
 
   return (
     <>
-      <div className={styles.transferBox}>
-        <div className={styles.transferContainer}>
-          <p className={styles.transferText}>Amount</p>
-          <input className={`${styles.transfer} ${styles.transferAmount}`} value={amount} type="number" required onChange={(e) => setAmount(parseInt(e.target.value) || 0)} />
+      <div className="inputBox">
+        <div className="inputContainer">
+          <p className="inputText">Amount</p>
+          <input
+            className="input"
+            value={amount}
+            type="number"
+            required
+            onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+          />
         </div>
-        <div className={styles.transferContainer}>
-          <p className={styles.transferText}>Method</p>
-          <select className={styles.transferMethod} value={from} required onChange={(e) => setFrom(parseInt(e.target.value))}>
-            {accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}
+        <div className="inputContainer">
+          <p className="inputText">From</p>
+          <select className="input" value={from} required onChange={(e) => setFrom(parseInt(e.target.value))}>
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>{account.name}</option>
+            ))}
           </select>
         </div>
-        <div className={styles.transferContainer}>
-          <p className={styles.transferText}>Method</p>
-          <select className={styles.transferMethod} value={to} required onChange={(e) => setTo(parseInt(e.target.value))}>
-            {accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}
+        <div className="inputContainer">
+          <p className="inputText">To</p>
+          <select className="input" value={to} required onChange={(e) => setTo(parseInt(e.target.value))}>
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>{account.name}</option>
+            ))}
           </select>
         </div>
-        <div className={styles.transferContainer}>
-          <p className={`${styles.transferText} ${styles.exchangeRate}`}>Exchange Rate</p>
-          1 {fromAccount.currency} = <input className={`${styles.transfer} ${styles.transferExchangeRate}`} value={exchangeRate} type="number" required onChange={(e) => setExchangeRate(parseInt(e.target.value) || 0)} /> {toAccount.currency}
+        <div className="inputContainer">
+          <p className="inputText">Exchange Rate</p>
+          1 {fromAccount.currency} = <input
+            className="input"
+            value={exchangeRate}
+            type="number"
+            required
+            onChange={(e) => setExchangeRate(parseInt(e.target.value) || 0)}
+          /> {toAccount.currency}
         </div>
-        <div className={styles.transferContainer}>
-          <p className={styles.transferText}>Date</p>
-          <input type="date" className={styles.transferDate} value={date} required onChange={(e) => setDate(e.target.value)} />
+        <div className="inputContainer">
+          <p className="inputText">Date</p>
+          <input
+            type="date"
+            className="input"
+            value={date}
+            required
+            onChange={(e) => setDate(e.target.value)}
+          />
         </div>
       </div>
-      <div className={styles.buttonContainer}>
-        <button className={styles.backBtn} onClick={onBack}>Back</button>
-        <button className={styles.saveTransferBtn} onClick={onSubmit}>Save</button>
+      <div className="buttonContainer">
+        <button className="backBtn button" onClick={onBack}>Back</button>
+        <button className="saveBtn button" onClick={onSubmit}>Save</button>
       </div>
+
     </>
   )
 }

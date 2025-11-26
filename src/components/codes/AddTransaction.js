@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import styles from '../styles/AddTransaction.module.css';
 import cn from 'classnames';
 
 const AddTransaction = ({ addTransaction, type, accounts }) => {
@@ -63,34 +62,63 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
 
   return (
     <>
-      <div className={styles.addTransactionBox}>
-        <div className={styles.addTransactionContainer}>
-          <p className={styles.addTransactionText}>Amount</p>
-          <input min="1" className={cn(styles.addTransaction, styles.addTransactionAmount, errors.amount ? styles.error : '')} value={amount === 0 ? '' : amount} placeholder='Enter amount' type="number" required onChange={(e) => setAmount(parseInt(e.target.value) || 0)} />
+      <div className="inputBox">
+        <div className="inputContainer">
+          <p className="inputText">Amount</p>
+          <input
+            min="1"
+            className={cn("input", errors.amount ? "error" : "")}
+            value={amount === 0 ? '' : amount}
+            placeholder="Enter amount"
+            type="number"
+            required
+            onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+          />
         </div>
-        <div className={styles.addTransactionContainer}>
-          <p className={styles.addTransactionText}>Category</p>
-          <select className={cn(styles.addTransactionCategory, errors.category ? styles.error : '')} value={category} required onChange={(e) => setCategory(e.target.value)} >
+        <div className="inputContainer">
+          <p className="inputText">Category</p>
+          <select
+            className={cn("input", errors.category ? "error" : "")}
+            value={category}
+            required
+            onChange={(e) => setCategory(e.target.value)}
+          >
             <option value="" disabled>Select Category</option>
-            {options.map((method, index) => <option key={index} value={method}>{method}</option>)}
+            {options.map((method, index) => (
+              <option key={index} value={method}>{method}</option>
+            ))}
           </select>
         </div>
-        <div className={styles.addTransactionContainer}>
-          <p className={styles.addTransactionText}>Method</p>
-          <select className={cn(styles.addTransactionMethod, errors.method ? styles.error : '')} value={method} required onChange={(e) => setMethod(parseInt(e.target.value))}>
+        <div className="inputContainer">
+          <p className="inputText">Method</p>
+          <select
+            className={cn("input", errors.method ? "error" : "")}
+            value={method}
+            required
+            onChange={(e) => setMethod(parseInt(e.target.value))}
+          >
             <option value="" disabled>Select Method</option>
-            {accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>{account.name}</option>
+            ))}
           </select>
         </div>
-        <div className={styles.addTransactionContainer}>
-          <p className={styles.addTransactionText}>Date</p>
-          <input type="date" className={styles.addTransactionDate} value={date} required onChange={(e) => setDate(e.target.value)} />
+        <div className="inputContainer">
+          <p className="inputText">Date</p>
+          <input
+            type="date"
+            className="input"
+            value={date}
+            required
+            onChange={(e) => setDate(e.target.value)}
+          />
         </div>
-      </div >
-      <div className={styles.buttonContainer}>
-        <button className={styles.backBtn} onClick={onBack}>Back</button>
-        <button className={styles.saveAddTransactionBtn} onClick={onSubmit}>Save</button>
       </div>
+      <div className="buttonContainer">
+        <button className="backBtn button" onClick={onBack}>Back</button>
+        <button className="saveBtn button" onClick={onSubmit}>Save</button>
+      </div>
+
     </>
   )
 }

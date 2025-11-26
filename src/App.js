@@ -23,6 +23,9 @@ function App() {
   const [selectedAccount, setSelectedAccount] = useState({})
   const [selectedTransaction, setSelectedTransaction] = useState({})
 
+  useEffect(() => {
+  document.body.setAttribute('dark-theme', 'dark'); // or 'light'
+}, []);
 
   useEffect(() => {
     localStorage.setItem('accounts', JSON.stringify(accounts));

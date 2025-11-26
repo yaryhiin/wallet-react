@@ -1,5 +1,6 @@
-import styles from '../styles/Buttons.module.css'
+import styles from '../styles/Buttons.module.scss'
 import { useNavigate } from 'react-router-dom'
+import cn from 'classnames'
 
 const Button = ({ src, classN, onClick, link, accounts }) => {
     const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Button = ({ src, classN, onClick, link, accounts }) => {
         }
     }
     return (
-        <div className={styles.button} onClick={() => goToLink()}>
+        <div className={cn(styles.button, "button")} onClick={() => goToLink()}>
             <div className={classN}>
                 <img src={src} className={classN} alt="button" onClick={onClick} />
             </div>

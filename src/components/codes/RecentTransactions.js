@@ -1,4 +1,4 @@
-import styles from '../styles/Transactions.module.css'
+import styles from '../styles/Transactions.module.scss'
 import Transaction from './Transaction'
 import ViewAllTransactions from './ViewAllTransactions'
 

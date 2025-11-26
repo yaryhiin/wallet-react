@@ -4,18 +4,11 @@
 }
 
 .viewAll {
-  background-color: #333;
   border-radius: 10px;
   padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .viewAll p {
   font-size: 14px;
   color: #aaa;
-}
-
-.viewAll:hover {
-  background-color: #444;
 }

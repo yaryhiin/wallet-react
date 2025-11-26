@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
-import styles from '../styles/Accounts.module.css'
+import styles from '../styles/Accounts.module.scss'
+import cn from 'classnames';
 
 const account = ({ account, openAccount }) => {
   return (
     <Link to='/changeAccount'>
-      <div className={styles.accountStyle} onClick={() => openAccount(account)}>
+      <div className={cn(styles.accountStyle, "button")} onClick={() => openAccount(account)}>
         <img className={styles.accIcon} src={`${process.env.PUBLIC_URL}/images/accounts/${account.icon}.png`} alt={account.icon} />
         <p className={styles.accName}>
           {account.name}
