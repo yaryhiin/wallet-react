@@ -1,25 +1,21 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { loadData } from '../../utils';
 
-const ChangeAccount = ({ account, changeAccount, deleteAccount }) => {
+const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const navigate = useNavigate();
   function home() {
     navigate('/');
   }
 
+  const accounts = loadData("accounts");
+  const { id } = useParams();
+  const account = accounts.find(a => a.id === Number(id));
+
   const [name, setName] = useState(account.name);
   const [balance, setBalance] = useState(account.balance);
   const [currency, setCurrency] = useState(account.currency);
   const [icon, setIcon] = useState(account.icon);
-
-  useEffect(() => {
-    setName(account.name);
-    setBalance(account.balance);
-    setCurrency(account.currency);
-    setIcon(account.icon);
-  }, [account]);
-
-  let id = account.id
 
   const onSubmit = (e) => {
     e.preventDefault();

@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom'
 import styles from '../styles/Transactions.module.scss'
 import cn from 'classnames';
 
-const Transaction = ({ transaction, accounts, openTransaction }) => {
+const Transaction = ({ transaction, accounts }) => {
     return (
-        <Link to='../changeTransaction'>
-            <div className={cn("button", styles.transactionStyle)} onClick={() => openTransaction(transaction)}>
+        <Link to={`../changeTransaction/${transaction.id}`}>
+            <div className={cn("button", styles.transactionStyle)}>
                 <div className={styles.transactionDetails}>
                     <div className={styles.leftDetails}>
                         <p className={styles.transName}>{transaction.category}</p>

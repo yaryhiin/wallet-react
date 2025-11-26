@@ -4,3 +4,11 @@ export function updateAccountBalance(accounts, id, change) {
     );
     return (updatedAccounts);
 }
+
+export const loadData = (key) => {
+    try {
+        return JSON.parse(localStorage.getItem(key)) || [];
+    } catch {
+        return [];
+    }
+};

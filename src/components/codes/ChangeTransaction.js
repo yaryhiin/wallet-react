@@ -1,11 +1,17 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
+import { loadData } from '../../utils';
 
-const ChangeTransaction = ({ accounts, transaction, changeTransaction, deleteTransaction }) => {
+const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
     const navigate = useNavigate();
     function home() {
         navigate('/');
     }
+
+    const accounts = loadData("accounts");
+    const transactions = loadData("transactions");
+    const { id } = useParams();
+    const transaction = transactions.find(t => t.id === Number(id));
 
     const [type, setType] = useState(transaction.type);
     const [amount, setAmount] = useState(transaction.amount);
@@ -13,7 +19,6 @@ const ChangeTransaction = ({ accounts, transaction, changeTransaction, deleteTra
     const [method, setMethod] = useState(transaction.method);
     const [date, setDate] = useState(transaction.date);
 
-    let id = transaction.id
     let currency = transaction.currency;
 
     const onSubmit = (e) => {

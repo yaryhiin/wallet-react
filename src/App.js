@@ -13,19 +13,17 @@ import AddAccount from './components/codes/AddAccount'
 import ChangeAccount from './components/codes/ChangeAccount'
 import ChangeTransaction from './components/codes/ChangeTransaction'
 import DeleteAllBtn from './components/codes/DeleteAllBtn'
+import { loadData } from './utils'
 
 function App() {
-  const initialAccounts = JSON.parse(localStorage.getItem('accounts')) || [];
-  const initialTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+  const initialAccounts = loadData('accounts');
+  const initialTransactions = loadData('transactions');
   const [accounts, setAccounts] = useState(initialAccounts)
   const [transactions, setTransactions] = useState(initialTransactions)
 
-  const [selectedAccount, setSelectedAccount] = useState({})
-  const [selectedTransaction, setSelectedTransaction] = useState({})
-
   useEffect(() => {
-  document.body.setAttribute('dark-theme', 'dark'); // or 'light'
-}, []);
+    document.body.setAttribute('dark-theme', 'dark'); // or 'light'
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('accounts', JSON.stringify(accounts));
@@ -36,7 +34,7 @@ function App() {
     const id = Math.floor(Math.random() * 10000) + 1
     setTransactions([...transactions, { id, ...transaction }])
 
-    setAccounts(updateAccountBalance(accounts, accountWithMethod.id, transaction.amount ));
+    setAccounts(updateAccountBalance(accounts, accountWithMethod.id, transaction.amount));
   }
 
   function transfer(from, to, amount, date, exchangeRate) {
@@ -64,10 +62,6 @@ function App() {
     setAccounts([...accounts, newAccount])
   }
 
-  function openAccount(account) {
-    setSelectedAccount(account);
-  }
-
   function changeAccount(changedAccount) {
     const updatedAccounts = accounts.map((account) =>
       account.id === changedAccount.id ? changedAccount : account
@@ -80,10 +74,6 @@ function App() {
     setAccounts(updatedAccounts);
     const updatedTransactions = transactions.filter((transaction) => transaction.method !== id);
     setTransactions(updatedTransactions);
-  }
-
-  function openTransaction(transaction) {
-    setSelectedTransaction(transaction);
   }
 
   function changeTransaction(changedTransaction) {
@@ -161,8 +151,8 @@ function App() {
         <Routes>
           <Route path='/' element={
             <>
-              <Accounts accounts={accounts} openAccount={openAccount} />
-              <RecentTransactions transactions={transactions} accounts={accounts} openTransaction={openTransaction} />
+              <Accounts accounts={accounts} />
+              <RecentTransactions transactions={transactions} accounts={accounts} />
               <Buttons accounts={accounts} />
               <DeleteAllBtn deleteAll={deleteAll} />
             </>
@@ -179,14 +169,14 @@ function App() {
           <Route path='addAccount' element={
             <AddAccount addAccount={addAccount} />
           } />
-          <Route path='changeAccount' element={
-            <ChangeAccount account={selectedAccount} changeAccount={changeAccount} deleteAccount={deleteAccount} />
+          <Route path='changeAccount/:id' element={
+            <ChangeAccount changeAccount={changeAccount} deleteAccount={deleteAccount} />
           } />
-          <Route path='changeTransaction' element={
-            <ChangeTransaction accounts={accounts} transaction={selectedTransaction} changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} />
+          <Route path='changeTransaction/:id' element={
+            <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} />
           } />
           <Route path='transactions' element={
-            <Transactions transactions={transactions} accounts={accounts} openTransaction={openTransaction} />
+            <Transactions transactions={transactions} accounts={accounts} />
           } />
         </Routes>
       </div>
