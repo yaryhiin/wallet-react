@@ -12,6 +12,9 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const { id } = useParams();
   const account = accounts.find(a => a.id === Number(id));
 
+  const accountCurrency = ["UAH", "PLN", "USD", "CAD"];
+  const accountIcon = ["card_blue", "card_pink", "cash", "crypto", "bank", "euro", "usd"];
+
   const [name, setName] = useState(account.name);
   const [balance, setBalance] = useState(account.balance);
   const [currency, setCurrency] = useState(account.currency);
@@ -70,22 +73,19 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
         <div className="inputContainer">
           <p className="inputText">Currency</p>
           <select className="input" value={currency} required onChange={(e) => setCurrency(e.target.value)}>
-            <option value="UAH">UAH</option>
-            <option value="PLN">PLN</option>
-            <option value="USD">USD</option>
-            <option value="CAD">CAD</option>
+            <option value="" disabled>Select Currecny</option>
+            {accountCurrency.map((currency, index) => (
+              <option key={index} value={currency}>{currency}</option>
+            ))}
           </select>
         </div>
         <div className="inputContainer">
           <p className="inputText">Icon</p>
           <select className="input" value={icon} required onChange={(e) => setIcon(e.target.value)}>
-            <option value="card_blue">Blue card</option>
-            <option value="card_pink">Pink card</option>
-            <option value="cash">Cash</option>
-            <option value="crypto">Crypto</option>
-            <option value="bank">Bank account</option>
-            <option value="euro">Euro</option>
-            <option value="usd">USD</option>
+            <option value="" disabled>Select Icon</option>
+            {accountIcon.map((icon, index) => (
+              <option key={index} value={icon}>{icon}</option>
+            ))}
           </select>
         </div>
       </div>

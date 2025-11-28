@@ -19,6 +19,8 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
     const [method, setMethod] = useState(transaction.method);
     const [date, setDate] = useState(transaction.date);
 
+    const transMethod = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle", "Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
+
     let currency = transaction.currency;
 
     const onSubmit = (e) => {
@@ -84,27 +86,16 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                 <div className="inputContainer">
                     <p className="inputText">Category</p>
                     <select className="input" value={category} required onChange={(e) => setCategory(e.target.value)}>
-                        <option value="Salary">Salary</option>
-                        <option value="Crypto">Crypto</option>
-                        <option value="Interests">Interests</option>
-                        <option value="Business">Business</option>
-                        <option value="Gifts">Gifts</option>
-                        <option value="Rewards">Rewards</option>
-                        <option value="Side Hustle">Side Hustle</option>
-                        <option value="Groceries">Groceries</option>
-                        <option value="Cafe">Cafe</option>
-                        <option value="Credit">Credit</option>
-                        <option value="Transporting">Transporting</option>
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Sport">Sport</option>
-                        <option value="Health">Health</option>
-                        <option value="Education">Education</option>
-                        <option value="Charity">Charity</option>
+                        <option value="" disabled>Select Category</option>
+                        {transMethod.map((method, index) => (
+                            <option key={index} value={method}>{method}</option>
+                        ))}
                     </select>
                 </div>
                 <div className="inputContainer">
                     <p className="inputText">Method</p>
                     <select className="input" value={method} required onChange={(e) => setMethod(parseInt(e.target.value))}>
+                        <option value="" disabled>Select Method</option>
                         {accounts.map((account) => (
                             <option key={account.id} value={account.id}>{account.name}</option>
                         ))}
