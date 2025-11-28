@@ -13,22 +13,33 @@ import AddAccount from './components/codes/AddAccount'
 import ChangeAccount from './components/codes/ChangeAccount'
 import ChangeTransaction from './components/codes/ChangeTransaction'
 import DeleteAllBtn from './components/codes/DeleteAllBtn'
+import ThemeSwitch from './components/codes/ThemeSwitch'
 import { loadData } from './utils'
 
 function App() {
-  const initialAccounts = loadData('accounts');
-  const initialTransactions = loadData('transactions');
-  const [accounts, setAccounts] = useState(initialAccounts)
-  const [transactions, setTransactions] = useState(initialTransactions)
-
-  useEffect(() => {
-    document.body.setAttribute('dark-theme', 'dark'); // or 'light'
-  }, []);
+  const [accounts, setAccounts] = useState(loadData('accounts'));
+  const [transactions, setTransactions] = useState(loadData('transactions'));
+  const [theme, setTheme] = useState(() => {
+  const saved = localStorage.getItem('theme');
+  if (saved) return saved;
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+});
 
   useEffect(() => {
     localStorage.setItem('accounts', JSON.stringify(accounts));
     localStorage.setItem('transactions', JSON.stringify(transactions));
-  }, [accounts, transactions]);
+    localStorage.setItem('theme', theme);
+  }, [accounts, transactions, theme]);
+
+  useEffect(() => {
+    document.body.setAttribute('theme', theme);
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }
 
   function addTransaction(transaction, accountWithMethod) {
     const id = Math.floor(Math.random() * 10000) + 1
@@ -151,6 +162,7 @@ function App() {
         <Routes>
           <Route path='/' element={
             <>
+              <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
               <Accounts accounts={accounts} />
               <RecentTransactions transactions={transactions} accounts={accounts} />
               <Buttons accounts={accounts} />
