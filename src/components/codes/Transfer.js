@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { limitToTwoDecimals } from '../../utils';
+import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
+import cn from 'classnames';
 
 const Transfer = ({ transfer, accounts }) => {
 
@@ -9,20 +10,34 @@ const Transfer = ({ transfer, accounts }) => {
     navigate('/');
   }
 
-  const today = new Date();
-  const formattedDate = today.toISOString().split('T')[0];
+  const formattedDate = getFormattedLocalDateTime(new Date());
 
-  const [exchangeRate, setExchangeRate] = useState(1);
+  const [exchangeRate, setExchangeRate] = useState(0);
   const [amount, setAmount] = useState(0);
   const [from, setFrom] = useState(accounts[0].id);
   const [to, setTo] = useState(accounts[0].id);
   const [date, setDate] = useState(formattedDate);
+
+  const [errors, setErrors] = useState({});
 
   const fromAccount = accounts.find((account) => account.id === from)
   const toAccount = accounts.find((account) => account.id === to)
 
   const onSubmit = (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+    if (!amount || amount <= 0) newErrors.amount = true;
+    if (!exchangeRate) newErrors.exchangeRate = true;
+    if (!from) newErrors.from = true;
+    if (!to) newErrors.to = true;
+    if (!date) newErrors.date = true;
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     transfer(from, to, amount, date, exchangeRate)
 
     setAmount(0);
@@ -50,8 +65,9 @@ const Transfer = ({ transfer, accounts }) => {
         <div className="inputContainer">
           <p className="inputText">Amount</p>
           <input
-            className="input"
-            value={amount}
+            className={cn("input", errors.amount ? "error" : "")}
+            value={amount === 0 ? '' : amount}
+            placeholder="Enter amount"
             type="number"
             step="0.01"
             required
@@ -60,7 +76,7 @@ const Transfer = ({ transfer, accounts }) => {
         </div>
         <div className="inputContainer">
           <p className="inputText">From</p>
-          <select className="input" value={from} required onChange={(e) => setFrom(e.target.value)}>
+          <select className={cn("input", errors.from ? "error" : "")} value={from} required onChange={(e) => setFrom(e.target.value)}>
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.name}</option>
             ))}
@@ -68,7 +84,7 @@ const Transfer = ({ transfer, accounts }) => {
         </div>
         <div className="inputContainer">
           <p className="inputText">To</p>
-          <select className="input" value={to} required onChange={(e) => setTo(e.target.value)}>
+          <select className={cn("input", errors.to ? "error" : "")} value={to} required onChange={(e) => setTo(e.target.value)}>
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.name}</option>
             ))}
@@ -77,8 +93,9 @@ const Transfer = ({ transfer, accounts }) => {
         <div className="inputContainer">
           <p className="inputText">Exchange Rate</p>
           1 {fromAccount.currency} = <input
-            className="input"
-            value={exchangeRate}
+            className={cn("input", errors.exchangeRate ? "error" : "")}
+            value={exchangeRate === 0 ? '' : exchangeRate}
+            placeholder="Enter exchange rate"
             type="number"
             step="0.01"
             required
@@ -88,11 +105,11 @@ const Transfer = ({ transfer, accounts }) => {
         <div className="inputContainer">
           <p className="inputText">Date</p>
           <input
-            type="date"
-            className="input"
+            type="datetime-local"
+            className={cn("input", errors.date ? "error" : "")}
             value={date}
             required
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
           />
         </div>
       </div>

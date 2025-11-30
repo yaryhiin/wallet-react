@@ -17,7 +17,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
     navigate('/');
   }
 
-  const formattedDate = getFormattedLocalDateTime(new Date()); 
+  const formattedDate = getFormattedLocalDateTime(new Date());
 
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('');
@@ -31,10 +31,10 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
     if (!amount || amount <= 0) newErrors.amount = true;
     if (!category) newErrors.category = true;
     if (!method) newErrors.method = true;
+    if (!date) newErrors.date = true;
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      alert(accounts[0].id)
       return;
     }
 
@@ -109,7 +109,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
           <p className="inputText">Date</p>
           <input
             type="datetime-local"
-            className="input"
+            className={cn("input", errors.date ? "error" : "")}
             value={date}
             required
             onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
