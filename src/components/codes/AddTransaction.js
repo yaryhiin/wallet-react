@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import cn from 'classnames';
+import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
 
 const AddTransaction = ({ addTransaction, type, accounts }) => {
 
@@ -16,8 +17,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
     navigate('/');
   }
 
-  const today = new Date();
-  const formattedDate = today.toISOString().split('T')[0];
+  const formattedDate = getFormattedLocalDateTime(new Date()); 
 
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('');
@@ -34,6 +34,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      alert(accounts[0].id)
       return;
     }
 
@@ -71,8 +72,9 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
             value={amount === 0 ? '' : amount}
             placeholder="Enter amount"
             type="number"
+            step="0.01"
             required
-            onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+            onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
           />
         </div>
         <div className="inputContainer">
@@ -95,7 +97,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
             className={cn("input", errors.method ? "error" : "")}
             value={method}
             required
-            onChange={(e) => setMethod(parseInt(e.target.value))}
+            onChange={(e) => setMethod(e.target.value)}
           >
             <option value="" disabled>Select Method</option>
             {accounts.map((account) => (
@@ -106,11 +108,11 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
         <div className="inputContainer">
           <p className="inputText">Date</p>
           <input
-            type="date"
+            type="datetime-local"
             className="input"
             value={date}
             required
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
           />
         </div>
       </div>

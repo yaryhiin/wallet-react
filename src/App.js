@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { v4 as uuid } from 'uuid';
 
 import { updateAccountBalance } from './utils'
 
@@ -20,12 +21,12 @@ function App() {
   const [accounts, setAccounts] = useState(loadData('accounts'));
   const [transactions, setTransactions] = useState(loadData('transactions'));
   const [theme, setTheme] = useState(() => {
-  const saved = localStorage.getItem('theme');
-  if (saved) return saved;
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
-});
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  });
 
   useEffect(() => {
     localStorage.setItem('accounts', JSON.stringify(accounts));
@@ -42,7 +43,7 @@ function App() {
   }
 
   function addTransaction(transaction, accountWithMethod) {
-    const id = Math.floor(Math.random() * 10000) + 1
+    const id = uuid();
     setTransactions([...transactions, { id, ...transaction }])
 
     setAccounts(updateAccountBalance(accounts, accountWithMethod.id, transaction.amount));
@@ -51,24 +52,23 @@ function App() {
   function transfer(from, to, amount, date, exchangeRate) {
     const fromAccount = accounts.find((account) => account.id === from)
     const toAccount = accounts.find((account) => account.id === to)
-    fromAccount.balance -= amount;
-    let updatedAccounts = accounts.map((account) =>
-      account.id === fromAccount.id ? fromAccount : account
+    const amountExchanged = amount * exchangeRate;
+    const updatedAccounts = updateAccountBalance(
+      updateAccountBalance(accounts, fromAccount.id, -amount),
+      toAccount.id,
+      amountExchanged
     );
-    const id1 = Math.floor(Math.random() * 10000) + 1
-    const id2 = Math.floor(Math.random() * 10000) + 1
+
+    setAccounts(updatedAccounts);
+    const id1 = uuid();
+    const id2 = uuid();
     const newTransaction1 = { id: id1, category: "Transfer", amount: amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date }
     const newTransaction2 = { id: id2, category: "Transfer", amount: amount * exchangeRate, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date }
     setTransactions([...transactions, newTransaction1, newTransaction2])
-    toAccount.balance += amount * exchangeRate;
-    updatedAccounts = accounts.map((account) =>
-      account.id === toAccount.id ? toAccount : account
-    );
-    setAccounts(updatedAccounts);
   }
 
   function addAccount(account) {
-    const id = Math.floor(Math.random() * 10000) + 1
+    const id = uuid();
     const newAccount = { id, ...account }
     setAccounts([...accounts, newAccount])
   }
@@ -81,50 +81,35 @@ function App() {
   }
 
   function deleteAccount(id) {
-    const updatedAccounts = accounts.filter((account) => account.id !== id);
-    setAccounts(updatedAccounts);
     const updatedTransactions = transactions.filter((transaction) => transaction.method !== id);
     setTransactions(updatedTransactions);
+    const updatedAccounts = accounts.filter((account) => account.id !== id);
+    setAccounts(updatedAccounts);
   }
 
-  function changeTransaction(changedTransaction) {
-    const previousTransaction = transactions.find((transaction) => transaction.id === changedTransaction.id)
-    const accountToChange = accounts.find((account) => account.id === changedTransaction.method);
-    if (previousTransaction.type === 'income' && changedTransaction.type === 'expense') {
-      accountToChange.balance -= previousTransaction.amount;
-      accountToChange.balance -= changedTransaction.amount;
-      const updatedAccounts = accounts.map((account) =>
-        account.id === accountToChange.id ? accountToChange : account
-      );
-      setAccounts(updatedAccounts);
+  function changeTransaction(changed) {
+    const prev = transactions.find(t => t.id === changed.id);
+
+    const accountOld = accounts.find(a => a.id === changed.method);
+    const accountNew = accounts.find(a => a.id === prev.method);
+    if (prev.type === "income") {
+      accountOld.balance -= prev.amount;
+    } else {
+      accountOld.balance += prev.amount;
     }
-    else if (previousTransaction.type === 'expense' && changedTransaction.type === 'income') {
-      accountToChange.balance += previousTransaction.amount;
-      accountToChange.balance += changedTransaction.amount;
-      const updatedAccounts = accounts.map((account) =>
-        account.id === accountToChange.id ? accountToChange : account
-      );
-      setAccounts(updatedAccounts);
+    if (changed.type === "income") {
+      accountNew.balance += changed.amount;
+    } else {
+      accountNew.balance -= changed.amount;
     }
-    else if (previousTransaction.amount !== changedTransaction.amount) {
-      if (previousTransaction.type === 'income') {
-        accountToChange.balance -= previousTransaction.amount
-        accountToChange.balance += changedTransaction.amount
-        const updatedAccounts = accounts.map((account) =>
-          account.id === accountToChange.id ? accountToChange : account
-        );
-        setAccounts(updatedAccounts);
-      } else if (previousTransaction.type === 'expense') {
-        accountToChange.balance += previousTransaction.amount
-        accountToChange.balance -= changedTransaction.amount
-        const updatedAccounts = accounts.map((account) =>
-          account.id === accountToChange.id ? accountToChange : account
-        );
-        setAccounts(updatedAccounts);
-      }
-    }
-    const updatedTransactions = transactions.map((transaction) => transaction.id === changedTransaction.id ? changedTransaction : transaction)
-    setTransactions(updatedTransactions)
+    const updatedAccounts = accounts.map(a =>
+      a.id === accountOld.id ? { ...accountOld } : a.id === accountNew.id ? { ...accountNew } : a
+    );
+    setAccounts(updatedAccounts);
+    const updatedTransactions = transactions.map(t =>
+      t.id === changed.id ? changed : t
+    );
+    setTransactions(updatedTransactions);
   }
 
   function deleteTransaction(id) {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { loadData } from '../../utils';
+import { loadData, limitToTwoDecimals } from '../../utils';
 
 const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
 
   const accounts = loadData("accounts");
   const { id } = useParams();
-  const account = accounts.find(a => a.id === Number(id));
+  const account = accounts.find(a => a.id === id);
 
   const accountCurrency = ["UAH", "PLN", "USD", "CAD"];
   const accountIcon = ["card_blue", "card_pink", "cash", "crypto", "bank", "euro", "usd"];
@@ -68,7 +68,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
         </div>
         <div className="inputContainer">
           <p className="inputText">Balance</p>
-          <input type="number" value={balance} className="input" required onChange={(e) => setBalance(parseInt(e.target.value) || 0)} />
+          <input type="number" step="0.01" value={balance} className="input" required onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)} />
         </div>
         <div className="inputContainer">
           <p className="inputText">Currency</p>

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import cn from 'classnames'
+import { limitToTwoDecimals } from '../../utils'
 
 const AddAccount = ({ addAccount }) => {
 
@@ -70,12 +71,13 @@ const AddAccount = ({ addAccount }) => {
           <p className="inputText">Balance</p>
           <input
             type="number"
+            step="0.01"
             min="0"
             value={balance === 0 ? '' : balance}
             placeholder="Enter balance"
             className={cn("input", errors.balance ? "error" : "")}
             required
-            onChange={(e) => setBalance(parseInt(e.target.value) || 0)}
+            onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)}
           />
         </div>
         <div className="inputContainer">

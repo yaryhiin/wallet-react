@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
-import { loadData } from '../../utils';
+import { loadData, limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
 
 const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
     const accounts = loadData("accounts");
     const transactions = loadData("transactions");
     const { id } = useParams();
-    const transaction = transactions.find(t => t.id === Number(id));
+    const transaction = transactions.find(t => t.id === id);
 
     const [type, setType] = useState(transaction.type);
     const [amount, setAmount] = useState(transaction.amount);
@@ -79,8 +79,9 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                         className="input inputAmount"
                         value={amount}
                         type="number"
+                        step="0.01"
                         required
-                        onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+                        onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
                     />
                 </div>
                 <div className="inputContainer">
@@ -94,7 +95,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                 </div>
                 <div className="inputContainer">
                     <p className="inputText">Method</p>
-                    <select className="input" value={method} required onChange={(e) => setMethod(parseInt(e.target.value))}>
+                    <select className="input" value={method} required onChange={(e) => setMethod(e.target.value)}>
                         <option value="" disabled>Select Method</option>
                         {accounts.map((account) => (
                             <option key={account.id} value={account.id}>{account.name}</option>
@@ -103,7 +104,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                 </div>
                 <div className="inputContainer">
                     <p className="inputText">Date</p>
-                    <input type="date" className="input" value={date} required onChange={(e) => setDate(e.target.value)} />
+                    <input type="datetime-local" className="input" value={date} required onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))} />
                 </div>
             </div>
             <div className="buttonContainer">

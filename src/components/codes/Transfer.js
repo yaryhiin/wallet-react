@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { limitToTwoDecimals } from '../../utils';
 
 const Transfer = ({ transfer, accounts }) => {
 
@@ -52,13 +53,14 @@ const Transfer = ({ transfer, accounts }) => {
             className="input"
             value={amount}
             type="number"
+            step="0.01"
             required
-            onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+            onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
           />
         </div>
         <div className="inputContainer">
           <p className="inputText">From</p>
-          <select className="input" value={from} required onChange={(e) => setFrom(parseInt(e.target.value))}>
+          <select className="input" value={from} required onChange={(e) => setFrom(e.target.value)}>
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.name}</option>
             ))}
@@ -66,7 +68,7 @@ const Transfer = ({ transfer, accounts }) => {
         </div>
         <div className="inputContainer">
           <p className="inputText">To</p>
-          <select className="input" value={to} required onChange={(e) => setTo(parseInt(e.target.value))}>
+          <select className="input" value={to} required onChange={(e) => setTo(e.target.value)}>
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.name}</option>
             ))}
@@ -78,8 +80,9 @@ const Transfer = ({ transfer, accounts }) => {
             className="input"
             value={exchangeRate}
             type="number"
+            step="0.01"
             required
-            onChange={(e) => setExchangeRate(parseInt(e.target.value) || 0)}
+            onChange={(e) => setExchangeRate(limitToTwoDecimals(e.target.value) || 0)}
           /> {toAccount.currency}
         </div>
         <div className="inputContainer">
