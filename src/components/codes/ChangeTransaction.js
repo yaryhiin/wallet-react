@@ -1,12 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
-import { loadData, limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
+import { loadData, limitToTwoDecimals, getFormattedLocalDateTime, getInputClass } from '../../utils';
 
 const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
     const navigate = useNavigate();
     function home() {
         navigate('/');
     }
+
+    const [errors, setErrors] = useState({});
 
     const accounts = loadData("accounts");
     const transactions = loadData("transactions");
@@ -25,6 +27,17 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+
+        const newErrors = {};
+        if (!amount || amount <= 0) newErrors.amount = true;
+        if (!category) newErrors.category = true;
+        if (!method) newErrors.method = true;
+        if (!date) newErrors.date = true;
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
 
         changeTransaction({ id, category, amount, currency, type, method, date })
 
@@ -68,7 +81,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
             <div className="inputBox">
                 <div className="inputContainer">
                     <p className="inputText">Type</p>
-                    <select className="input" value={type} required onChange={(e) => setType(e.target.value)}>
+                    <select className={getInputClass('type', errors)} value={type} required onChange={(e) => setType(e.target.value)}>
                         <option value="income">Income</option>
                         <option value="expense">Expense</option>
                     </select>
@@ -76,7 +89,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                 <div className="inputContainer">
                     <p className="inputText">Amount</p>
                     <input
-                        className="input inputAmount"
+                        className={getInputClass('amount', errors)}
                         value={amount}
                         type="number"
                         step="0.01"
@@ -86,7 +99,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                 </div>
                 <div className="inputContainer">
                     <p className="inputText">Category</p>
-                    <select className="input" value={category} required onChange={(e) => setCategory(e.target.value)}>
+                    <select className={getInputClass('category', errors)} value={category} required onChange={(e) => setCategory(e.target.value)}>
                         <option value="" disabled>Select Category</option>
                         {transMethod.map((method, index) => (
                             <option key={index} value={method}>{method}</option>
@@ -95,7 +108,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                 </div>
                 <div className="inputContainer">
                     <p className="inputText">Method</p>
-                    <select className="input" value={method} required onChange={(e) => setMethod(e.target.value)}>
+                    <select className={getInputClass('method', errors)} value={method} required onChange={(e) => setMethod(e.target.value)}>
                         <option value="" disabled>Select Method</option>
                         {accounts.map((account) => (
                             <option key={account.id} value={account.id}>{account.name}</option>
@@ -104,7 +117,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                 </div>
                 <div className="inputContainer">
                     <p className="inputText">Date</p>
-                    <input type="datetime-local" className="input" value={date} required onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))} />
+                    <input type="datetime-local" className={getInputClass('date', errors)} value={date} required onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))} />
                 </div>
             </div>
             <div className="buttonContainer">

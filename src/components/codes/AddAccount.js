@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import cn from 'classnames'
-import { limitToTwoDecimals } from '../../utils'
+import { limitToTwoDecimals, getInputClass } from '../../utils'
 
 const AddAccount = ({ addAccount }) => {
 
@@ -62,7 +61,7 @@ const AddAccount = ({ addAccount }) => {
             type="text"
             value={!name ? '' : name}
             placeholder="Enter name"
-            className={cn("input", errors.name ? "error" : "")}
+            className={getInputClass('name', errors)}
             required
             onChange={(e) => setName(e.target.value)}
           />
@@ -75,7 +74,7 @@ const AddAccount = ({ addAccount }) => {
             min="0"
             value={balance === 0 ? '' : balance}
             placeholder="Enter balance"
-            className={cn("input", errors.balance ? "error" : "")}
+            className={getInputClass('balance', errors)}
             required
             onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)}
           />
@@ -83,7 +82,7 @@ const AddAccount = ({ addAccount }) => {
         <div className="inputContainer">
           <p className="inputText">Currency</p>
           <select
-            className={cn("input", errors.currency ? "error" : "")}
+            className={getInputClass('currency', errors)}
             value={currency}
             required
             onChange={(e) => setCurrency(e.target.value)}
@@ -97,7 +96,7 @@ const AddAccount = ({ addAccount }) => {
         <div className="inputContainer">
           <p className="inputText">Icon</p>
           <select
-            className={cn("input", errors.icon ? "error" : "")}
+            className={getInputClass('icon', errors)}
             value={icon}
             required
             onChange={(e) => setIcon(e.target.value)}

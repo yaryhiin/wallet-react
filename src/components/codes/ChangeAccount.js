@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { loadData, limitToTwoDecimals } from '../../utils';
+import { loadData, limitToTwoDecimals, getInputClass } from '../../utils';
 
 const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const navigate = useNavigate();
   function home() {
     navigate('/');
   }
+
+  const [errors, setErrors] = useState({});
 
   const accounts = loadData("accounts");
   const { id } = useParams();
@@ -22,17 +24,25 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (name !== "") {
-      changeAccount({ id, name, balance, currency, icon })
-      setName('');
-      setBalance();
-      setCurrency('');
-      setIcon('');
 
-      home();
-    } else {
-      alert("You forgot to write the name")
+    const newErrors = {};
+    if (!name) newErrors.name = true;
+    if (!balance || balance < 0) newErrors.balance = true;
+    if (!currency) newErrors.currency = true;
+    if (!icon) newErrors.icon = true;
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
+
+    changeAccount({ id, name, balance, currency, icon })
+    setName('');
+    setBalance();
+    setCurrency('');
+    setIcon('');
+
+    home();
   }
 
   const onBack = (e) => {
@@ -64,15 +74,15 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
       <div className="inputBox">
         <div className="inputContainer">
           <p className="inputText">Account name</p>
-          <input type="text" value={name} className="input" required onChange={(e) => setName(e.target.value)} />
+          <input type="text" value={name} className={getInputClass('name', errors)} required onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="inputContainer">
           <p className="inputText">Balance</p>
-          <input type="number" step="0.01" value={balance} className="input" required onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)} />
+          <input type="number" step="0.01" value={balance} className={getInputClass('balance', errors)} required onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)} />
         </div>
         <div className="inputContainer">
           <p className="inputText">Currency</p>
-          <select className="input" value={currency} required onChange={(e) => setCurrency(e.target.value)}>
+          <select className={getInputClass('currency', errors)} value={currency} required onChange={(e) => setCurrency(e.target.value)}>
             <option value="" disabled>Select Currecny</option>
             {accountCurrency.map((currency, index) => (
               <option key={index} value={currency}>{currency}</option>
@@ -81,7 +91,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
         </div>
         <div className="inputContainer">
           <p className="inputText">Icon</p>
-          <select className="input" value={icon} required onChange={(e) => setIcon(e.target.value)}>
+          <select className={getInputClass('icon', errors)} value={icon} required onChange={(e) => setIcon(e.target.value)}>
             <option value="" disabled>Select Icon</option>
             {accountIcon.map((icon, index) => (
               <option key={index} value={icon}>{icon}</option>

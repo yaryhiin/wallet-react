@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import cn from 'classnames';
-import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
+import { limitToTwoDecimals, getFormattedLocalDateTime, getInputClass } from '../../utils';
 
 const AddTransaction = ({ addTransaction, type, accounts }) => {
 
@@ -44,7 +43,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
 
     setAmount(0);
     setCategory('');
-    setMethod(0);
+    setMethod('');
     setDate(formattedDate);
 
     home();
@@ -55,7 +54,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
 
     setAmount(0);
     setCategory('');
-    setMethod(0);
+    setMethod('');
     setDate(formattedDate);
 
     home();
@@ -68,7 +67,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
           <p className="inputText">Amount</p>
           <input
             min="1"
-            className={cn("input", errors.amount ? "error" : "")}
+            className={getInputClass('amount', errors)}
             value={amount === 0 ? '' : amount}
             placeholder="Enter amount"
             type="number"
@@ -80,7 +79,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
         <div className="inputContainer">
           <p className="inputText">Category</p>
           <select
-            className={cn("input", errors.category ? "error" : "")}
+            className={getInputClass('category', errors)}
             value={category}
             required
             onChange={(e) => setCategory(e.target.value)}
@@ -94,7 +93,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
         <div className="inputContainer">
           <p className="inputText">Method</p>
           <select
-            className={cn("input", errors.method ? "error" : "")}
+            className={getInputClass('method', errors)}
             value={method}
             required
             onChange={(e) => setMethod(e.target.value)}
@@ -109,7 +108,7 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
           <p className="inputText">Date</p>
           <input
             type="datetime-local"
-            className={cn("input", errors.date ? "error" : "")}
+            className={getInputClass('date', errors)}
             value={date}
             required
             onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
