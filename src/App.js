@@ -42,16 +42,15 @@ function App() {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   }
 
-  function addTransaction(transaction, accountWithMethod) {
+  function addTransaction(transaction, targetAccount) {
     const id = uuid();
     setTransactions([...transactions, { id, ...transaction }])
-
-    setAccounts(updateAccountBalance(accounts, accountWithMethod.id, transaction.amount));
+    setAccounts(updateAccountBalance(accounts, targetAccount.id, transaction.amount));
   }
 
   function transfer(from, to, amount, date, exchangeRate) {
-    const fromAccount = accounts.find((account) => account.id === from)
-    const toAccount = accounts.find((account) => account.id === to)
+    const fromAccount = accounts.find((a) => a.id === from)
+    const toAccount = accounts.find((a) => a.id === to)
     const amountExchanged = amount * exchangeRate;
     const updatedAccounts = updateAccountBalance(
       updateAccountBalance(accounts, fromAccount.id, -amount),
@@ -63,7 +62,7 @@ function App() {
     const id1 = uuid();
     const id2 = uuid();
     const newTransaction1 = { id: id1, category: "Transfer", amount: amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date }
-    const newTransaction2 = { id: id2, category: "Transfer", amount: amount * exchangeRate, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date }
+    const newTransaction2 = { id: id2, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date }
     setTransactions([...transactions, newTransaction1, newTransaction2])
   }
 
@@ -74,16 +73,16 @@ function App() {
   }
 
   function changeAccount(changedAccount) {
-    const updatedAccounts = accounts.map((account) =>
-      account.id === changedAccount.id ? changedAccount : account
+    const updatedAccounts = accounts.map((a) =>
+      a.id === changedAccount.id ? changedAccount : a
     );
     setAccounts(updatedAccounts);
   }
 
   function deleteAccount(id) {
-    const updatedTransactions = transactions.filter((transaction) => transaction.method !== id);
+    const updatedTransactions = transactions.filter((t) => t.method !== id);
     setTransactions(updatedTransactions);
-    const updatedAccounts = accounts.filter((account) => account.id !== id);
+    const updatedAccounts = accounts.filter((a) => a.id !== id);
     setAccounts(updatedAccounts);
   }
 
@@ -113,24 +112,25 @@ function App() {
   }
 
   function deleteTransaction(id) {
-    const deletedTransaction = transactions.find((transaction) => transaction.id === id);
-    let accountToChange = accounts.find((account) => account.id === deletedTransaction.method);
-    if (deletedTransaction.type === 'income') {
-      accountToChange.balance -= deletedTransaction.amount;
-      const updatedAccounts = accounts.map((account) =>
-        account.id === accountToChange.id ? accountToChange : account
-      );
-      setAccounts(updatedAccounts);
-    } else if (deletedTransaction.type === 'expense') {
-      accountToChange.balance += deletedTransaction.amount;
-      const updatedAccounts = accounts.map((account) =>
-        account.id === accountToChange.id ? accountToChange : account
-      );
-      setAccounts(updatedAccounts);
-    }
-    const updatedTransactions = transactions.filter((transaction) => transaction.id !== id);
+    const deletedTransaction = transactions.find((t) => t.id === id);
+
+    const updatedAccounts = accounts.map((a) => {
+      if (a.id !== deletedTransaction.method) return a;
+
+      const newBalance =
+        deletedTransaction.type === "income"
+          ? a.balance - deletedTransaction.amount
+          : a.balance + deletedTransaction.amount;
+
+      return { ...a, balance: newBalance };
+    });
+
+    setAccounts(updatedAccounts);
+
+    const updatedTransactions = transactions.filter((t) => t.id !== id);
     setTransactions(updatedTransactions);
   }
+
 
   function deleteAll() {
     let result = window.confirm("Are you sure you want to delete everything?")

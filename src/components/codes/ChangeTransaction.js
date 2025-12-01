@@ -81,7 +81,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
             <div className="inputBox">
                 <div className="inputContainer">
                     <p className="inputText">Type</p>
-                    <select className={getInputClass('type', errors)} value={type} required onChange={(e) => setType(e.target.value)}>
+                    <select className="input" value={type} required onChange={(e) => setType(e.target.value)}>
                         <option value="income">Income</option>
                         <option value="expense">Expense</option>
                     </select>

@@ -49,7 +49,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
     e.preventDefault();
 
     setName('');
-    setBalance();
+    setBalance(0);
     setCurrency('');
     setIcon('');
 
@@ -59,8 +59,12 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const onDelete = (e) => {
     e.preventDefault();
 
+    if (!window.confirm(`This account has ${account.balance} ${account.currency}. Are you sure?`)) {
+      return;
+    }
+
     setName('');
-    setBalance();
+    setBalance(0);
     setCurrency('');
     setIcon('');
 
