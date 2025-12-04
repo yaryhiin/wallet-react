@@ -14,7 +14,7 @@ import AddAccount from './components/codes/AddAccount'
 import ChangeAccount from './components/codes/ChangeAccount'
 import ChangeTransaction from './components/codes/ChangeTransaction'
 import DeleteAllBtn from './components/codes/DeleteAllBtn'
-import ThemeSwitch from './components/codes/ThemeSwitch'
+import Layout from './Layout';
 import { loadData } from './utils'
 
 function App() {
@@ -133,48 +133,65 @@ function App() {
 
 
   function deleteAll() {
-    let result = window.confirm("Are you sure you want to delete everything?")
-    if (result) {
-      setAccounts([])
-      setTransactions([])
-      localStorage.clear()
+    if (!window.confirm("Are you sure you want to delete everything?")) {
+      return;
     }
+    setAccounts([])
+    setTransactions([])
+    localStorage.clear()
+  }
+
+  function exportData() {
+    const accounts = loadData("accounts");
+    const transactions = loadData("transactions");
+    const json = JSON.stringify({ accounts, transactions }, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'wallet_data.json';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   return (
     <Router>
       <div className="body">
         <Routes>
-          <Route path='/' element={
-            <>
-              <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
-              <Accounts accounts={accounts} />
-              <RecentTransactions transactions={transactions} accounts={accounts} />
-              <Buttons accounts={accounts} />
-              <DeleteAllBtn deleteAll={deleteAll} />
-            </>
-          } />
-          <Route path='income' element={
-            <AddTransaction addTransaction={addTransaction} type={"income"} accounts={accounts} />
-          } />
-          <Route path='expense' element={
-            <AddTransaction addTransaction={addTransaction} type={"expense"} accounts={accounts} />
-          } />
-          <Route path='transfer' element={
-            <Transfer transfer={transfer} accounts={accounts} />
-          } />
-          <Route path='addAccount' element={
-            <AddAccount addAccount={addAccount} />
-          } />
-          <Route path='changeAccount/:id' element={
-            <ChangeAccount changeAccount={changeAccount} deleteAccount={deleteAccount} />
-          } />
-          <Route path='changeTransaction/:id' element={
-            <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} />
-          } />
-          <Route path='transactions' element={
-            <Transactions transactions={transactions} accounts={accounts} />
-          } />
+          <Route element={
+            <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} />
+          }>
+            <Route path='/' element={
+              <>
+                <Accounts accounts={accounts} />
+                <RecentTransactions transactions={transactions} accounts={accounts} />
+                <Buttons accounts={accounts} />
+                <DeleteAllBtn deleteAll={deleteAll} />
+              </>
+            } />
+            <Route path='income' element={
+              <AddTransaction addTransaction={addTransaction} type={"income"} accounts={accounts} />
+            } />
+            <Route path='expense' element={
+              <AddTransaction addTransaction={addTransaction} type={"expense"} accounts={accounts} />
+            } />
+            <Route path='transfer' element={
+              <Transfer transfer={transfer} accounts={accounts} />
+            } />
+            <Route path='addAccount' element={
+              <AddAccount addAccount={addAccount} />
+            } />
+            <Route path='changeAccount/:id' element={
+              <ChangeAccount changeAccount={changeAccount} deleteAccount={deleteAccount} />
+            } />
+            <Route path='changeTransaction/:id' element={
+              <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} />
+            } />
+            <Route path='transactions' element={
+              <Transactions transactions={transactions} accounts={accounts} />
+            } />
+          </Route>
         </Routes>
       </div>
     </Router>
