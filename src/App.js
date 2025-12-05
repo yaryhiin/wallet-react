@@ -155,12 +155,44 @@ function App() {
     URL.revokeObjectURL(url);
   }
 
+  function importData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.click();
+
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const text = event.target.result;
+          const data = JSON.parse(text);
+          if (!data.accounts || !data.transactions) {
+            alert("Invalid backup file.");
+            return;
+          }
+          setAccounts(data.accounts);
+          setTransactions(data.transactions);
+          localStorage.setItem('accounts', JSON.stringify(data.accounts));
+          localStorage.setItem('transactions', JSON.stringify(data.transactions));
+          alert("Data imported successfully.");
+        } catch (error) {
+          alert("Error reading backup file.");
+        }
+      }
+      reader.readAsText(file);
+    }
+  }
+
   return (
     <Router>
-      <div className="body">
+      <div className="App">
         <Routes>
           <Route element={
-            <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} />
+            <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} importData={importData} />
           }>
             <Route path='/' element={
               <>

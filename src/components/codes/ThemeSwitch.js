@@ -1,4 +1,4 @@
-import React from 'react'
+import styles from '../styles/ThemeSwitch.module.scss'
 
 const ThemeSwitch = ({toggleTheme, theme}) => {
     return (
@@ -6,7 +6,7 @@ const ThemeSwitch = ({toggleTheme, theme}) => {
             <button
                 type="button"
                 onClick={toggleTheme}
-                className="themeSwitch"
+                className={styles.themeSwitch}
                 aria-pressed={theme === 'dark'}
                 title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
             >

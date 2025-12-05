@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ExportData = (exportData) => {
+const ExportData = ({ exportData }) => {
   return (
     <div>
-        <button className="button exportData" onClick={exportData.exportData}>Export Data</button>
+      <button className="button exportData" onClick={exportData}>Export</button>
     </div>
   )
 }

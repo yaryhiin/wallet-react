@@ -1,6 +1,13 @@
 @import './base/variables';
 @import './base/global';
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30%;
+}
+
 .body {
   display: flex;
   flex-direction: column;
@@ -12,9 +19,13 @@
 }
 
 .themeSwitch {
+  display: flex;
+  justify-content: center;
+  align-self: center;
   margin-bottom: 20px;
 }
 
-.exportData {
-  margin-bottom: 20px;
+.importExport {
+  display: flex;
+  gap: 10px;
 }
