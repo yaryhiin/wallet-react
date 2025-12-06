@@ -150,7 +150,9 @@ function App() {
   function exportData() {
     const accounts = loadData("accounts");
     const transactions = loadData("transactions");
-    const json = JSON.stringify({ accounts, transactions }, null, 2);
+    const theme = loadData("theme");
+    const categories = loadData("categories");
+    const json = JSON.stringify({ accounts, transactions, theme, categories }, null, 2);
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
@@ -182,8 +184,12 @@ function App() {
           }
           setAccounts(data.accounts);
           setTransactions(data.transactions);
+          setTheme(data.theme || 'dark');
+          setCategories(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories });
           localStorage.setItem('accounts', JSON.stringify(data.accounts));
           localStorage.setItem('transactions', JSON.stringify(data.transactions));
+          localStorage.setItem('theme', JSON.stringify(data.theme) || 'dark');
+          localStorage.setItem('categories', JSON.stringify(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories }));
           alert("Data imported successfully.");
         } catch (error) {
           alert("Error reading backup file.");
