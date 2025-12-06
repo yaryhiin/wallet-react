@@ -1,15 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { limitToTwoDecimals, getFormattedLocalDateTime, getInputClass } from '../../utils';
+import Modal from './Modal'
 
-const AddTransaction = ({ addTransaction, type, accounts }) => {
+const AddTransaction = ({ addTransaction, type, accounts, addCategory, categories, deleteCategory }) => {
 
-  const incomeMethod = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle"];
-  const expenseMethod = ["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
-
-  const options = type === "expense" ? expenseMethod : incomeMethod
+  const options = type === "expense" ? categories.expense : categories.income
 
   const [errors, setErrors] = useState({});
+  const [showModal, setShowModal] = useState(false);
+
+  function handleAddCategory(newCategory) {
+    addCategory(type, newCategory);
+    setShowModal(false);
+  }
+
+  function handleDeleteCategory(category) {
+    window.confirm(`Are you sure you want to delete the category "${category}"? This action cannot be undone.`) &&
+      deleteCategory(type, category);
+  }
 
   const navigate = useNavigate();
   function home() {
@@ -82,14 +91,23 @@ const AddTransaction = ({ addTransaction, type, accounts }) => {
             className={getInputClass('category', errors)}
             value={category}
             required
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value === "__add_new_category__") {
+                setShowModal(true);
+                return;
+              }
+              setCategory(e.target.value)
+            }}
           >
             <option value="" disabled>Select Category</option>
             {options.map((method, index) => (
               <option key={index} value={method}>{method}</option>
             ))}
+            <option value="__add_new_category__">+ Add new category</option>
           </select>
+          <button className="button deleteBtn deleteCategoryBtn" onClick={() => handleDeleteCategory(category)}>🗑️</button>
         </div>
+        {showModal && <Modal onAddCategory={handleAddCategory} onClose={() => setShowModal(false)} />}
         <div className="inputContainer">
           <p className="inputText">Method</p>
           <select

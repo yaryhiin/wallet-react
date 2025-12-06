@@ -1,14 +1,26 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { loadData, limitToTwoDecimals, getFormattedLocalDateTime, getInputClass } from '../../utils';
+import Modal from './Modal';
 
-const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
+const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, categories, deleteCategory }) => {
     const navigate = useNavigate();
     function home() {
         navigate('/');
     }
 
     const [errors, setErrors] = useState({});
+    const [showModal, setShowModal] = useState(false);
+
+    function handleAddCategory(newCategory) {
+        addCategory(type, newCategory);
+        setShowModal(false);
+    }
+
+    function handleDeleteCategory(category) {
+        window.confirm(`Are you sure you want to delete the category "${category}"? This action cannot be undone.`) &&
+            deleteCategory(type, category);
+    }
 
     const accounts = loadData("accounts");
     const transactions = loadData("transactions");
@@ -21,7 +33,11 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
     const [method, setMethod] = useState(transaction.method);
     const [date, setDate] = useState(transaction.date);
 
-    const transMethod = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle", "Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
+    const [options, setOptions] = useState(categories[type]);
+
+    useEffect(() => {
+        setOptions(categories[type]);
+    }, [type, categories]);
 
     let currency = transaction.currency;
 
@@ -101,11 +117,14 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction }) => {
                     <p className="inputText">Category</p>
                     <select className={getInputClass('category', errors)} value={category} required onChange={(e) => setCategory(e.target.value)}>
                         <option value="" disabled>Select Category</option>
-                        {transMethod.map((method, index) => (
-                            <option key={index} value={method}>{method}</option>
+                        {options.map((c, i) => (
+                            <option key={i} value={c}>{c}</option>
                         ))}
+                        <option value="__add_new_category__">+ Add new category</option>
                     </select>
+                    <button className="button deleteBtn deleteCategoryBtn" onClick={() => handleDeleteCategory(category)}>🗑️</button>
                 </div>
+                {showModal && <Modal onAddCategory={handleAddCategory} onClose={() => setShowModal(false)} />}
                 <div className="inputContainer">
                     <p className="inputText">Method</p>
                     <select className={getInputClass('method', errors)} value={method} required onChange={(e) => setMethod(e.target.value)}>

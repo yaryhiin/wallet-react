@@ -18,8 +18,13 @@ import Layout from './Layout';
 import { loadData } from './utils'
 
 function App() {
+  const defaultExpenseCategories = ["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
+  const defaultIncomeCategories = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle"];
+  const loadedCategories = loadData('categories') || {};
+
   const [accounts, setAccounts] = useState(loadData('accounts'));
   const [transactions, setTransactions] = useState(loadData('transactions'));
+  const [categories, setCategories] = useState({ expense: loadedCategories.expense || defaultExpenseCategories, income: loadedCategories.income || defaultIncomeCategories });
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved;
@@ -32,7 +37,8 @@ function App() {
     localStorage.setItem('accounts', JSON.stringify(accounts));
     localStorage.setItem('transactions', JSON.stringify(transactions));
     localStorage.setItem('theme', theme);
-  }, [accounts, transactions, theme]);
+    localStorage.setItem('categories', JSON.stringify(categories));
+  }, [accounts, transactions, theme, categories]);
 
   useEffect(() => {
     document.body.setAttribute('theme', theme);
@@ -187,6 +193,24 @@ function App() {
     }
   }
 
+  function addCategory(type, name) {
+    setCategories(prev => {
+      const updated = { ...prev };
+      updated[type] = [...prev[type], name];
+      localStorage.setItem('categories', JSON.stringify(updated));
+      return updated;
+    });
+  }
+
+  function deleteCategory(type, name) {
+    setCategories(prev => {
+      const updated = { ...prev, [type]: prev[type].filter(c => c !== name) };
+      localStorage.setItem('categories', JSON.stringify(updated));
+      return updated;
+    });
+  }
+
+
   return (
     <Router>
       <div className="App">
@@ -203,10 +227,10 @@ function App() {
               </>
             } />
             <Route path='income' element={
-              <AddTransaction addTransaction={addTransaction} type={"income"} accounts={accounts} />
+              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory}/>
             } />
             <Route path='expense' element={
-              <AddTransaction addTransaction={addTransaction} type={"expense"} accounts={accounts} />
+              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory}/>
             } />
             <Route path='transfer' element={
               <Transfer transfer={transfer} accounts={accounts} />
@@ -218,7 +242,7 @@ function App() {
               <ChangeAccount changeAccount={changeAccount} deleteAccount={deleteAccount} />
             } />
             <Route path='changeTransaction/:id' element={
-              <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} />
+              <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
             } />
             <Route path='transactions' element={
               <Transactions transactions={transactions} accounts={accounts} />

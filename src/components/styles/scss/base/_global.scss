@@ -1,6 +1,7 @@
 header {
   padding: 10px 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: var(--bg);
 }
 
 body {
@@ -113,4 +114,8 @@ a:hover {
   height: 35px;
   font-size: 13px;
   font-weight: bold;
+}
+
+.deleteCategoryBtn {
+  width: 40px;
 }

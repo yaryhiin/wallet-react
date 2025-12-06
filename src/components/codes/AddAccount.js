@@ -16,7 +16,7 @@ const AddAccount = ({ addAccount }) => {
   const [name, setName] = useState('');
   const [balance, setBalance] = useState(0);
   const [currency, setCurrency] = useState('');
-  const [icon, setIcon] = useState();
+  const [icon, setIcon] = useState('');
 
   const onSubmit = (e) => {
     e.preventDefault();
