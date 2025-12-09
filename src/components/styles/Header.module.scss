@@ -1,0 +1,52 @@
+.importExport {
+  display: flex;
+  gap: 10px;
+}
+
+.importData, .exportData {
+  margin-bottom: 20px;
+  width: 70px;
+  height: 35px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.importData {
+  background-color: var(--save-btn-bg);
+
+  &:hover {
+    background-color: var(--save-btn-hover-bg);
+  }
+}
+
+.exportData {
+  background-color: var(--change-btn-bg);
+
+  &:hover {
+    background-color: var(--change-btn-hover-bg);
+  }
+}
+
+.themeSwitch {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--btn-bg);
+  color: var(--text);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: background 150ms, transform 120ms;
+}
+
+.themeSwitch:hover { transform: translateY(-1px); }
+.themeSwitch[aria-pressed='true'] {
+  outline: 2px solid rgba(0,0,0,0.08);
+}
+
+@media (max-width: 600px) {
+  .importData, .exportData {
+    width: 60px;
+    height: 30px;
+    font-size: 12px;
+  } 
+}

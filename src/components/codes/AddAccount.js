@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { limitToTwoDecimals, getInputClass } from '../../utils'
+import { limitToTwoDecimals } from '../../utils'
+import styles from '../styles/FormLayout.module.scss'
+import cn from 'classnames';
 
 const AddAccount = ({ addAccount }) => {
 
@@ -54,49 +56,52 @@ const AddAccount = ({ addAccount }) => {
 
   return (
     <div>
-      <div className="inputBox">
-        <div className="inputContainer">
-          <p className="inputText">Account name</p>
+      <div className={styles.inputBox}>
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Account name</p>
           <input
             type="text"
             value={!name ? '' : name}
             placeholder="Enter name"
-            className={getInputClass('name', errors)}
+            className={cn(styles.input, errors.name && styles.error)}
             required
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Balance</p>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Balance</p>
           <input
             type="number"
             step="0.01"
             min="0"
             value={balance === 0 ? '' : balance}
             placeholder="Enter balance"
-            className={getInputClass('balance', errors)}
+            className={cn(styles.input, errors.balance && styles.error)}
             required
             onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)}
           />
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Currency</p>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Currency</p>
           <select
-            className={getInputClass('currency', errors)}
+            className={cn(styles.input, errors.currency && styles.error)}
             value={currency}
             required
             onChange={(e) => setCurrency(e.target.value)}
           >
-            <option value="" disabled>Select Currecny</option>
+            <option value="" disabled>Select Currency</option>
             {accountCurrency.map((currency, index) => (
               <option key={index} value={currency}>{currency}</option>
             ))}
           </select>
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Icon</p>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Icon</p>
           <select
-            className={getInputClass('icon', errors)}
+            className={cn(styles.input, errors.icon && styles.error)}
             value={icon}
             required
             onChange={(e) => setIcon(e.target.value)}
@@ -108,9 +113,10 @@ const AddAccount = ({ addAccount }) => {
           </select>
         </div>
       </div>
-      <div className="buttonContainer">
+
+      <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>
-        <button className="saveBtn button" onClick={onSubmit}>Save</button>
+        <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>
       </div>
     </div>
   )

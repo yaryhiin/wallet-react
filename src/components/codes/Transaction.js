@@ -4,8 +4,9 @@ import cn from 'classnames';
 
 const Transaction = ({ transaction, accounts }) => {
     return (
-        <Link to={`../changeTransaction/${transaction.id}`}>
-            <div className={cn("button", styles.transactionStyle)}>
+
+        <div className={cn( styles.transactionStyle)}>
+            <Link to={`../changeTransaction/${transaction.id}`}>
                 <div className={styles.transactionDetails}>
                     <div className={styles.leftDetails}>
                         <p className={styles.transName}>{transaction.category}</p>
@@ -25,8 +26,8 @@ const Transaction = ({ transaction, accounts }) => {
                         <p className={styles.transDate}>{transaction.date}</p>
                     </div>
                 </div>
-            </div>
-        </Link>
+            </Link>
+        </div>
     )
 }
 

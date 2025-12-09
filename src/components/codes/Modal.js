@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import styles from '../styles/Modal.module.scss'
+import cn from 'classnames';
 
 const Modal = ({ onClose, onAddCategory }) => {
     const [newCategory, setNewCategory] = useState("");
@@ -9,19 +11,19 @@ const Modal = ({ onClose, onAddCategory }) => {
     }
 
     return (
-        <div className="modal">
-            <div className="modalContent">
-                <input className="input"
+        <div className={styles.modal}>
+            <div className={styles.modalContent}>
+                <input className={styles.input}
                     type="text"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                     placeholder="Category name"
                 />
-                <div className="buttons">
-                    <button className="button saveBtn" onClick={handleSubmit}>
+                <div className={styles.buttons}>
+                    <button className={cn(styles.addBtn, "button")} onClick={handleSubmit}>
                         Add
                     </button>
-                    <button className="button deleteBtn" onClick={onClose}>
+                    <button className={cn(styles.cancelBtn, "button")} onClick={onClose}>
                         Cancel
                     </button>
                 </div>

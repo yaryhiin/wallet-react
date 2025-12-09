@@ -1,9 +1,10 @@
-import React from 'react'
+import styles from '../styles/Header.module.scss'
+import cn from 'classnames'
 
 const ExportData = ({ exportData }) => {
   return (
     <div>
-      <button className="button exportData" onClick={exportData}>Export</button>
+      <button className={cn("button", styles.exportData)} onClick={exportData}>Export</button>
     </div>
   )
 }

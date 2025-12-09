@@ -1,38 +1,3 @@
-@import './base/variables';
-@import './base/global';
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 30%;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-  padding-top: 30px;
-  width: 70%;
-}
-
-.themeSwitch {
-  display: flex;
-  justify-content: center;
-  align-self: center;
-  margin-bottom: 20px;
-}
-
-.importExport {
-  display: flex;
-  gap: 10px;
-}
-
 .modal {
   position: fixed;
   top: 0;
@@ -65,10 +30,27 @@
   border-radius: 4px;
   width: 100%;
   box-sizing: border-box;
+  margin-top: 13px;
 }
 
 .modalContent .buttons {
   display: flex;
   justify-content: center;
   gap: 10px;
+}
+
+.addBtn {
+  background-color: var(--save-btn-bg);
+
+  &:hover {
+    background-color: var(--save-btn-hover-bg);
+  }
+}
+
+.cancelBtn {
+  background-color: var(--delete-btn-bg);
+
+  &:hover {
+    background-color: var(--delete-btn-hover-bg);
+  }
 }

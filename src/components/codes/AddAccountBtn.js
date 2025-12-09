@@ -5,8 +5,8 @@ import cn from 'classnames';
 const AddAccountBtn = () => {
     return (
         <Link to="addAccount">
-            <div className={cn(styles.accountStyle, "button")}>
-                <img className={`${styles.accIcon} ${styles.addAccBtn}`} src={`${process.env.PUBLIC_URL}/images/buttons/add_btn.png`} alt="Add Account" />
+            <div className={cn(styles.accountStyle, styles.addAccBtn, "button")}>
+                <img src={`${process.env.PUBLIC_URL}/images/buttons/add_btn.png`} alt="Add Account" />
             </div>
         </Link>
     )

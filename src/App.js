@@ -188,7 +188,7 @@ function App() {
           setCategories(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories });
           localStorage.setItem('accounts', JSON.stringify(data.accounts));
           localStorage.setItem('transactions', JSON.stringify(data.transactions));
-          localStorage.setItem('theme', JSON.stringify(data.theme) || 'dark');
+          localStorage.setItem('theme', data.theme || 'dark');
           localStorage.setItem('categories', JSON.stringify(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories }));
           alert("Data imported successfully.");
         } catch (error) {

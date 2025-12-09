@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { limitToTwoDecimals, getFormattedLocalDateTime, getInputClass } from '../../utils';
-import styles from '../styles/Transfer.module.scss'
+import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
+import styles from '../styles/FormLayout.module.scss'
+import cn from 'classnames';
 
 const Transfer = ({ transfer, accounts }) => {
 
@@ -66,12 +67,12 @@ const Transfer = ({ transfer, accounts }) => {
   }
 
   return (
-    <>
-      <div className="inputBox">
-        <div className="inputContainer">
-          <p className="inputText">Amount</p>
+    <div>
+      <div className={styles.inputBox}>
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Amount</p>
           <input
-            className={getInputClass('amount', errors)}
+            className={cn(styles.input, errors.amount && styles.error)}
             value={amount === 0 ? '' : amount}
             placeholder="Enter amount"
             type="number"
@@ -80,26 +81,40 @@ const Transfer = ({ transfer, accounts }) => {
             onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
           />
         </div>
-        <div className="inputContainer">
-          <p className="inputText">From</p>
-          <select className={getInputClass('from', errors)} value={from} required onChange={(e) => setFrom(e.target.value)}>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>From</p>
+          <select
+            className={cn(styles.input, errors.from && styles.error)}
+            value={from}
+            required
+            onChange={(e) => setFrom(e.target.value)}
+          >
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.name}</option>
             ))}
           </select>
         </div>
-        <div className="inputContainer">
-          <p className="inputText">To</p>
-          <select className={getInputClass('to', errors)} value={to} required onChange={(e) => setTo(e.target.value)}>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>To</p>
+          <select
+            className={cn(styles.input, errors.to && styles.error)}
+            value={to}
+            required
+            onChange={(e) => setTo(e.target.value)}
+          >
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>{account.name}</option>
             ))}
           </select>
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Exchange Rate</p>
-          1 {!isFlipped ? fromAccount.currency : toAccount.currency} = <input
-            className={getInputClass('exchangeRate', errors)}
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Exchange Rate</p>
+          1 {!isFlipped ? fromAccount.currency : toAccount.currency} =
+          <input
+            className={cn(styles.input, errors.exchangeRate && styles.error)}
             value={exchangeRate === 0 ? '' : exchangeRate}
             placeholder="Enter exchange rate"
             type="number"
@@ -107,25 +122,31 @@ const Transfer = ({ transfer, accounts }) => {
             required
             onChange={(e) => setExchangeRate(limitToTwoDecimals(e.target.value) || 0)}
           /> {!isFlipped ? toAccount.currency : fromAccount.currency}
-          <button className={`${styles.convertBtn} button`} onClick={() => { setIsFlipped(prev => !prev); }}>🔄</button>
+          <button
+            className={cn(styles.convertBtn, "button")}
+            onClick={() => setIsFlipped(prev => !prev)}
+          >
+            🔄
+          </button>
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Date</p>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Date</p>
           <input
             type="datetime-local"
-            className={getInputClass('date', errors)}
+            className={cn(styles.input, errors.date && styles.error)}
             value={date}
             required
             onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
           />
         </div>
       </div>
-      <div className="buttonContainer">
-        <button className="backBtn button" onClick={onBack}>Back</button>
-        <button className="saveBtn button" onClick={onSubmit}>Save</button>
-      </div>
 
-    </>
+      <div className={styles.buttonContainer}>
+        <button className="backBtn button" onClick={onBack}>Back</button>
+        <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>
+      </div>
+    </div>
   )
 }
 

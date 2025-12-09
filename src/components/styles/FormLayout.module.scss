@@ -1,0 +1,88 @@
+.input {
+  width: 200px;
+  height: 30px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid var(--input-border);
+  padding: 5px;
+  background-color: var(--input-bg);
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.inputBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 30px; 
+  margin-bottom: 30px; 
+}
+
+.inputContainer {
+  margin-bottom: 15px;
+}
+
+.convertBtn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    text-align: center;
+    font-size: 18px;
+}
+
+.inputText {
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: var(--input-text);
+  text-align: left;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.saveBtn {
+  background-color: var(--save-btn-bg);
+
+  &:hover {
+    background-color: var(--save-btn-hover-bg);
+  }
+}
+
+.changeBtn {
+  background-color: var(--change-btn-bg);
+
+  &:hover {
+    background-color: var(--change-btn-hover-bg);
+  }
+}
+
+.deleteBtn {
+  background-color: var(--delete-btn-bg);
+
+  &:hover {
+    background-color: var(--delete-btn-hover-bg);
+  }
+}
+
+.error {
+  border: 2px solid var(--error-border);
+  background-color: var(--error-bg);
+}
+
+.deleteCategoryBtn {
+  width: 40px;
+}
+
+@media (max-width: 600px) {
+  .input {
+    width: 150px;
+  }
+
+  .input[type="text"], .input[type="number"] {
+    font-size: 16px;
+  }
+
+}

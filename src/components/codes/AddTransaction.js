@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { limitToTwoDecimals, getFormattedLocalDateTime, getInputClass } from '../../utils';
+import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal'
+import styles from '../styles/FormLayout.module.scss'
+import cn from 'classnames';
 
 const AddTransaction = ({ addTransaction, type, accounts, addCategory, categories, deleteCategory }) => {
 
@@ -70,13 +72,13 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
   }
 
   return (
-    <>
-      <div className="inputBox">
-        <div className="inputContainer">
-          <p className="inputText">Amount</p>
+    <div>
+      <div className={styles.inputBox}>
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Amount</p>
           <input
             min="1"
-            className={getInputClass('amount', errors)}
+            className={cn(styles.input, errors.amount && styles.error)}
             value={amount === 0 ? '' : amount}
             placeholder="Enter amount"
             type="number"
@@ -85,10 +87,11 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
             onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
           />
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Category</p>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Category</p>
           <select
-            className={getInputClass('category', errors)}
+            className={cn(styles.input, errors.category && styles.error)}
             value={category}
             required
             onChange={(e) => {
@@ -105,13 +108,15 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
             ))}
             <option value="__add_new_category__">+ Add new category</option>
           </select>
-          <button className="button deleteBtn deleteCategoryBtn" onClick={() => handleDeleteCategory(category)}>🗑️</button>
+          <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => handleDeleteCategory(category)}>🗑️</button>
         </div>
+
         {showModal && <Modal onAddCategory={handleAddCategory} onClose={() => setShowModal(false)} />}
-        <div className="inputContainer">
-          <p className="inputText">Method</p>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Method</p>
           <select
-            className={getInputClass('method', errors)}
+            className={cn(styles.input, errors.method && styles.error)}
             value={method}
             required
             onChange={(e) => setMethod(e.target.value)}
@@ -122,23 +127,24 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
             ))}
           </select>
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Date</p>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Date</p>
           <input
             type="datetime-local"
-            className={getInputClass('date', errors)}
+            className={cn(styles.input, errors.date && styles.error)}
             value={date}
             required
             onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
           />
         </div>
       </div>
-      <div className="buttonContainer">
-        <button className="backBtn button" onClick={onBack}>Back</button>
-        <button className="saveBtn button" onClick={onSubmit}>Save</button>
-      </div>
 
-    </>
+      <div className={styles.buttonContainer}>
+        <button className="backBtn button" onClick={onBack}>Back</button>
+        <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>
+      </div>
+    </div>
   )
 }
 

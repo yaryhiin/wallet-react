@@ -1,8 +1,9 @@
 .accounts {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 20px;
   justify-content: center;
+  // width: 100%;
   margin-bottom: 20px;
 }
 
@@ -13,7 +14,7 @@
   border-radius: 10px;
   width: 200px;
   height: 200px;
-  margin: 0 10px;
+  margin: 0;
   padding: 20px;
 }
 
@@ -33,6 +34,7 @@
   font-size: 24px;
   font-weight: bold;
   margin-top: 10px;
+  text-align: center;
 }
 
 .accCurrency {
@@ -42,17 +44,44 @@
 }
 
 .addAccBtn {
-  position: relative;
-  top: 22%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 @media (max-width: 600px) {
-  .accounts {
-    grid-template-columns: 1fr;
-  }
+  // .accounts {
+  //   grid-template-columns: 1fr;
+  // }
 
   .accountStyle {
-    width: 100%;
-    margin: 0;
+    width: 120px;
+    height: 120px;
   }
+
+  .accIcon {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+}
+
+.accName {
+  font-size: 15px;
+  margin: 6px;
+}
+
+.accBalance {
+  font-size: 15px;
+  margin: 4px;
+}
+
+.accCurrency {
+  font-size: 14px;
+  margin: 0;
+}
+.addAccBtn img {
+  width: 60px;
+  height: 60px;
+}
 }

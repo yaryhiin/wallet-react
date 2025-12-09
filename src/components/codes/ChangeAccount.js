@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { loadData, limitToTwoDecimals, getInputClass } from '../../utils';
+import { loadData, limitToTwoDecimals } from '../../utils';
+import styles from '../styles/FormLayout.module.scss'
+import cn from 'classnames';
 
 const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const navigate = useNavigate();
@@ -74,28 +76,54 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   }
 
   return (
-    <>
-      <div className="inputBox">
-        <div className="inputContainer">
-          <p className="inputText">Account name</p>
-          <input type="text" value={name} className={getInputClass('name', errors)} required onChange={(e) => setName(e.target.value)} />
+    <div>
+      <div className={styles.inputBox}>
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Account name</p>
+          <input
+            type="text"
+            value={name}
+            className={cn(styles.input, errors.name && styles.error)}
+            required
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Balance</p>
-          <input type="number" step="0.01" value={balance} className={getInputClass('balance', errors)} required onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)} />
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Balance</p>
+          <input
+            type="number"
+            step="0.01"
+            value={balance}
+            className={cn(styles.input, errors.balance && styles.error)}
+            required
+            onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)}
+          />
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Currency</p>
-          <select className={getInputClass('currency', errors)} value={currency} required onChange={(e) => setCurrency(e.target.value)}>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Currency</p>
+          <select
+            className={cn(styles.input, errors.currency && styles.error)}
+            value={currency}
+            required
+            onChange={(e) => setCurrency(e.target.value)}
+          >
             <option value="" disabled>Select Currecny</option>
             {accountCurrency.map((currency, index) => (
               <option key={index} value={currency}>{currency}</option>
             ))}
           </select>
         </div>
-        <div className="inputContainer">
-          <p className="inputText">Icon</p>
-          <select className={getInputClass('icon', errors)} value={icon} required onChange={(e) => setIcon(e.target.value)}>
+
+        <div className={styles.inputContainer}>
+          <p className={styles.inputText}>Icon</p>
+          <select
+            className={cn(styles.input, errors.icon && styles.error)}
+            value={icon}
+            required
+            onChange={(e) => setIcon(e.target.value)}
+          >
             <option value="" disabled>Select Icon</option>
             {accountIcon.map((icon, index) => (
               <option key={index} value={icon}>{icon}</option>
@@ -103,12 +131,12 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
           </select>
         </div>
       </div>
-      <div className="buttonContainer">
+      <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>
-        <button className="changeBtn button" onClick={onSubmit}>Change</button>
-        <button className="deleteBtn button" onClick={onDelete}>Delete</button>
+        <button className={cn(styles.changeBtn, "button")} onClick={onSubmit}>Change</button>
+        <button className={cn(styles.deleteBtn, "button")} onClick={onDelete}>Delete</button>
       </div>
-    </>
+    </div>
   )
 }
 

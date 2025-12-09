@@ -1,0 +1,68 @@
+* { 
+  max-width: 100%;
+}
+
+header {
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: var(--bg);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a:link,
+a:active,
+a:visited,
+a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.button {
+  width: 120px;
+  height: 40px;
+  background-color: var(--btn-bg);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 16px;
+  margin-top: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: var(--btn-hover-bg);
+  }
+}
+
+.backBtn {
+  background-color: var(--back-btn-bg);
+
+  &:hover {
+    background-color: var(--back-btn-hover-bg);
+  }
+}
+
+.deleteBtn {
+  background-color: var(--delete-btn-bg);
+
+  &:hover {
+    background-color: var(--delete-btn-hover-bg);
+  }
+}
+
+@media (max-width: 600px) {
+  .button {
+    width: 100px;
+    height: 35px;
+    font-size: 14px;
+    margin-left: 5px;
+  }
+}

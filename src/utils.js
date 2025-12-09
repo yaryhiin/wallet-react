@@ -1,5 +1,3 @@
-import cn from "classnames";
-
 export function updateAccountBalance(accounts, id, change) {
     const updatedAccounts = accounts.map((account) =>
         account.id === id ? { ...account, balance: limitToTwoDecimals(account.balance + change) } : account
@@ -40,5 +38,3 @@ export const getFormattedLocalDateTime = (dateStr) => {
 
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
-
-export const getInputClass = (field, errors) => cn("input", errors[field] && "error");

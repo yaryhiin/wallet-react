@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import styles from '../styles/Accounts.module.scss'
 import cn from 'classnames';
 
-const account = ({ account, openAccount }) => {
+const account = ({ account }) => {
   return (
     <Link to={`/changeAccount/${account.id}`}>
       <div className={cn(styles.accountStyle, "button")}>
@@ -16,7 +16,7 @@ const account = ({ account, openAccount }) => {
         <p className={styles.accCurrency}>
           {account.currency}
         </p>
-      </div>
+      </div >
     </Link>
   )
 }

@@ -10,11 +10,9 @@ const Transactions = ({ transactions, accounts }) => {
     const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
     return (
         <div className={styles.transactionsBox}>
-            <div className={styles.transactions}>
-                {sortedTransactions.map((t) => (<Transaction key={t.id} transaction={t} accounts={accounts} />))}
-                <div className='buttonContainer'>
-                    <button className="backBtn button" onClick={(e) => { e.preventDefault(); home() }}>Back</button>
-                </div>
+            {sortedTransactions.map((t) => (<Transaction key={t.id} transaction={t} accounts={accounts} />))}
+            <div className='buttonContainer'>
+                <button className="backBtn button" onClick={(e) => { e.preventDefault(); home() }}>Back</button>
             </div>
         </div>
     )
