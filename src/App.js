@@ -13,9 +13,9 @@ import Transfer from './components/codes/Transfer'
 import AddAccount from './components/codes/AddAccount'
 import ChangeAccount from './components/codes/ChangeAccount'
 import ChangeTransaction from './components/codes/ChangeTransaction'
-import DeleteAllBtn from './components/codes/DeleteAllBtn'
 import Layout from './Layout';
 import { loadData } from './utils'
+import WelcomeScreen from './components/codes/WelcomeScreen';
 
 function App() {
   const defaultExpenseCategories = ["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
@@ -137,16 +137,6 @@ function App() {
     setTransactions(updatedTransactions);
   }
 
-
-  function deleteAll() {
-    if (!window.confirm("Are you sure you want to delete everything?")) {
-      return;
-    }
-    setAccounts([])
-    setTransactions([])
-    localStorage.clear()
-  }
-
   function exportData() {
     const accounts = loadData("accounts");
     const transactions = loadData("transactions");
@@ -224,19 +214,25 @@ function App() {
           <Route element={
             <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} importData={importData} />
           }>
-            <Route path='/' element={
-              <>
-                <Accounts accounts={accounts} />
-                <RecentTransactions transactions={transactions} accounts={accounts} />
-                <Buttons accounts={accounts} />
-                <DeleteAllBtn deleteAll={deleteAll} />
-              </>
-            } />
+            {accounts.length === 0 ? (
+              <Route path='/' element={
+                <WelcomeScreen />
+              } />
+            ) : (
+              <Route path='/' element={
+                <>
+                  <Accounts accounts={accounts} />
+                  <RecentTransactions transactions={transactions} accounts={accounts} />
+                  <Buttons accounts={accounts} />
+                </>
+              } />
+            )
+            }
             <Route path='income' element={
-              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory}/>
+              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
             } />
             <Route path='expense' element={
-              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory}/>
+              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
             } />
             <Route path='transfer' element={
               <Transfer transfer={transfer} accounts={accounts} />
