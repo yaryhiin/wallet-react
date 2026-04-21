@@ -26,8 +26,8 @@ function App() {
   const [transactions, setTransactions] = useState(loadData('transactions'));
   const [categories, setCategories] = useState({ expense: loadedCategories.expense || defaultExpenseCategories, income: loadedCategories.income || defaultIncomeCategories });
   const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('theme');
-    if (saved) return saved;
+    const saved = loadData('theme');
+    if (saved.length > 0) return saved;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
       : 'light';
@@ -36,7 +36,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem('accounts', JSON.stringify(accounts));
     localStorage.setItem('transactions', JSON.stringify(transactions));
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('theme', JSON.stringify(theme));
     localStorage.setItem('categories', JSON.stringify(categories));
   }, [accounts, transactions, theme, categories]);
 
@@ -178,7 +178,7 @@ function App() {
           setCategories(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories });
           localStorage.setItem('accounts', JSON.stringify(data.accounts));
           localStorage.setItem('transactions', JSON.stringify(data.transactions));
-          localStorage.setItem('theme', data.theme || 'dark');
+          localStorage.setItem('theme', JSON.stringify(data.theme) || JSON.stringify('dark'));
           localStorage.setItem('categories', JSON.stringify(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories }));
           alert("Data imported successfully.");
         } catch (error) {
