@@ -17,7 +17,15 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const account = accounts.find(a => a.id === id);
 
   const accountCurrency = ["UAH", "PLN", "USD", "CAD"];
-  const accountIcon = ["card_blue", "card_pink", "cash", "crypto", "bank", "euro", "usd"];
+  const accountIcon = [
+    { value: "card_blue", name: "Card Blue" },
+    { value: "card_pink", name: "Card Pink" },
+    { value: "cash", name: "Cash" },
+    { value: "crypto", name: "Crypto" },
+    { value: "bank", name: "Bank" },
+    { value: "euro", name: "Euro" },
+    { value: "usd", name: "USD" }
+  ];
 
   const [name, setName] = useState(account.name);
   const [balance, setBalance] = useState(account.balance);
@@ -126,7 +134,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
           >
             <option value="" disabled>Select Icon</option>
             {accountIcon.map((icon, index) => (
-              <option key={index} value={icon}>{icon}</option>
+              <option key={index} value={icon.value}>{icon.name}</option>
             ))}
           </select>
         </div>

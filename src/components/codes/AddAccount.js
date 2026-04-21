@@ -7,7 +7,15 @@ import cn from 'classnames';
 const AddAccount = ({ addAccount }) => {
 
   const accountCurrency = ["UAH", "PLN", "USD", "CAD"];
-  const accountIcon = ["card_blue", "card_pink", "cash", "crypto", "bank", "euro", "usd"];
+  const accountIcon = [
+    { value: "card_blue", name: "Card Blue" },
+    { value: "card_pink", name: "Card Pink" },
+    { value: "cash", name: "Cash" },
+    { value: "crypto", name: "Crypto" },
+    { value: "bank", name: "Bank" },
+    { value: "euro", name: "Euro" },
+    { value: "usd", name: "USD" }
+  ];
 
   const [errors, setErrors] = useState({});
 
@@ -108,7 +116,7 @@ const AddAccount = ({ addAccount }) => {
           >
             <option value="" disabled>Select Icon</option>
             {accountIcon.map((icon, index) => (
-              <option key={index} value={icon}>{icon}</option>
+              <option key={index} value={icon.value}>{icon.name}</option>
             ))}
           </select>
         </div>
