@@ -13,6 +13,7 @@ const Modal = ({ onClose, onAddCategory }) => {
     return (
         <div className={styles.modal}>
             <div className={styles.modalContent}>
+                <h2 className={styles.heading}>Add New Category</h2>
                 <input className={styles.input}
                     type="text"
                     value={newCategory}

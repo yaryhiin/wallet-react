@@ -63,7 +63,8 @@ const AddAccount = ({ addAccount }) => {
   }
 
   return (
-    <div>
+    <div className={styles.formContainer}>
+      <h1 className={styles.heading}>Add Account</h1>
       <div className={styles.inputBox}>
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Account name</p>

@@ -72,7 +72,8 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
   }
 
   return (
-    <div>
+    <div className={styles.formContainer}>
+      <h1 className={styles.heading}>Add Transaction</h1>
       <div className={styles.inputBox}>
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Amount</p>

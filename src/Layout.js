@@ -15,7 +15,7 @@ export default function Layout({ toggleTheme, theme, exportData, importData }) {
         <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
       </header>
       <main className="body">
-        <Outlet />
+          <Outlet />
       </main>
     </>
   );

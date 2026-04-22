@@ -95,7 +95,8 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
   }
 
   return (
-    <div>
+    <div className={styles.formContainer}>
+      <h1 className={styles.heading}>Change Transaction</h1>
       <div className={styles.inputBox}>
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Type</p>

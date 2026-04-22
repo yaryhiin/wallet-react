@@ -84,7 +84,8 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   }
 
   return (
-    <div>
+    <div className={styles.formContainer}>
+      <h1 className={styles.heading}>Change Account</h1>
       <div className={styles.inputBox}>
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Account name</p>
@@ -141,7 +142,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
       </div>
       <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>
-        <button className={cn(styles.changeBtn, "button")} onClick={onSubmit}>Change</button>
+        <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>
         <button className={cn(styles.deleteBtn, "button")} onClick={onDelete}>Delete</button>
       </div>
     </div>

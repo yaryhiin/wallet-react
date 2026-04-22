@@ -1,7 +1,7 @@
 :root {
     --bg: #fafafa;
     --text: #1e1e1e;
-    --font: 'Arial, sans-serif';
+    --font: 'Inter, Roboto';
 
     --btn-bg: #f0f0f0;
     --btn-hover-bg: #e5e5e5;
@@ -14,12 +14,10 @@
     --back-btn-hover-bg: #dcdcdc;
 
     // Buttons
-    --save-btn-bg: rgb(0, 145, 0);
-    --save-btn-hover-bg: rgb(0, 190, 0);
-    --change-btn-bg: rgb(0, 0, 185);
-    --change-btn-hover-bg: rgb(0, 0, 240);
-    --delete-btn-bg: rgb(185, 0, 0);
-    --delete-btn-hover-bg: rgb(240, 0, 0);
+    --save-btn-bg: #22C55E;
+    --save-btn-hover-bg: #16A34A;
+    --delete-btn-bg: #EF4444;
+    --delete-btn-hover-bg: #DC2626;
 
     // Errors
     --error-border: rgb(255, 0, 0);
@@ -27,13 +25,16 @@
 }
 
 [theme='dark'] {
-    --bg: #292929;
-    --text: #fff;
+    --bg: #18181B;
+    --header-bg: #1F1F23;
+    --card-bg: #23232A;
+    --card-bg-border: #34343A;
+    --text: #F4F4F5;
     --btn-bg: #333;
     --btn-hover-bg: #444;
     --input-bg: #e7e7e7;
     --input-border: #ccc;
     --input-text: #e7e7e7;
-    --back-btn-bg: #252525;
+    --back-btn-bg: #2F2F36;
     --back-btn-hover-bg: #333;
 }
