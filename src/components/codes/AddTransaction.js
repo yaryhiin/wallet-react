@@ -91,44 +91,44 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
 
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Category</p>
-          <select
-            className={cn(styles.input, errors.category && styles.error)}
-            value={category}
-            required
-            onChange={(e) => {
-              if (e.target.value === "__add_new_category__") {
-                setShowModal(true);
-                return;
-              }
-              setCategory(e.target.value)
-            }}
-          >
-            <option value="" disabled>Select Category</option>
-            {options.map((method, index) => (
-              <option key={index} value={method}>{method}</option>
-            ))}
-            <option value="__add_new_category__">+ Add new category</option>
-          </select>
-          <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => handleDeleteCategory(category)}>🗑️</button>
+          <div className={styles.fieldRow}>
+            <select
+              className={cn(styles.input, errors.category && styles.error)}
+              value={category}
+              required
+              onChange={(e) => {
+                if (e.target.value === "__add_new_category__") {
+                  setShowModal(true);
+                  return;
+                }
+                setCategory(e.target.value)
+              }}
+            >
+              <option value="" disabled>Select Category</option>
+              {options.map((method, index) => (
+                <option key={index} value={method}>{method}</option>
+              ))}
+              <option value="__add_new_category__">+ Add new category</option>
+            </select>
+            <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => handleDeleteCategory(category)}>🗑️</button>
+          </div>
         </div>
 
         {showModal && <Modal onAddCategory={handleAddCategory} onClose={() => setShowModal(false)} />}
 
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Method</p>
-          <div className={styles.fieldRow}>
-            <select
-              className={cn(styles.input, errors.method && styles.error)}
-              value={method}
-              required
-              onChange={(e) => setMethod(e.target.value)}
-            >
-              <option value="" disabled>Select Method</option>
-              {accounts.map((account) => (
-                <option key={account.id} value={account.id}>{account.name}</option>
-              ))}
-            </select>
-          </div>
+          <select
+            className={cn(styles.input, errors.method && styles.error)}
+            value={method}
+            required
+            onChange={(e) => setMethod(e.target.value)}
+          >
+            <option value="" disabled>Select Method</option>
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>{account.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className={cn(styles.inputContainer, styles.fullWidth)}>
