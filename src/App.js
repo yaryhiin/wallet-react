@@ -215,23 +215,24 @@ function App() {
           <Route element={
             <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} importData={importData} />
           }>
-            {accounts.length === 0 ? (
-              <Route path='/' element={
-                <WelcomeScreen />
-              } />
-            ) : (
-              <Route path='/' element={
-                <>
-                  <Accounts accounts={accounts} />
-                  <RecentTransactions transactions={transactions} accounts={accounts} />
-                  <Buttons accounts={accounts} />
-                </>
-              } />
-            )
-            }
             <Route element={
               <Container />
             }>
+              {accounts.length === 0 ? (
+                <Route path='/' element={
+                  <WelcomeScreen />
+                } />
+              ) : (
+                <Route path='/' element={
+                  <>
+                    <Accounts accounts={accounts} />
+                    <RecentTransactions transactions={transactions} accounts={accounts} />
+                    <Buttons accounts={accounts} />
+                  </>
+                } />
+              )
+              }
+
               <Route path='income' element={
                 <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
               } />

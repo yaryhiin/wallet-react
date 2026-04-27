@@ -116,20 +116,22 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
 
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Method</p>
-          <select
-            className={cn(styles.input, errors.method && styles.error)}
-            value={method}
-            required
-            onChange={(e) => setMethod(e.target.value)}
-          >
-            <option value="" disabled>Select Method</option>
-            {accounts.map((account) => (
-              <option key={account.id} value={account.id}>{account.name}</option>
-            ))}
-          </select>
+          <div className={styles.fieldRow}>
+            <select
+              className={cn(styles.input, errors.method && styles.error)}
+              value={method}
+              required
+              onChange={(e) => setMethod(e.target.value)}
+            >
+              <option value="" disabled>Select Method</option>
+              {accounts.map((account) => (
+                <option key={account.id} value={account.id}>{account.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className={styles.inputContainer}>
+        <div className={cn(styles.inputContainer, styles.fullWidth)}>
           <p className={styles.inputText}>Date</p>
           <input
             type="datetime-local"

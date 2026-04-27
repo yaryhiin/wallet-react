@@ -4,13 +4,16 @@
   align-items: center;
   justify-content: center;
   padding: 0 20px;
+  gap: 30px;
+  width: 100%;
+  max-width: 850px;
 }
 
 .input {
-  width: 200px;
-  height: 30px;
+  width: 100%;
+  height: 40px;
   box-sizing: border-box;
-  border-radius: 4px;
+  border-radius: 12px;
   border: 1px solid var(--input-border);
   padding: 5px;
   background-color: var(--input-bg);
@@ -19,28 +22,48 @@
 }
 
 .inputBox {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 24px;
+  row-gap: 16px;
   align-items: center;
   justify-content: center;
   padding-top: 30px; 
   margin-bottom: 30px; 
+  width: 100%;
+  max-width: 850px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
 }
 
 .inputContainer {
   margin-bottom: 15px;
+  width: 100%;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;;
+  gap: 12px;
+}
+
+.fieldRow select {
+  flex: 1;
 }
 
 .convertBtn {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     padding: 0;
     text-align: center;
-    font-size: 18px;
+    font-size: 22px;
 }
 
 .inputText {
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 5px;
   color: var(--input-text);
   text-align: left;
@@ -48,7 +71,13 @@
 
 .buttonContainer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+}
+
+.heading {
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--text);
 }
 
 .saveBtn {
@@ -82,15 +111,24 @@
 
 .deleteCategoryBtn {
   width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 5px;
+  margin-top: 5px;
 }
 
 @media (max-width: 600px) {
-  .input {
-    width: 150px;
+  .inputContainer {
+    max-width: 300px;
   }
 
   .input[type="text"], .input[type="number"] {
     font-size: 16px;
   }
-
+  .inputBox {
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  }
 }

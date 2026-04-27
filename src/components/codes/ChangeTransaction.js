@@ -125,25 +125,27 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
 
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Category</p>
-          <select
-            className={cn(styles.input, errors.category && styles.error)}
-            value={category}
-            required
-            onChange={(e) => {
-              if (e.target.value === "__add_new_category__") {
-                setShowModal(true);
-                return;
-              }
-              setCategory(e.target.value)
-            }}
-          >
-            <option value="" disabled>Select Category</option>
-            {options.map((method, index) => (
-              <option key={index} value={method}>{method}</option>
-            ))}
-            <option value="__add_new_category__">+ Add new category</option>
-          </select>
-          <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => handleDeleteCategory(category)}>🗑️</button>
+          <div className={styles.fieldRow}>
+            <select
+              className={cn(styles.input, errors.category && styles.error)}
+              value={category}
+              required
+              onChange={(e) => {
+                if (e.target.value === "__add_new_category__") {
+                  setShowModal(true);
+                  return;
+                }
+                setCategory(e.target.value)
+              }}
+            >
+              <option value="" disabled>Select Category</option>
+              {options.map((method, index) => (
+                <option key={index} value={method}>{method}</option>
+              ))}
+              <option value="__add_new_category__">+ Add new category</option>
+            </select>
+            <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => handleDeleteCategory(category)}>🗑️</button>
+          </div>
         </div>
 
         {showModal && <Modal onAddCategory={handleAddCategory} onClose={() => setShowModal(false)} />}
@@ -163,7 +165,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
           </select>
         </div>
 
-        <div className={styles.inputContainer}>
+        <div className={cn(styles.inputContainer, styles.fullWidth)}>
           <p className={styles.inputText}>Date</p>
           <input
             type="datetime-local"
