@@ -14,15 +14,15 @@ const Transaction = ({ transaction, accounts }) => {
                     </div>
                     <div className={styles.rightDetails}>
                         {transaction.type === 'income' ?
-                            <>
+                            <div>
                                 <p className={styles.transAmountIncome}>{transaction.amount}</p>
                                 <p className={styles.transCurrencyIncome}>{transaction.currency}</p>
-                            </>
+                            </div>
                             :
-                            <>
+                            <div>
                                 <p className={styles.transAmountExpense}>{transaction.amount}</p>
                                 <p className={styles.transCurrencyExpense}>{transaction.currency}</p>
-                            </>}
+                            </div>}
                         <p className={styles.transDate}>{transaction.date}</p>
                     </div>
                 </div>
