@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import styles from '../styles/Transactions.module.scss'
 import cn from 'classnames';
+import { formatDate } from '../../utils';
 
 const Transaction = ({ transaction, accounts }) => {
-    return (
+    const transactionDate = formatDate(transaction.date);
 
+    return (
         <div className={cn( styles.transactionStyle)}>
             <Link to={`../changeTransaction/${transaction.id}`}>
                 <div className={styles.transactionDetails}>
@@ -23,7 +25,7 @@ const Transaction = ({ transaction, accounts }) => {
                                 <p className={styles.transAmountExpense}>{transaction.amount}</p>
                                 <p className={styles.transCurrencyExpense}>{transaction.currency}</p>
                             </div>}
-                        <p className={styles.transDate}>{transaction.date}</p>
+                        <p className={styles.transDate}>{transactionDate}</p>
                     </div>
                 </div>
             </Link>

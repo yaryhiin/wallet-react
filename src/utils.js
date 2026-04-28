@@ -38,3 +38,12 @@ export const getFormattedLocalDateTime = (dateStr) => {
 
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
+
+export const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleString('en-CA', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}

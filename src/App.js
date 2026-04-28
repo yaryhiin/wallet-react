@@ -67,7 +67,7 @@ function App() {
     setAccounts(updatedAccounts);
     const id1 = uuid();
     const id2 = uuid();
-    const newTransaction1 = { id: id1, category: "Transfer", amount: amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date }
+    const newTransaction1 = { id: id1, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date }
     const newTransaction2 = { id: id2, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date }
     setTransactions([...transactions, newTransaction1, newTransaction2])
   }
@@ -214,43 +214,43 @@ function App() {
           <Route element={
             <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} importData={importData} />
           }>
-              {accounts.length === 0 ? (
-                <Route path='/' element={
-                  <WelcomeScreen />
-                } />
-              ) : (
-                <Route path='/' element={
-                  <>
-                    <Accounts accounts={accounts} />
-                    <RecentTransactions transactions={transactions} accounts={accounts} />
-                    <Buttons accounts={accounts} />
-                  </>
-                } />
-              )
-              }
+            {accounts.length === 0 ? (
+              <Route path='/' element={
+                <WelcomeScreen />
+              } />
+            ) : (
+              <Route path='/' element={
+                <>
+                  <Accounts accounts={accounts} />
+                  <RecentTransactions transactions={transactions} accounts={accounts} />
+                  <Buttons accounts={accounts} />
+                </>
+              } />
+            )
+            }
 
-              <Route path='income' element={
-                <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
-              } />
-              <Route path='expense' element={
-                <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
-              } />
-              <Route path='transfer' element={
-                <Transfer transfer={transfer} accounts={accounts} />
-              } />
-              <Route path='addAccount' element={
-                <AddAccount addAccount={addAccount} />
-              } />
-              <Route path='changeAccount/:id' element={
-                <ChangeAccount changeAccount={changeAccount} deleteAccount={deleteAccount} />
-              } />
-              <Route path='changeTransaction/:id' element={
-                <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
-              } />
-              <Route path='transactions' element={
-                <Transactions transactions={transactions} accounts={accounts} />
-              } />
-            </Route>
+            <Route path='income' element={
+              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
+            } />
+            <Route path='expense' element={
+              <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
+            } />
+            <Route path='transfer' element={
+              <Transfer transfer={transfer} accounts={accounts} />
+            } />
+            <Route path='addAccount' element={
+              <AddAccount addAccount={addAccount} />
+            } />
+            <Route path='changeAccount/:id' element={
+              <ChangeAccount changeAccount={changeAccount} deleteAccount={deleteAccount} />
+            } />
+            <Route path='changeTransaction/:id' element={
+              <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
+            } />
+            <Route path='transactions' element={
+              <Transactions transactions={transactions} accounts={accounts} />
+            } />
+          </Route>
         </Routes>
       </div>
     </Router>
