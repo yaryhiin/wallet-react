@@ -67,7 +67,7 @@ const Transfer = ({ transfer, accounts }) => {
   }
 
   return (
-    <div>
+    <div className={styles.formContainer}>
       <div className={styles.inputBox}>
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Amount</p>
@@ -112,22 +112,24 @@ const Transfer = ({ transfer, accounts }) => {
 
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Exchange Rate</p>
-          1 {!isFlipped ? fromAccount.currency : toAccount.currency} =
-          <input
-            className={cn(styles.input, errors.exchangeRate && styles.error)}
-            value={exchangeRate === 0 ? '' : exchangeRate}
-            placeholder="Enter exchange rate"
-            type="number"
-            step="0.01"
-            required
-            onChange={(e) => setExchangeRate(limitToTwoDecimals(e.target.value) || 0)}
-          /> {!isFlipped ? toAccount.currency : fromAccount.currency}
-          <button
-            className={cn(styles.convertBtn, "button")}
-            onClick={() => setIsFlipped(prev => !prev)}
-          >
-            🔄
-          </button>
+          <div className={styles.fieldRow}>
+            1 {!isFlipped ? fromAccount.currency : toAccount.currency} =
+            <input
+              className={cn(styles.input, errors.exchangeRate && styles.error)}
+              value={exchangeRate === 0 ? '' : exchangeRate}
+              placeholder="Enter exchange rate"
+              type="number"
+              step="0.01"
+              required
+              onChange={(e) => setExchangeRate(limitToTwoDecimals(e.target.value) || 0)}
+            /> {!isFlipped ? toAccount.currency : fromAccount.currency}
+            <button
+              className={cn(styles.convertBtn, "button")}
+              onClick={() => setIsFlipped(prev => !prev)}
+            >
+              🔄
+            </button>
+          </ div>
         </div>
 
         <div className={cn(styles.inputContainer, styles.fullWidth)}>
@@ -141,7 +143,6 @@ const Transfer = ({ transfer, accounts }) => {
           />
         </div>
       </div>
-
       <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>
         <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>

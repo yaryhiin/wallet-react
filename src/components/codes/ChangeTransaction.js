@@ -178,7 +178,6 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
           />
         </div>
       </div>
-
       <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>
         <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>
