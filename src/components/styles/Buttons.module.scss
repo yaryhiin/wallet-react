@@ -30,8 +30,13 @@
 
 @media (max-width: 600px) {
   .button {
-    font-size: 10px;
-    height: 40px;
-    width: 80px;
+    font-size: 13px;
+    height: 50px;
+    width: 100px;
+  }
+
+  .buttons {
+    width: 100%;
+    margin: 20px 0;
   }
 }

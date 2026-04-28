@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { loadData, limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal';
+import MessageModal from './MessageModal';
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
@@ -13,15 +14,12 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
 
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [showMessageModal, setShowMessageModal] = useState(false);
 
   function handleAddCategory(newCategory) {
     addCategory(type, newCategory);
     setShowModal(false);
-  }
-
-  function handleDeleteCategory(category) {
-    window.confirm(`Are you sure you want to delete the category "${category}"? This action cannot be undone.`) &&
-      deleteCategory(type, category);
+    setCategory(newCategory);
   }
 
   const accounts = loadData("accounts");
@@ -36,6 +34,14 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
   const [date, setDate] = useState(transaction.date);
 
   const [options, setOptions] = useState(categories[type]);
+
+  const title = "Confirm Action";
+  const text = `Are you sure you want to delete the category "${category}"? \n This action cannot be undone.`;
+
+  function handleDeleteCategory() {
+    deleteCategory(type, category);
+    setShowMessageModal(false);
+  }
 
   useEffect(() => {
     setOptions(categories[type]);
@@ -146,9 +152,10 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
               ))}
               <option value="__add_new_category__">+ Add new category</option>
             </select>
-            <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => handleDeleteCategory(category)}>🗑️</button>
+            <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => setShowMessageModal(true)}>🗑️</button>
           </div>
         </div>
+        {showMessageModal && <MessageModal title={title} text={text} onDelete={handleDeleteCategory} onClose={() => setShowMessageModal(false)} />}
 
         {showModal && <Modal onAddCategory={handleAddCategory} onClose={() => setShowModal(false)} />}
 

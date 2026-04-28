@@ -1,14 +1,17 @@
 :root {
-    --bg: #fafafa;
-    --text: #1e1e1e;
+    --text: #262626;
     --font: 'Inter, Roboto';
-
+    --bg: #F5F5F7;
+    --header-bg: #ECECF1;
+    --card-bg: #FFFFFF;
+    --card-bg-border: #D9D9E0;
     --btn-bg: #f0f0f0;
     --btn-hover-bg: #e5e5e5;
 
     --input-bg: #ffffff;
     --input-border: #d0d0d0;
     --input-text: #1e1e1e;
+    --subtle-text: #555;
 
     --back-btn-bg: #e9e9e9;
     --back-btn-hover-bg: #dcdcdc;
@@ -36,6 +39,7 @@
     --input-bg: #e7e7e7;
     --input-border: #ccc;
     --input-text: #e3e3e3;
+    --subtle-text: #c5c5c5;
     --back-btn-bg: #2F2F36;
     --back-btn-hover-bg: #333;
 }

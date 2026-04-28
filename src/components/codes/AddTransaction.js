@@ -4,6 +4,7 @@ import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal'
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
+import MessageModal from './MessageModal';
 
 const AddTransaction = ({ addTransaction, type, accounts, addCategory, categories, deleteCategory }) => {
 
@@ -11,15 +12,12 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
 
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [showMessageModal, setShowMessageModal] = useState(false);
 
   function handleAddCategory(newCategory) {
     addCategory(type, newCategory);
     setShowModal(false);
-  }
-
-  function handleDeleteCategory(category) {
-    window.confirm(`Are you sure you want to delete the category "${category}"? This action cannot be undone.`) &&
-      deleteCategory(type, category);
+    setCategory(newCategory);
   }
 
   const navigate = useNavigate();
@@ -33,6 +31,14 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
   const [category, setCategory] = useState('');
   const [method, setMethod] = useState('');
   const [date, setDate] = useState(formattedDate);
+
+  const title = "Confirm Action";
+  const text = `Are you sure you want to delete the category "${category}"? \n This action cannot be undone.`;
+
+  function handleDeleteCategory() {
+    deleteCategory(type, category);
+    setShowMessageModal(false);
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -111,10 +117,11 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
               ))}
               <option value="__add_new_category__">+ Add new category</option>
             </select>
-            <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => handleDeleteCategory(category)}>🗑️</button>
+            <button className={cn(styles.deleteCategoryBtn, styles.deleteBtn, "button")} onClick={() => setShowMessageModal(true)}>🗑️</button>
           </div>
         </div>
 
+        {showMessageModal && <MessageModal title={title} text={text} onDelete={handleDeleteCategory} onClose={() => setShowMessageModal(false)} />}
         {showModal && <Modal onAddCategory={handleAddCategory} onClose={() => setShowModal(false)} />}
 
         <div className={styles.inputContainer}>
