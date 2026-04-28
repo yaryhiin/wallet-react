@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { loadData, limitToTwoDecimals } from '../../utils';
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
+import MessageModal from './MessageModal';
 
 const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const navigate = useNavigate();
@@ -31,6 +32,10 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const [balance, setBalance] = useState(account.balance);
   const [currency, setCurrency] = useState(account.currency);
   const [icon, setIcon] = useState(account.icon);
+
+  const [showModal, setShowModal] = useState(false);
+  const title = "Confirm Action";
+  const text = `This account has ${account.balance} ${account.currency}. \n You sure you want to delete it?`;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -66,13 +71,8 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
     home();
   }
 
-  const onDelete = (e) => {
-    e.preventDefault();
-
-    if (!window.confirm(`This account has ${account.balance} ${account.currency}. Are you sure?`)) {
-      return;
-    }
-
+  function handleDeleteAccount() {
+    setShowModal(false);
     setName('');
     setBalance(0);
     setCurrency('');
@@ -81,6 +81,11 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
     deleteAccount(id);
 
     home();
+  }
+
+  const onDelete = (e) => {
+    e.preventDefault();
+    setShowModal(true);
   }
 
   return (
@@ -141,6 +146,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
             ))}
           </select>
         </div>
+        {showModal && <MessageModal title={title} text={text} onDelete={handleDeleteAccount} onClose={() => setShowModal(false)} />}
       </div>
       <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>

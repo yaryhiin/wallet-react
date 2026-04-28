@@ -9,6 +9,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  text-align: center;
 }
 
 .modalContent {
@@ -49,10 +50,10 @@
   }
 }
 
-.cancelBtn {
-  background-color: var(--delete-btn-bg);
+.backBtn {
+  background-color: var(--back-btn-bg);
 
   &:hover {
-    background-color: var(--delete-btn-hover-bg);
+    background-color: var(--back-btn-hover-bg);
   }
 }

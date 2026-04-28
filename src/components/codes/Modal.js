@@ -24,8 +24,8 @@ const Modal = ({ onClose, onAddCategory }) => {
                     <button className={cn(styles.addBtn, "button")} onClick={handleSubmit}>
                         Add
                     </button>
-                    <button className={cn(styles.cancelBtn, "button")} onClick={onClose}>
-                        Cancel
+                    <button className={cn(styles.backBtn, "button")} onClick={onClose}>
+                        Back
                     </button>
                 </div>
             </div>
