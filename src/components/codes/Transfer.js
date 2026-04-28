@@ -130,7 +130,7 @@ const Transfer = ({ transfer, accounts }) => {
           </button>
         </div>
 
-        <div className={styles.inputContainer}>
+        <div className={cn(styles.inputContainer, styles.fullWidth)}>
           <p className={styles.inputText}>Date</p>
           <input
             type="datetime-local"

@@ -7,6 +7,7 @@ const AddAccountBtn = () => {
         <Link to="addAccount">
             <div className={cn(styles.accountStyle, styles.addAccBtn, "button")}>
                 <img src={`${process.env.PUBLIC_URL}/images/buttons/add_btn.png`} alt="Add Account" />
+                <p>Add Account</p>
             </div>
         </Link>
     )

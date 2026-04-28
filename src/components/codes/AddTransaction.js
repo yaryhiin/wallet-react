@@ -38,7 +38,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
     e.preventDefault();
 
     const newErrors = {};
-    if (!amount || amount <= 0) newErrors.amount = true;
+    if (!amount || amount <= 0 || amount > 999999999) newErrors.amount = true;
     if (!category) newErrors.category = true;
     if (!method) newErrors.method = true;
     if (!date) newErrors.date = true;
@@ -78,12 +78,13 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Amount</p>
           <input
-            min="1"
             className={cn(styles.input, errors.amount && styles.error)}
             value={amount === 0 ? '' : amount}
             placeholder="Enter amount"
             type="number"
             step="0.01"
+            min="0"
+            max="999999999"
             required
             onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
           />
@@ -131,7 +132,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
           </select>
         </div>
 
-        <div className={cn(styles.inputContainer, styles.fullWidth)}>
+        <div className={styles.inputContainer}>
           <p className={styles.inputText}>Date</p>
           <input
             type="datetime-local"

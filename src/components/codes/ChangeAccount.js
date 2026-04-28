@@ -37,7 +37,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
 
     const newErrors = {};
     if (!name) newErrors.name = true;
-    if (!balance || balance < 0) newErrors.balance = true;
+    if (!balance || balance < 0 || balance > 999999999) newErrors.balance = true;
     if (!currency) newErrors.currency = true;
     if (!icon) newErrors.icon = true;
 
@@ -103,6 +103,8 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
           <input
             type="number"
             step="0.01"
+            min="0"
+            max="999999999"
             value={balance}
             className={cn(styles.input, errors.balance && styles.error)}
             required

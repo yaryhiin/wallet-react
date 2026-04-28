@@ -6,6 +6,7 @@ const RecentTransactions = ({ transactions, accounts }) => {
   const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
   return (
     <div className={styles.transactionsBox}>
+      <h1 className='title'>Recent Transactions</h1>
         {sortedTransactions.slice(0, 3).map(t => (<Transaction key={t.id} transaction={t} accounts={accounts} />))}
       {transactions.length > 3 && <ViewAllTransactions />}
     </div>

@@ -46,8 +46,7 @@
 .fieldRow {
   display: flex;
   align-items: center;
-  justify-content: center;;
-  gap: 12px;
+  justify-content: center;
 }
 
 .fieldRow select {
@@ -75,7 +74,7 @@
 }
 
 .heading {
-  font-size: 40px;
+  font-size: 30px;
   font-weight: bold;
   color: var(--text);
 }

@@ -47,7 +47,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
     e.preventDefault();
 
     const newErrors = {};
-    if (!amount || amount <= 0) newErrors.amount = true;
+    if (!amount || amount <= 0 || amount > 999999999) newErrors.amount = true;
     if (!category) newErrors.category = true;
     if (!method) newErrors.method = true;
     if (!date) newErrors.date = true;
@@ -118,6 +118,8 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
             value={amount}
             type="number"
             step="0.01"
+            min="0"
+            max="999999999"
             required
             onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
           />

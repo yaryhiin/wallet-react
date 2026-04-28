@@ -1,22 +1,37 @@
 .buttons {
   display: flex;
   justify-content: space-between;
-  width: 300px;
-  margin-top: 20px;
+  width: 70%;
+  margin: 40px 0;
 }
 
 .button {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
-  width: 60px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 110px;
   height: 60px;
 }
 
-.incomeBtn img,
-.expenseBtn img,
-.transferBtn img {
-  width: 30px;
-  height: 30px;
+.incomeBtn {
+  border: 1px solid var(--save-btn-bg);
+}
+
+.expenseBtn {
+  border: 1px solid var(--delete-btn-bg);
+}
+
+.transferBtn {
+  border: 1px solid var(--transfer-btn-bg);
+}
+
+@media (max-width: 600px) {
+  .button {
+    font-size: 10px;
+    height: 40px;
+    width: 80px;
+  }
 }

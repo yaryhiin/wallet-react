@@ -14,7 +14,6 @@ import AddAccount from './components/codes/AddAccount'
 import ChangeAccount from './components/codes/ChangeAccount'
 import ChangeTransaction from './components/codes/ChangeTransaction'
 import Layout from './Layout';
-import Container from './Container';
 import { loadData } from './utils'
 import WelcomeScreen from './components/codes/WelcomeScreen';
 
@@ -215,9 +214,6 @@ function App() {
           <Route element={
             <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} importData={importData} />
           }>
-            <Route element={
-              <Container />
-            }>
               {accounts.length === 0 ? (
                 <Route path='/' element={
                   <WelcomeScreen />
@@ -255,7 +251,6 @@ function App() {
                 <Transactions transactions={transactions} accounts={accounts} />
               } />
             </Route>
-          </Route>
         </Routes>
       </div>
     </Router>

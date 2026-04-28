@@ -1,9 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.totalBalance {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
 .accounts {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   justify-content: center;
-  // width: 100%;
   margin-bottom: 20px;
 }
 
@@ -11,77 +28,87 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   border-radius: 10px;
   width: 200px;
-  height: 200px;
+  height: 150px;
   margin: 0;
-  padding: 20px;
+  padding: 10px;
 }
 
 .accIcon {
-  width: 60px;
-  height: 60px;
-  margin-top: 10px;
+  width: 50px;
+  height: 50px;
 }
 
 .accName {
   font-size: 18px;
-  margin-top: 15px;
+  margin: 5px;
   text-align: center;
 }
 
 .accBalance {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
-  margin-top: 10px;
+  margin: 5px;
   text-align: center;
 }
 
 .accCurrency {
   font-size: 16px;
-  margin-top: 5px;
+  margin: 0;
   text-align: center;
 }
 
-.addAccBtn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+
+.addAccBtn img {
+  margin-top: 20px;
+  width: 30px;
+  height: 30px;
+}
+
+.addAccBtn p {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 @media (max-width: 600px) {
-  // .accounts {
-  //   grid-template-columns: 1fr;
-  // }
-
   .accountStyle {
     width: 120px;
-    height: 120px;
+    height: 90px;
   }
 
   .accIcon {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   margin: 0;
 }
 
 .accName {
-  font-size: 15px;
-  margin: 6px;
+  font-size: 13px;
+  margin: 3px;
 }
 
 .accBalance {
-  font-size: 15px;
-  margin: 4px;
+  font-size: 18px;
+  margin: 3px;
 }
 
 .accCurrency {
-  font-size: 14px;
+  font-size: 11px;
   margin: 0;
 }
 .addAccBtn img {
-  width: 60px;
-  height: 60px;
+  width: 20px;
+  height: 20px;
+}
+
+.addAccBtn p {
+  font-size: 16px;
+}
+
+.totalBalance {
+  font-size: 14px;
 }
 }
