@@ -124,6 +124,7 @@
 @media (max-width: 600px) {
   .inputContainer {
     max-width: 300px;
+    margin: 0;
   }
 
   .input {
@@ -135,5 +136,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+  }
+
+  .formContainer {
+    gap: 15px;
   }
 }
