@@ -7,7 +7,13 @@ const RecentTransactions = ({ transactions, accounts }) => {
   return (
     <div className={styles.transactionsBox}>
       <h1 className='title'>Recent Transactions</h1>
-        {sortedTransactions.slice(0, 3).map(t => (<Transaction key={t.id} transaction={t} accounts={accounts} />))}
+      {transactions.length === 0 && (
+        <div className={styles.noTransactionsContainer}>
+          <h3 className={styles.header}>No transactions yet.</h3>
+          <p className={styles.text}>Your recent activity will appear here.</p>
+        </div>
+      )}
+      {sortedTransactions.slice(0, 3).map(t => (<Transaction key={t.id} transaction={t} accounts={accounts} />))}
       {transactions.length > 3 && <ViewAllTransactions />}
     </div>
   )
