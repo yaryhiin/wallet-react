@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { v4 as uuid } from 'uuid';
 
-import { updateAccountBalance } from './utils'
+import { updateAccountBalance, limitToDecimals } from './utils'
 
 import Accounts from './components/codes/Accounts'
 import Transactions from './components/codes/Transactions'
@@ -57,7 +57,7 @@ function App() {
   function transfer(from, to, amount, date, exchangeRate) {
     const fromAccount = accounts.find((a) => a.id === from)
     const toAccount = accounts.find((a) => a.id === to)
-    const amountExchanged = amount * exchangeRate;
+    const amountExchanged = limitToDecimals(amount * exchangeRate, 2);
     const updatedAccounts = updateAccountBalance(
       updateAccountBalance(accounts, fromAccount.id, -amount),
       toAccount.id,

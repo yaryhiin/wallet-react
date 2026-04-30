@@ -137,11 +137,29 @@ table {
   border-collapse: collapse;
 }
 
+.tableWrapper {
+  height: 60vh;
+  overflow-y: auto;
+}
+
 th {
   padding: 10px;
   font-size : 18px;
   border-bottom: 3px solid var(--card-bg-border);
+  border-top: 1px solid var(--card-bg-border);
   font-weight: normal;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--card-bg);
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--card-bg);
+  border-top: 1px solid var(--card-bg-border);
 }
 
 .transCategory {

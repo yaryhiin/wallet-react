@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
+import { useState, useEffect } from 'react'
+import { limitToDecimals, getFormattedLocalDateTime, fetchRate } from '../../utils';
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
@@ -24,6 +24,39 @@ const Transfer = ({ transfer, accounts }) => {
 
   const fromAccount = accounts.find((account) => account.id === from)
   const toAccount = accounts.find((account) => account.id === to)
+  const [fromCurrency, setFromCurrency] = useState(fromAccount ? fromAccount.currency : null);
+  const [toCurrency, setToCurrency] = useState(toAccount ? toAccount.currency : null);
+
+  useEffect(() => {
+    async function loadRate() {
+      if (!fromCurrency || !toCurrency) return;
+
+      const fetchedRate = await fetchRate(fromCurrency, toCurrency);
+
+      if (fetchedRate !== null) {
+        setExchangeRate(limitToDecimals(fetchedRate, 4));
+      }
+    }
+
+    loadRate();
+  }, [fromCurrency, toCurrency]);
+
+  useEffect(() => {
+    const fromAcc = accounts.find((account) => account.id === from);
+    const toAcc = accounts.find((account) => account.id === to);
+    setFromCurrency(fromAcc ? fromAcc.currency : null);
+    setToCurrency(toAcc ? toAcc.currency : null);
+  }, [from, to, accounts]);
+
+  function handleSwapCurrencies() {
+    const oldFrom = fromCurrency;
+    const oldTo = toCurrency;
+
+    setFromCurrency(oldTo);
+    setToCurrency(oldFrom);
+    console.log(oldFrom, oldTo);
+    console.log(fromCurrency, toCurrency);
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -45,7 +78,7 @@ const Transfer = ({ transfer, accounts }) => {
       ? 1 / exchangeRate
       : exchangeRate;
 
-    transfer(from, to, amount, date, adjustedExchangeRate)
+    transfer(from, to, amount, date, limitToDecimals(adjustedExchangeRate, 4))
 
     setAmount(0);
     setFrom(accounts[0].id);
@@ -78,7 +111,7 @@ const Transfer = ({ transfer, accounts }) => {
             type="number"
             step="0.01"
             required
-            onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
+            onChange={(e) => setAmount(limitToDecimals(e.target.value, 2) || 0)}
           />
         </div>
 
@@ -113,19 +146,19 @@ const Transfer = ({ transfer, accounts }) => {
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Exchange Rate</p>
           <div className={styles.fieldRow}>
-            1 {!isFlipped ? fromAccount.currency : toAccount.currency} =
+            1 {fromCurrency} =
             <input
               className={cn(styles.input, errors.exchangeRate && styles.error)}
-              value={exchangeRate === 0 ? '' : exchangeRate}
+              value={exchangeRate ?? ""}
               placeholder="Enter exchange rate"
               type="number"
-              step="0.01"
+              step="0.0001"
               required
-              onChange={(e) => setExchangeRate(limitToTwoDecimals(e.target.value) || 0)}
-            /> {!isFlipped ? toAccount.currency : fromAccount.currency}
+              onChange={(e) => setExchangeRate(limitToDecimals(e.target.value, 4) || 0)}
+            /> {toCurrency}
             <button
               className={cn(styles.convertBtn, "button")}
-              onClick={() => setIsFlipped(prev => !prev)}
+              onClick={() => { setIsFlipped(prev => !prev); handleSwapCurrencies(); }}
             >
               🔄
             </button>

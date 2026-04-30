@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { loadData, limitToTwoDecimals } from '../../utils';
+import { loadData, limitToDecimals, fetchCurrencies } from '../../utils';
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 import MessageModal from './MessageModal';
@@ -17,7 +17,15 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
   const { id } = useParams();
   const account = accounts.find(a => a.id === id);
 
-  const accountCurrency = ["UAH", "PLN", "USD", "CAD"];
+  const [accountCurrency, setAccountCurrency] = useState([]);
+
+  useEffect(() => {
+    async function loadCurrencies() {
+      const currencies = await fetchCurrencies();
+      setAccountCurrency(currencies);
+    }
+    loadCurrencies()
+  }, []);
   const accountIcon = [
     { value: "card_blue", name: "Card Blue" },
     { value: "card_pink", name: "Card Pink" },
@@ -113,7 +121,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
             value={balance}
             className={cn(styles.input, errors.balance && styles.error)}
             required
-            onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)}
+            onChange={(e) => setBalance(limitToDecimals(e.target.value, 2) || 0)}
           />
         </div>
 
@@ -127,7 +135,7 @@ const ChangeAccount = ({ changeAccount, deleteAccount }) => {
           >
             <option value="" disabled>Select Currecny</option>
             {accountCurrency.map((currency, index) => (
-              <option key={index} value={currency}>{currency}</option>
+              <option key={index} value={currency.iso_code}>{currency.iso_code} - {currency.name}</option>
             ))}
           </select>
         </div>

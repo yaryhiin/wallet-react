@@ -1,6 +1,6 @@
 export function updateAccountBalance(accounts, id, change) {
     const updatedAccounts = accounts.map((account) =>
-        account.id === id ? { ...account, balance: limitToTwoDecimals(account.balance + change) } : account
+        account.id === id ? { ...account, balance: limitToDecimals(account.balance + change, 2) } : account
     );
     return (updatedAccounts);
 }
@@ -13,17 +13,15 @@ export const loadData = (key) => {
     }
 };
 
-export function limitToTwoDecimals(value) {
+export function limitToDecimals(value, decimals) {
     if (value === "" || value === null) return "";
 
-    const str = value.toString();
-    const cleaned = str.includes('.')
-        ? str.replace(/(\.\d{2}).*$/, '$1')
-        : str;
+    const numberValue = Number(value);
 
-    const numberValue = parseFloat(cleaned);
+    if (isNaN(numberValue)) return "";
 
-    return isNaN(numberValue) ? "" : numberValue;
+    const factor = 10 ** decimals;
+    return Math.trunc(numberValue * factor) / factor;
 }
 
 export const getFormattedLocalDateTime = (dateStr) => {
@@ -40,10 +38,44 @@ export const getFormattedLocalDateTime = (dateStr) => {
 }
 
 export const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleString('en-CA', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+    return new Date(dateString).toLocaleString('en-CA', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+export const fetchRate = async (fromCurrency, toCurrency) => {
+    if (!fromCurrency || !toCurrency) return;
+    if (fromCurrency === toCurrency) return '1';
+
+    try {
+        const res = await fetch(
+            `https://api.frankfurter.dev/v2/rates?base=${fromCurrency}&quotes=${toCurrency}`
+        );
+        const data = await res.json();
+        if (!data.length || data[0].rate === undefined) {
+            return null;
+        }
+        return data[0].rate;
+    } catch (error) {
+        console.error('Failed to fetch exchange rate:', error);
+        return null;
+    }
+}
+
+export const fetchCurrencies = async () => {
+    try {
+        const res = await fetch(`https://api.frankfurter.dev/v2/currencies`);
+        const data = await res.json();
+        // if (!data.length || data === undefined) {
+        //     return null;
+        // }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch currencies:', error);
+        return {};
+    }
 }

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
+import { limitToDecimals, getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal'
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
@@ -92,7 +92,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
             min="0"
             max="999999999"
             required
-            onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
+            onChange={(e) => setAmount(limitToDecimals(e.target.value, 2) || 0)}
           />
         </div>
 

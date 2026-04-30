@@ -1,6 +1,6 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { loadData, limitToTwoDecimals, getFormattedLocalDateTime } from '../../utils';
+import { loadData, limitToDecimals, getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal';
 import MessageModal from './MessageModal';
 import styles from '../styles/FormLayout.module.scss'
@@ -8,8 +8,10 @@ import cn from 'classnames';
 
 const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, categories, deleteCategory }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/';
   function home() {
-    navigate('/');
+    navigate(from);
   }
 
   const [errors, setErrors] = useState({});
@@ -127,7 +129,7 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
             min="0"
             max="999999999"
             required
-            onChange={(e) => setAmount(limitToTwoDecimals(e.target.value) || 0)}
+            onChange={(e) => setAmount(limitToDecimals(e.target.value, 2) || 0)}
           />
         </div>
 

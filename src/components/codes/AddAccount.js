@@ -1,12 +1,21 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { limitToTwoDecimals } from '../../utils'
+import { useEffect, useState } from 'react'
+import { limitToDecimals, fetchCurrencies } from '../../utils'
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
 const AddAccount = ({ addAccount }) => {
 
-  const accountCurrency = ["UAH", "PLN", "USD", "CAD"];
+
+  const [accountCurrency, setAccountCurrency] = useState([]);
+
+  useEffect(() => {
+    async function loadCurrencies() {
+      const currencies = await fetchCurrencies();
+      setAccountCurrency(currencies);
+    }
+    loadCurrencies()
+  }, []);
   const accountIcon = [
     { value: "card_blue", name: "Card Blue" },
     { value: "card_pink", name: "Card Pink" },
@@ -89,7 +98,7 @@ const AddAccount = ({ addAccount }) => {
             placeholder="Enter balance"
             className={cn(styles.input, errors.balance && styles.error)}
             required
-            onChange={(e) => setBalance(limitToTwoDecimals(e.target.value) || 0)}
+            onChange={(e) => setBalance(limitToDecimals(e.target.value, 2) || 0)}
           />
         </div>
 
@@ -103,7 +112,7 @@ const AddAccount = ({ addAccount }) => {
           >
             <option value="" disabled>Select Currency</option>
             {accountCurrency.map((currency, index) => (
-              <option key={index} value={currency}>{currency}</option>
+              <option key={index} value={currency.iso_code}>{currency.iso_code} - {currency.name}</option>
             ))}
           </select>
         </div>
