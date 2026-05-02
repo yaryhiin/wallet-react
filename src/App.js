@@ -163,7 +163,7 @@ function App() {
         <Routes>
           {accounts.length === 0 ? (
             <Route path='/' element={
-              <WelcomeScreen />
+              <WelcomeScreen toggleTheme={toggleTheme} theme={theme}/>
             } />
           ) : (
             <Route path='/' element={

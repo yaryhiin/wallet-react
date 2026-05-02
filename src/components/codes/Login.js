@@ -52,33 +52,35 @@ const Login = () => {
   }
 
   return (
-    <div className={styles.formContainer}>
-      <h1 className={styles.heading}>Log In</h1>
-      <div className={styles.inputBox}>
-        <div className={styles.inputContainer}>
-          <p className={styles.inputText}>Email</p>
-          <input
-            className={cn(styles.input, errors.email && styles.error)}
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    <div className="container">
+      <div className={styles.formContainer}>
+        <h1 className={styles.heading}>Log In</h1>
+        <div className={styles.inputBox}>
+          <div className={styles.inputContainer}>
+            <p className={styles.inputText}>Email</p>
+            <input
+              className={cn(styles.input, errors.email && styles.error)}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className={styles.inputContainer}>
+            <p className={styles.inputText}>Password</p>
+            <input
+              className={cn(styles.input, errors.password && styles.error)}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
         </div>
-        <div className={styles.inputContainer}>
-          <p className={styles.inputText}>Password</p>
-          <input
-            className={cn(styles.input, errors.password && styles.error)}
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+        <div className={styles.buttonContainer}>
+          <button className="backBtn button" onClick={onBack}>Back</button>
+          <button className={cn(styles.saveBtn, "button")} onClick={handleLogin}>Log In</button>
         </div>
-      </div>
-      <div className={styles.buttonContainer}>
-        <button className="backBtn button" onClick={onBack}>Back</button>
-        <button className={cn(styles.saveBtn, "button")} onClick={handleLogin}>Log In</button>
       </div>
     </div>
   )

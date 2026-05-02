@@ -18,6 +18,7 @@ const SignUp = () => {
     useEffect(() => {
         const newErrors = {};
         if (confirmPassword !== password) newErrors.confirmPassword = true;
+        setErrors(newErrors);
     }, [confirmPassword, password])
 
     async function handleSignUp(e) {
@@ -62,43 +63,45 @@ const SignUp = () => {
     }
 
     return (
-        <div className={styles.formContainer}>
-            <h1 className={styles.heading}>Sign Up</h1>
-            <div className={styles.inputBox}>
-                <div className={styles.inputContainer}>
-                    <p className={styles.inputText}>Email</p>
-                    <input
-                        className={cn(styles.input, errors.email && styles.error)}
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+        <div className="container">
+            <div className={styles.formContainer}>
+                <h1 className={styles.heading}>Sign Up</h1>
+                <div className={styles.inputBox}>
+                    <div className={styles.inputContainer}>
+                        <p className={styles.inputText}>Email</p>
+                        <input
+                            className={cn(styles.input, errors.email && styles.error)}
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <p className={styles.inputText}>Password</p>
+                        <input
+                            className={cn(styles.input, errors.password && styles.error)}
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <div className={cn(styles.inputContainer, styles.fullWidth)}>
+                        <p className={styles.inputText}>Confirm Password</p>
+                        <input
+                            className={cn(styles.input, errors.confirmPassword && styles.error)}
+                            type="password"
+                            placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <div className={styles.inputContainer}>
-                    <p className={styles.inputText}>Password</p>
-                    <input
-                        className={cn(styles.input, errors.password && styles.error)}
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                <div className={styles.buttonContainer}>
+                    <button className="backBtn button" onClick={onBack}>Back</button>
+                    <button className={cn(styles.saveBtn, "button")} onClick={handleSignUp}>Sign Up</button>
                 </div>
-                <div className={cn(styles.inputContainer, styles.fullWidth)}>
-                    <p className={styles.inputText}>Confirm Password</p>
-                    <input
-                        className={cn(styles.input, errors.confirmPassword && styles.error)}
-                        type="password"
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                </div>
-            </div>
-            <div className={styles.buttonContainer}>
-                <button className="backBtn button" onClick={onBack}>Back</button>
-                <button className={cn(styles.saveBtn, "button")} onClick={handleSignUp}>Sign Up</button>
             </div>
         </div>
     )

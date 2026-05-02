@@ -1,3 +1,9 @@
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .content {
     min-height: 70vh;
     display: flex;
@@ -42,16 +48,19 @@ a{
 
 .sessionBox {
   display: flex;
+  flex-direction: row;
   gap: 10px;
 }
 
 .logIn, .signUp {
-  margin-bottom: 20px;
-  width: 70px;
-  height: 35px;
-  font-size: 13px;
-  font-weight: bold;
-  border: 1px solid var(--card-bg-border);
+  margin-top: 28px;
+    padding: 14px 28px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .signUp {
@@ -69,3 +78,4 @@ a{
     background-color: var(--back-btn-hover-bg);
   }
 }
+

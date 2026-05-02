@@ -7,7 +7,7 @@ export default function Layout({ toggleTheme, theme }) {
   return (
     <>
       <header className="header">
-            <a href="/" className={cn("button", styles.logOut)}>Log Out</a>
+        <a href="/" className={cn("button", styles.logOut)}>Log Out</a>
         <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
       </header>
       <main className="body">
