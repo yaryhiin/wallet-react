@@ -13,6 +13,8 @@ import Transfer from './components/codes/Transfer'
 import AddAccount from './components/codes/AddAccount'
 import ChangeAccount from './components/codes/ChangeAccount'
 import ChangeTransaction from './components/codes/ChangeTransaction'
+import SignUp from './components/codes/SignUp'
+import Login from "./components/codes/Login";
 import Layout from './Layout';
 import { loadData } from './utils'
 import WelcomeScreen from './components/codes/WelcomeScreen';
@@ -137,58 +139,6 @@ function App() {
     setTransactions(updatedTransactions);
   }
 
-  function exportData() {
-    const accounts = loadData("accounts");
-    const transactions = loadData("transactions");
-    const theme = loadData("theme");
-    const categories = loadData("categories");
-    const json = JSON.stringify({ accounts, transactions, theme, categories }, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'wallet_data.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/json';
-    input.click();
-
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const text = event.target.result;
-          const data = JSON.parse(text);
-          if (!data.accounts || !data.transactions) {
-            alert("Invalid backup file.");
-            return;
-          }
-          setAccounts(data.accounts);
-          setTransactions(data.transactions);
-          setTheme(data.theme || 'dark');
-          setCategories(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories });
-          localStorage.setItem('accounts', JSON.stringify(data.accounts));
-          localStorage.setItem('transactions', JSON.stringify(data.transactions));
-          localStorage.setItem('theme', JSON.stringify(data.theme) || JSON.stringify('dark'));
-          localStorage.setItem('categories', JSON.stringify(data.categories || { expense: defaultExpenseCategories, income: defaultIncomeCategories }));
-          alert("Data imported successfully.");
-        } catch (error) {
-          alert("Error reading backup file.");
-        }
-      }
-      reader.readAsText(file);
-    }
-  }
-
   function addCategory(type, name) {
     setCategories(prev => {
       const updated = { ...prev };
@@ -211,24 +161,29 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {accounts.length === 0 ? (
+            <Route path='/' element={
+              <WelcomeScreen />
+            } />
+          ) : (
+            <Route path='/' element={
+              <Layout toggleTheme={toggleTheme} theme={theme}>
+                <Accounts accounts={accounts} />
+                <RecentTransactions transactions={transactions} accounts={accounts} />
+                <Buttons accounts={accounts} />
+              </Layout>
+            } />
+          )
+          }
+          <Route path='signup' element={
+            <SignUp />
+          } />
+          <Route path='login' element={
+            <Login />
+          } />
           <Route element={
-            <Layout toggleTheme={toggleTheme} theme={theme} exportData={exportData} importData={importData} />
+            <Layout toggleTheme={toggleTheme} theme={theme} />
           }>
-            {accounts.length === 0 ? (
-              <Route path='/' element={
-                <WelcomeScreen />
-              } />
-            ) : (
-              <Route path='/' element={
-                <>
-                  <Accounts accounts={accounts} />
-                  <RecentTransactions transactions={transactions} accounts={accounts} />
-                  <Buttons accounts={accounts} />
-                </>
-              } />
-            )
-            }
-
             <Route path='income' element={
               <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
             } />

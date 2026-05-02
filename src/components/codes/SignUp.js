@@ -1,5 +1,5 @@
 import { supabase } from "../../supabase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 import { useNavigate } from "react-router-dom";
@@ -15,12 +15,18 @@ const SignUp = () => {
         navigate('/');
     }
 
+    useEffect(() => {
+        const newErrors = {};
+        if (confirmPassword !== password) newErrors.confirmPassword = true;
+    }, [confirmPassword, password])
+
     async function handleSignUp(e) {
         e.preventDefault();
 
         const newErrors = {};
-        if (password !== confirmPassword) newErrors.confirmPassword = true;
+        if (password !== confirmPassword || !confirmPassword) newErrors.confirmPassword = true;
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = true;
+        if (!password) newErrors.password = true;
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -79,7 +85,7 @@ const SignUp = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                <div className={styles.inputContainer}>
+                <div className={cn(styles.inputContainer, styles.fullWidth)}>
                     <p className={styles.inputText}>Confirm Password</p>
                     <input
                         className={cn(styles.input, errors.confirmPassword && styles.error)}

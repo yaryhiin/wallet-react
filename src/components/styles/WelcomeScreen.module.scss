@@ -20,18 +20,52 @@
     margin-bottom: 12px;
 }
 
-.button {
-    margin-top: 28px;
-    padding: 14px 28px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
+a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  color: inherit;
+
+  border: none;
+  background: none;
+  font: inherit;
+  line-height: normal;
+
+  cursor: pointer;
+  user-select: none;
+
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-.button:active {
-    transform: scale(0.98);
+.sessionBox {
+  display: flex;
+  gap: 10px;
+}
+
+.logIn, .signUp {
+  margin-bottom: 20px;
+  width: 70px;
+  height: 35px;
+  font-size: 13px;
+  font-weight: bold;
+  border: 1px solid var(--card-bg-border);
+}
+
+.signUp {
+  background-color: var(--save-btn-bg);
+
+  &:hover {
+    background-color: var(--save-btn-hover-bg);
+  }
+}
+
+.logIn, .logOut {
+  background-color: var(--back-btn-bg);
+
+  &:hover {
+    background-color: var(--back-btn-hover-bg);
+  }
 }

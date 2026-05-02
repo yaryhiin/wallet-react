@@ -53,7 +53,7 @@ const Login = () => {
 
   return (
     <div className={styles.formContainer}>
-      <h1 className={styles.heading}>Sign Up</h1>
+      <h1 className={styles.heading}>Log In</h1>
       <div className={styles.inputBox}>
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Email</p>
