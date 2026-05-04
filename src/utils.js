@@ -76,12 +76,12 @@ export async function deleteData(key, itemId) {
 }
 
 export async function deleteTransactionsByAccount(accountId) {
-    const {error} = await supabase
-    .from('transactions')
-    .delete()
-    .eq('method', accountId);
+    const { error } = await supabase
+        .from('transactions')
+        .delete()
+        .eq('method', accountId);
 
-    if(error) {
+    if (error) {
         console.error(`Error deleting related transactions:`, error.message);
         return false;
     }

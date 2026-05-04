@@ -55,8 +55,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
     }
 
     const accountWithMethod = accounts.find((account) => account.id === method);
-    const changedAmount = type === 'expense' ? -amount : amount
-    addTransaction({ category, amount: changedAmount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
+    addTransaction({ category, amount: amount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
 
     setAmount(0);
     setCategory('');

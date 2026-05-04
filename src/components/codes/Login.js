@@ -35,6 +35,7 @@ const Login = () => {
 
     if (error) {
       setAuthError(getAuthErrorMessage(error));
+      setErrors({password: true, email: true});
       return;
     }
     console.log("User logged in successfully:", data);
@@ -67,6 +68,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            {authError && (<p className={cn(styles.errorMessage, styles.fullWidth)}>{authError}</p>)}
           </div>
           <div className={styles.inputContainer}>
             <p className={styles.inputText}>Password</p>
@@ -77,8 +79,8 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {authError && (<p className={cn(styles.errorMessage, styles.fullWidth)}>{authError}</p>)}
           </div>
-        {authError && (<h2 className={cn(styles.errorMessage, styles.fullWidth)}>{authError}</h2>)}
         </div>
         <div className={styles.buttonContainer}>
           <button className="backBtn button" onClick={onBack}>Back</button>

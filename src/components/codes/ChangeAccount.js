@@ -152,7 +152,7 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
             ))}
           </select>
         </div>
-        {showModal && <MessageModal title={title} text={text} onDelete={handleDeleteAccount} onClose={() => setShowModal(false)} />}
+        {showModal && <MessageModal title={title} text={text} onDelete={handleDeleteAccount} onClose={() => setShowModal(false)}/>}
       </div>
       <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>

@@ -4,6 +4,7 @@ import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 import { useNavigate } from "react-router-dom";
 import { getAuthErrorMessage } from "../../utils";
+import MessageModal from "./MessageModal";
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
@@ -12,10 +13,17 @@ const SignUp = () => {
     const [errors, setErrors] = useState({});
     const [authError, setAuthError] = useState('');
 
+    const [showModal, setShowModal] = useState(false);
+    const title = "Account created"
+    const text = "Check your email and confirm your account before logging in."
+
 
     const navigate = useNavigate();
     function home() {
         navigate('/');
+    }
+    function login() {
+        navigate('/login');
     }
 
     useEffect(() => {
@@ -44,6 +52,7 @@ const SignUp = () => {
 
         if (error) {
             setAuthError(getAuthErrorMessage(error));
+            setErrors({ password: true, email: true, confirmPassword: true });
             return;
         }
         console.log("User signed up successfully:", data);
@@ -52,7 +61,7 @@ const SignUp = () => {
         setPassword('');
         setConfirmPassword('');
 
-        home();
+        setShowModal(true);
     }
 
     const onBack = (e) => {
@@ -99,8 +108,9 @@ const SignUp = () => {
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
+                        {authError && (<p className={cn(styles.errorMessage)}>{authError}</p>)}
                     </div>
-                    {authError && (<h2 className={cn(styles.errorMessage, styles.fullWidth)}>{authError}</h2>)}
+                    {showModal && <MessageModal title={title} text={text} onDelete={home} onClose={() => { setShowModal(false); login() }} twoButton={false} />}
                 </div>
                 <div className={styles.buttonContainer}>
                     <button className="backBtn button" onClick={onBack}>Back</button>
