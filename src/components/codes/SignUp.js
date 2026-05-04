@@ -3,12 +3,15 @@ import { useState, useEffect } from "react";
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 import { useNavigate } from "react-router-dom";
+import { getAuthErrorMessage } from "../../utils";
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
+    const [authError, setAuthError] = useState('');
+
 
     const navigate = useNavigate();
     function home() {
@@ -40,7 +43,7 @@ const SignUp = () => {
         });
 
         if (error) {
-            console.log("Error signing up:", error.message);
+            setAuthError(getAuthErrorMessage(error));
             return;
         }
         console.log("User signed up successfully:", data);
@@ -97,6 +100,7 @@ const SignUp = () => {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </div>
+                    {authError && (<h2 className={cn(styles.errorMessage, styles.fullWidth)}>{authError}</h2>)}
                 </div>
                 <div className={styles.buttonContainer}>
                     <button className="backBtn button" onClick={onBack}>Back</button>

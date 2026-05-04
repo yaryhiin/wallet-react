@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { loadData, limitToDecimals, fetchCurrencies } from '../../utils';
+import { limitToDecimals, fetchCurrencies } from '../../utils';
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 import MessageModal from './MessageModal';
 
-const ChangeAccount = ({ changeAccount, deleteAccount }) => {
+const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
   const navigate = useNavigate();
   function home() {
     navigate('/');
   }
 
   const [errors, setErrors] = useState({});
-
-  const accounts = loadData("accounts");
   const { id } = useParams();
   const account = accounts.find(a => a.id === id);
 

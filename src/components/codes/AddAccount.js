@@ -4,7 +4,7 @@ import { limitToDecimals, fetchCurrencies } from '../../utils'
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
-const AddAccount = ({ addAccount }) => {
+const AddAccount = ({ addAccount, back }) => {
 
 
   const [accountCurrency, setAccountCurrency] = useState([]);
@@ -134,7 +134,7 @@ const AddAccount = ({ addAccount }) => {
       </div>
 
       <div className={styles.buttonContainer}>
-        <button className="backBtn button" onClick={onBack}>Back</button>
+        {back && <button className="backBtn button" onClick={onBack}>Back</button>}
         <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>
       </div>
     </div>

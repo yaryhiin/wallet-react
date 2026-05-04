@@ -3,11 +3,13 @@ import { useState } from "react";
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 import { useNavigate } from "react-router-dom";
+import { getAuthErrorMessage } from "../../utils";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [authError, setAuthError] = useState('');
 
   const navigate = useNavigate();
   function home() {
@@ -16,7 +18,7 @@ const Login = () => {
 
   async function handleLogin(e) {
     e.preventDefault();
-
+    setAuthError('');
     const newErrors = {};
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = true;
     if (!password) newErrors.password = true;
@@ -26,13 +28,13 @@ const Login = () => {
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      console.log("Error logged in:", error.message);
+      setAuthError(getAuthErrorMessage(error));
       return;
     }
     console.log("User logged in successfully:", data);
@@ -76,6 +78,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+        {authError && (<h2 className={cn(styles.errorMessage, styles.fullWidth)}>{authError}</h2>)}
         </div>
         <div className={styles.buttonContainer}>
           <button className="backBtn button" onClick={onBack}>Back</button>

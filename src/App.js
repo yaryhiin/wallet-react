@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { v4 as uuid } from 'uuid';
+import { supabase } from './supabase'
 
-import { updateAccountBalance, limitToDecimals } from './utils'
+import { updateAccountBalance, limitToDecimals, getData, createAccount, createTransaction, updateData, deleteData, deleteTransactionsByAccount } from './utils'
 
 import Accounts from './components/codes/Accounts'
 import Transactions from './components/codes/Transactions'
@@ -16,31 +16,60 @@ import ChangeTransaction from './components/codes/ChangeTransaction'
 import SignUp from './components/codes/SignUp'
 import Login from "./components/codes/Login";
 import Layout from './Layout';
-import { loadData } from './utils'
 import WelcomeScreen from './components/codes/WelcomeScreen';
 
 function App() {
   const defaultExpenseCategories = ["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
   const defaultIncomeCategories = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle"];
-  const loadedCategories = loadData('categories') || {};
 
-  const [accounts, setAccounts] = useState(loadData('accounts'));
-  const [transactions, setTransactions] = useState(loadData('transactions'));
-  const [categories, setCategories] = useState({ expense: loadedCategories.expense || defaultExpenseCategories, income: loadedCategories.income || defaultIncomeCategories });
+  const [accounts, setAccounts] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [categories, setCategories] = useState({ expense: defaultExpenseCategories, income: defaultIncomeCategories });
   const [theme, setTheme] = useState(() => {
-    const saved = loadData('theme');
+    const saved = '';
     if (saved.length > 0) return saved;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
       : 'light';
   });
 
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
   useEffect(() => {
-    localStorage.setItem('accounts', JSON.stringify(accounts));
-    localStorage.setItem('transactions', JSON.stringify(transactions));
-    localStorage.setItem('theme', JSON.stringify(theme));
-    localStorage.setItem('categories', JSON.stringify(categories));
-  }, [accounts, transactions, theme, categories]);
+    async function loadData() {
+      const [accountsData, transactionsData] = await Promise.all([getData('accounts'), getData('transactions')]);
+      setAccounts(accountsData);
+      setTransactions(transactionsData);
+    }
+
+    if (session) {
+      loadData();
+    }
+  }, [session])
+
+  useEffect(() => {
+    setAuthLoading(true);
+    async function loadSession() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.log('Error fetching session:', error);
+      }
+      setSession(data.session);
+      setAuthLoading(false);
+      console.log('Session loaded:', data.session);
+    }
+
+    loadSession();
+
+    const { data: { subscription }, } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setAuthLoading(false);
+      console.log('Auth state changed:', session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     document.body.setAttribute('theme', theme);
@@ -50,52 +79,21 @@ function App() {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   }
 
-  function addTransaction(transaction, targetAccount) {
-    const id = uuid();
-    setTransactions([...transactions, { id, ...transaction }])
-    setAccounts(updateAccountBalance(accounts, targetAccount.id, transaction.amount));
+  async function addTransaction(transaction, targetAccount) {
+    const newTransaction = await createTransaction({ user_id: session.user.id, ...transaction });
+    if (!newTransaction) return;
+    setTransactions((prev) => ([...prev, newTransaction]));
+    const changedAccount = updateAccountBalance(accounts, targetAccount.id, transaction.amount);
+    const updatedAccount = await updateData('accounts', changedAccount)
+    if (!updatedAccount) return;
+    setAccounts((prev) => (prev.map((a) =>
+      a.id === updatedAccount.id ? updatedAccount : a
+    )));
   }
 
-  function transfer(from, to, amount, date, exchangeRate) {
-    const fromAccount = accounts.find((a) => a.id === from)
-    const toAccount = accounts.find((a) => a.id === to)
-    const amountExchanged = limitToDecimals(amount * exchangeRate, 2);
-    const updatedAccounts = updateAccountBalance(
-      updateAccountBalance(accounts, fromAccount.id, -amount),
-      toAccount.id,
-      amountExchanged
-    );
-
-    setAccounts(updatedAccounts);
-    const id1 = uuid();
-    const id2 = uuid();
-    const newTransaction1 = { id: id1, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date }
-    const newTransaction2 = { id: id2, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date }
-    setTransactions([...transactions, newTransaction1, newTransaction2])
-  }
-
-  function addAccount(account) {
-    const id = uuid();
-    const newAccount = { id, ...account }
-    setAccounts([...accounts, newAccount])
-  }
-
-  function changeAccount(changedAccount) {
-    const updatedAccounts = accounts.map((a) =>
-      a.id === changedAccount.id ? changedAccount : a
-    );
-    setAccounts(updatedAccounts);
-  }
-
-  function deleteAccount(id) {
-    const updatedTransactions = transactions.filter((t) => t.method !== id);
-    setTransactions(updatedTransactions);
-    const updatedAccounts = accounts.filter((a) => a.id !== id);
-    setAccounts(updatedAccounts);
-  }
-
-  function changeTransaction(changed) {
+  async function changeTransaction(changed) {
     const prev = transactions.find(t => t.id === changed.id);
+    if (!prev) return;
 
     const accountOld = accounts.find(a => a.id === changed.method);
     const accountNew = accounts.find(a => a.id === prev.method);
@@ -109,34 +107,109 @@ function App() {
     } else {
       accountNew.balance -= changed.amount;
     }
-    const updatedAccounts = accounts.map(a =>
-      a.id === accountOld.id ? { ...accountOld } : a.id === accountNew.id ? { ...accountNew } : a
-    );
-    setAccounts(updatedAccounts);
-    const updatedTransactions = transactions.map(t =>
-      t.id === changed.id ? changed : t
-    );
-    setTransactions(updatedTransactions);
+    const updatedAccountOld = await updateData('accounts', accountOld);
+    const updatedAccountNew = await updateData('accounts', accountNew);
+    setAccounts((prev) => (prev.map(a =>
+      a.id === updatedAccountOld.id ? { ...updatedAccountOld } : a.id === updatedAccountNew.id ? { ...updatedAccountNew } : a
+    )));
+    const updatedTransaction = await updateData('transactions', changed)
+    if (!updatedTransaction) return;
+    setTransactions((prev) => (prev.map(t =>
+      t.id === updatedTransaction.id ? updatedTransaction : t
+    )));
   }
 
-  function deleteTransaction(id) {
+  async function deleteTransaction(id) {
     const deletedTransaction = transactions.find((t) => t.id === id);
 
-    const updatedAccounts = accounts.map((a) => {
-      if (a.id !== deletedTransaction.method) return a;
+    const changedAccount = accounts.find(a => a.id === deletedTransaction.method)
 
-      const newBalance =
-        deletedTransaction.type === "income"
-          ? a.balance - deletedTransaction.amount
-          : a.balance + deletedTransaction.amount;
+    const updatedBalance =
+      deletedTransaction.type === 'income'
+        ? changedAccount.balance - deletedTransaction.amount
+        : changedAccount.balance + deletedTransaction.amount;
 
-      return { ...a, balance: newBalance };
-    });
+    const updatedAccountData = {
+      ...changedAccount,
+      balance: updatedBalance,
+    };
+    const updatedAccount = await updateData('accounts', updatedAccountData)
 
-    setAccounts(updatedAccounts);
+    if (!updatedAccount) return;
 
-    const updatedTransactions = transactions.filter((t) => t.id !== id);
-    setTransactions(updatedTransactions);
+    setAccounts((prev) => (prev.map((a) =>
+      a.id === updatedAccount.id ? updatedAccount : a
+    )));
+
+    const transactionDeleted = await deleteData('transactions', id);
+
+    if (!transactionDeleted) return;
+
+    setTransactions((prev) => (prev.filter((t) => t.id !== id)));
+  }
+
+  async function transfer(from, to, amount, date, exchangeRate) {
+    const fromAccount = accounts.find((a) => a.id === from)
+    const toAccount = accounts.find((a) => a.id === to)
+    const amountExchanged = limitToDecimals(amount * exchangeRate, 2);
+    const changedAccount1 = updateAccountBalance(accounts, fromAccount.id, -amount)
+    const changedAccount2 = updateAccountBalance(accounts, toAccount.id, amountExchanged)
+
+    const updatedAccount1 = await updateData('accounts', changedAccount1);
+    if (!updatedAccount1) return;
+
+    const updatedAccount2 = await updateData('accounts', changedAccount2);
+    if (!updatedAccount2) return;
+
+    setAccounts((prev) =>
+      prev.map((a) =>
+        a.id === updatedAccount1.id
+          ? updatedAccount1
+          : a.id === updatedAccount2.id
+            ? updatedAccount2
+            : a
+      )
+    );
+
+    const newTransactions = await createTransaction([
+      { user_id: session.user.id, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },
+      { user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date }
+    ])
+
+    if (!newTransactions) return;
+
+    setTransactions((prev) => ([...prev, ...newTransactions]))
+  }
+
+  async function addAccount(account) {
+    const newAccount = await createAccount(account, session.user.id);
+
+    if (!newAccount) return;
+
+    setAccounts((prev) => [...prev, newAccount])
+  }
+
+  async function changeAccount(changedAccount) {
+    const updatedAccount = await updateData('accounts', changedAccount)
+
+    if (!updatedAccount) return;
+
+    setAccounts((prev) => (prev.map((a) =>
+      a.id === updatedAccount.id ? updatedAccount : a
+    )));
+  }
+
+  async function deleteAccount(id) {
+    const transactionsDeleted = await deleteTransactionsByAccount(id);
+
+    if (!transactionsDeleted) return;
+
+    const accountDeleted = await deleteData('accounts', id);
+
+    if (!accountDeleted) return;
+
+    setTransactions((prev) => (prev.filter((t) => t.method !== id)));
+    setAccounts((prev) => (prev.filter((a) => a.id !== id)));
   }
 
   function addCategory(type, name) {
@@ -156,25 +229,34 @@ function App() {
     });
   }
 
-
+  if (authLoading) return <div>Loading...</div>
   return (
     <Router>
       <div className="App">
         <Routes>
-          {accounts.length === 0 ? (
+          {!session ? (
             <Route path='/' element={
-              <WelcomeScreen toggleTheme={toggleTheme} theme={theme}/>
+              <WelcomeScreen toggleTheme={toggleTheme} theme={theme} />
             } />
           ) : (
-            <Route path='/' element={
-              <Layout toggleTheme={toggleTheme} theme={theme}>
-                <Accounts accounts={accounts} />
-                <RecentTransactions transactions={transactions} accounts={accounts} />
-                <Buttons accounts={accounts} />
-              </Layout>
-            } />
-          )
-          }
+            (session && accounts.length === 0) ? (
+              <Route path='/' element={
+                <Layout toggleTheme={toggleTheme} theme={theme}>
+                  <AddAccount addAccount={addAccount} back={false} />
+                </Layout>
+              } />
+            ) : (
+              (session && accounts.length > 0) && (
+                <Route path='/' element={
+                  <Layout toggleTheme={toggleTheme} theme={theme}>
+                    <Accounts accounts={accounts} />
+                    <RecentTransactions transactions={transactions} accounts={accounts} />
+                    <Buttons accounts={accounts} />
+                  </Layout>
+                } />
+              )
+            )
+          )}
           <Route path='signup' element={
             <SignUp />
           } />
@@ -194,13 +276,13 @@ function App() {
               <Transfer transfer={transfer} accounts={accounts} />
             } />
             <Route path='addAccount' element={
-              <AddAccount addAccount={addAccount} />
+              <AddAccount addAccount={addAccount} back={true} />
             } />
             <Route path='changeAccount/:id' element={
-              <ChangeAccount changeAccount={changeAccount} deleteAccount={deleteAccount} />
+              <ChangeAccount accounts={accounts} changeAccount={changeAccount} deleteAccount={deleteAccount} />
             } />
             <Route path='changeTransaction/:id' element={
-              <ChangeTransaction changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
+              <ChangeTransaction accounts={accounts} transactions={transactions} changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
             } />
             <Route path='transactions' element={
               <Transactions transactions={transactions} accounts={accounts} />

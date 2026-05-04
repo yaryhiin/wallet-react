@@ -1,12 +1,12 @@
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { loadData, limitToDecimals, getFormattedLocalDateTime } from '../../utils';
+import { limitToDecimals, getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal';
 import MessageModal from './MessageModal';
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
-const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, categories, deleteCategory }) => {
+const ChangeTransaction = ({accounts, transactions, changeTransaction, deleteTransaction, addCategory, categories, deleteCategory }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/';
@@ -24,8 +24,6 @@ const ChangeTransaction = ({ changeTransaction, deleteTransaction, addCategory, 
     setCategory(newCategory);
   }
 
-  const accounts = loadData("accounts");
-  const transactions = loadData("transactions");
   const { id } = useParams();
   const transaction = transactions.find(t => t.id === id);
 

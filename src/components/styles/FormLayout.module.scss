@@ -1,3 +1,9 @@
+.errorMessage {
+  display: block;
+  color: var(--delete-btn-bg);
+  margin: 0;
+}
+
 .formContainer {
   display: flex;
   flex-direction: column;
