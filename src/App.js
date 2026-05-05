@@ -26,8 +26,8 @@ function App() {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState({ expense: defaultExpenseCategories, income: defaultIncomeCategories });
   const [theme, setTheme] = useState(() => {
-    const saved = '';
-    if (saved.length > 0) return saved;
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
       : 'light';
@@ -63,7 +63,7 @@ function App() {
   useEffect(() => {
     async function loadData() {
       setDataLoading(true);
-      const [accountsData, transactionsData] = await Promise.all([getData('accounts'), getData('transactions')]);
+      const [accountsData, transactionsData, categoriesData] = await Promise.all([getData('accounts'), getData('transactions'), getData('categories')]);
       setAccounts(accountsData);
       setTransactions(transactionsData);
       setDataLoading(false);
@@ -77,7 +77,8 @@ function App() {
   }, [session])
 
   useEffect(() => {
-    document.body.setAttribute('theme', theme);
+    document.documentElement.setAttribute('theme', theme);
+    localStorage.setItem('theme', theme)
   }, [theme]);
 
   function toggleTheme() {
