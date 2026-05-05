@@ -15,7 +15,7 @@ const SignUp = () => {
 
     const [showModal, setShowModal] = useState(false);
     const title = "Account created"
-    const text = "Check your email and confirm your account before logging in."
+    const text = "Check your email for a confirmation link. \n If you already have an account, try logging in instead."
 
 
     const navigate = useNavigate();
@@ -39,6 +39,11 @@ const SignUp = () => {
         if (password !== confirmPassword || !confirmPassword) newErrors.confirmPassword = true;
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = true;
         if (!password) newErrors.password = true;
+        if (password.length < 6) {
+            setAuthError('Password must be at least 6 characters');
+            setErrors({ password: true, confirmPassword: true });
+            return
+        }
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);

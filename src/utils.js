@@ -183,10 +183,6 @@ export const getAuthErrorMessage = (error) => {
         switch (error.code) {
             case 'email_not_confirmed':
                 return 'Please confirm your email'
-            case 'email_exists':
-                return 'Email already registered'
-            case 'weak_password':
-                return 'Password is too weak'
             case 'email_address_invalid':
                 return 'Invalid email'
             case 'over_email_send_rate_limit':
