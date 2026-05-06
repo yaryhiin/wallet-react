@@ -83,11 +83,10 @@ function App() {
 
     if (session) {
       loadData();
-      console.log(accounts)
     } else {
       setDataLoading(false);
     }
-  }, [session, accounts])
+  }, [session])
 
   useEffect(() => {
     document.documentElement.setAttribute('theme', theme);
