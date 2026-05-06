@@ -269,9 +269,9 @@ function App() {
                 path="/"
                 element={
                   accounts.length === 0 ? (
-                    <Layout toggleTheme={toggleTheme} theme={theme}>
+                    <Layout toggleTheme={toggleTheme} theme={theme} >
                       <AddAccount addAccount={addAccount} back={false} />
-                    </Layout>
+                    </ Layout>
                   ) : (
                     <Layout toggleTheme={toggleTheme} theme={theme}>
                       <Accounts accounts={accounts} />
@@ -285,32 +285,37 @@ function App() {
               <Route path="/signup" element={<Navigate to="/" replace />} />
               <Route path="/login" element={<Navigate to="/" replace />} />
 
-              <Route element={
-                <Layout toggleTheme={toggleTheme} theme={theme} />
-              }>
-                <Route path='income' element={
-                  <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
-                } />
-                <Route path='expense' element={
-                  <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
-                } />
-                <Route path='transfer' element={
-                  <Transfer transfer={transfer} accounts={accounts} />
-                } />
-                <Route path='addAccount' element={
-                  <AddAccount addAccount={addAccount} back={true} />
-                } />
-                <Route path='changeAccount/:id' element={
-                  <ChangeAccount accounts={accounts} changeAccount={changeAccount} deleteAccount={deleteAccount} />
-                } />
-                <Route path='changeTransaction/:id' element={
-                  <ChangeTransaction accounts={accounts} transactions={transactions} changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
-                } />
-                <Route path='transactions' element={
-                  <Transactions transactions={transactions} accounts={accounts} />
-                } />
-              </Route>
+              {accounts.length > 0 &&
+                (<Route element={
+                  <Layout toggleTheme={toggleTheme} theme={theme} />
+                }>
+                  <Route path='/income' element={
+                    <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
+                  } />
+                  <Route path='/expense' element={
+                    <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
+                  } />
+                  {accounts.length > 1 ? (
+                    <Route path='/transfer' element={
+                      <Transfer transfer={transfer} accounts={accounts} />
+                    } />
+                  ) : (
+                    <Route path="/transfer" element={<Navigate to="/" replace />} />
+                  )}
 
+                  <Route path='/addAccount' element={
+                    <AddAccount addAccount={addAccount} back={true} />
+                  } />
+                  <Route path='/changeAccount/:id' element={
+                    <ChangeAccount accounts={accounts} changeAccount={changeAccount} deleteAccount={deleteAccount} />
+                  } />
+                  <Route path='/changeTransaction/:id' element={
+                    <ChangeTransaction accounts={accounts} transactions={transactions} changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
+                  } />
+                  <Route path='/transactions' element={
+                    <Transactions transactions={transactions} accounts={accounts} />
+                  } />
+                </Route>)}
               <Route path="*" element={<Navigate to="/" replace />} />
             </>
           )}
