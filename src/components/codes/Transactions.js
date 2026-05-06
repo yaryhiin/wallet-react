@@ -37,7 +37,9 @@ const Transactions = ({ transactions, accounts }) => {
                                     <td className={styles.transAmountExpense}>{transaction.amount}</td>
                                 }
                                 <td className={styles.transCurrency}>{transaction.currency}</td>
-                                <td>{accounts.find(account => account.id === transaction.method).name || 'Unknown Account'}</td>
+                                <td>
+                                    {accounts.find((account) => String(account.id) === String(transaction.method))?.name || 'Unknown Account'}
+                                </td>
                                 <td>{formatDate(transaction.date)}</td>
                             </tr>
                         ))}
