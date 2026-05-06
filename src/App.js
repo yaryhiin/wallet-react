@@ -17,11 +17,10 @@ import SignUp from './components/codes/SignUp'
 import Login from "./components/codes/Login";
 import Layout from './Layout';
 import WelcomeScreen from './components/codes/WelcomeScreen';
+const defaultExpenseCategories = ["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
+const defaultIncomeCategories = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle"];
 
 function App() {
-  const defaultExpenseCategories = ["Food", "Rent", "Utilities", "Entertainment", "Transportation", "Healthcare", "Shopping", "Subscriptions", "Education", "Travel"];
-  const defaultIncomeCategories = ["Salary", "Crypto", "Interests", "Business", "Gifts", "Rewards", "Side Hustle"];
-
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -63,19 +62,23 @@ function App() {
   useEffect(() => {
     async function loadData() {
       setDataLoading(true);
-      const [accountsData, transactionsData, categoriesData] = await Promise.all([getData('accounts'), getData('transactions'), getData('categories')]);
-      if (categoriesData.length === 0) {
-        const newExpenseCategories = (defaultExpenseCategories.map((c) => ({ user_id: session.user.id, type: "expense", name: c })))
-        const newIncomeCategories = (defaultIncomeCategories.map((c) => ({ user_id: session.user.id, type: "income", name: c })))
-        const newCategories = [...newExpenseCategories, ...newIncomeCategories];
-        const updatedCategories = await createCategories(newCategories);
-        if (!updatedCategories) return;
-        setCategories(updatedCategories);
+      try {
+        const [accountsData, transactionsData, categoriesData] = await Promise.all([getData('accounts'), getData('transactions'), getData('categories')]);
+        if (categoriesData.length === 0) {
+          const newExpenseCategories = (defaultExpenseCategories.map((c) => ({ user_id: session.user.id, type: "expense", name: c })))
+          const newIncomeCategories = (defaultIncomeCategories.map((c) => ({ user_id: session.user.id, type: "income", name: c })))
+          const newCategories = [...newExpenseCategories, ...newIncomeCategories];
+          const updatedCategories = await createCategories(newCategories);
+          if (!updatedCategories) return;
+          setCategories(updatedCategories);
+        } else {
+          setCategories(categoriesData);
+        }
+        setAccounts(accountsData);
+        setTransactions(transactionsData);
+      } finally {
+        setDataLoading(false);
       }
-      setCategories(categoriesData);
-      setAccounts(accountsData);
-      setTransactions(transactionsData);
-      setDataLoading(false);
     }
 
     if (session) {
@@ -84,7 +87,7 @@ function App() {
     } else {
       setDataLoading(false);
     }
-  }, [session])
+  }, [session, accounts])
 
   useEffect(() => {
     document.documentElement.setAttribute('theme', theme);
@@ -255,10 +258,10 @@ function App() {
                 <WelcomeScreen toggleTheme={toggleTheme} theme={theme} />
               } />
               <Route path='signup' element={
-                <SignUp toggleTheme={toggleTheme} theme={theme}/>
+                <SignUp toggleTheme={toggleTheme} theme={theme} />
               } />
               <Route path='login' element={
-                <Login toggleTheme={toggleTheme} theme={theme}/>
+                <Login toggleTheme={toggleTheme} theme={theme} />
               } />
             </>
           ) : (
