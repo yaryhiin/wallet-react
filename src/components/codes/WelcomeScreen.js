@@ -1,5 +1,4 @@
 import styles from "../styles/WelcomeScreen.module.scss"
-import cn from 'classnames';
 import ThemeSwitch from "./ThemeSwitch";
 import { useNavigate } from "react-router-dom";
 
