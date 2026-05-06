@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import { supabase } from './supabase'
 
-import { updateAccountBalance, limitToDecimals, getData, createAccount, createTransaction, updateData, deleteData, deleteTransactionsByAccount } from './utils'
+import { updateAccountBalance, limitToDecimals, getData, createData, createCategories, updateData, deleteData, deleteTransactionsByAccount } from './utils'
 
 import Accounts from './components/codes/Accounts'
 import Transactions from './components/codes/Transactions'
@@ -24,7 +24,7 @@ function App() {
 
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [categories, setCategories] = useState({ expense: defaultExpenseCategories, income: defaultIncomeCategories });
+  const [categories, setCategories] = useState([]);
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved;
@@ -64,6 +64,15 @@ function App() {
     async function loadData() {
       setDataLoading(true);
       const [accountsData, transactionsData, categoriesData] = await Promise.all([getData('accounts'), getData('transactions'), getData('categories')]);
+      if (categoriesData.length === 0) {
+        const newExpenseCategories = (defaultExpenseCategories.map((c) => ({ user_id: session.user.id, type: "expense", name: c })))
+        const newIncomeCategories = (defaultIncomeCategories.map((c) => ({ user_id: session.user.id, type: "income", name: c })))
+        const newCategories = [...newExpenseCategories, ...newIncomeCategories];
+        const updatedCategories = await createCategories(newCategories);
+        if (!updatedCategories) return;
+        setCategories(updatedCategories);
+      }
+      setCategories(categoriesData);
       setAccounts(accountsData);
       setTransactions(transactionsData);
       setDataLoading(false);
@@ -71,6 +80,7 @@ function App() {
 
     if (session) {
       loadData();
+      console.log(accounts)
     } else {
       setDataLoading(false);
     }
@@ -86,7 +96,7 @@ function App() {
   }
 
   async function addTransaction(transaction, targetAccount) {
-    const newTransaction = await createTransaction({ user_id: session.user.id, ...transaction });
+    const newTransaction = await createData({ user_id: session.user.id, ...transaction });
     if (!newTransaction) return;
     setTransactions((prev) => ([...prev, newTransaction]));
     let transactionAmount = transaction.amount;
@@ -151,7 +161,7 @@ function App() {
       a.id === updatedAccount.id ? updatedAccount : a
     )));
 
-    const transactionDeleted = await deleteData('transactions', id);
+    const transactionDeleted = await deleteData('transactions', id, session.user.id);
 
     if (!transactionDeleted) return;
 
@@ -181,8 +191,8 @@ function App() {
       )
     );
 
-    const newTransaction1 = await createTransaction({ user_id: session.user.id, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },)
-    const newTransaction2 = await createTransaction({ user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date })
+    const newTransaction1 = await createData({ user_id: session.user.id, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },)
+    const newTransaction2 = await createData({ user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date })
 
     if (!newTransaction1 || newTransaction2) return;
 
@@ -190,7 +200,7 @@ function App() {
   }
 
   async function addAccount(account) {
-    const newAccount = await createAccount(account, session.user.id);
+    const newAccount = await createData({ id: session.user.id, ...account });
 
     if (!newAccount) return;
 
@@ -212,7 +222,7 @@ function App() {
 
     if (!transactionsDeleted) return;
 
-    const accountDeleted = await deleteData('accounts', id);
+    const accountDeleted = await deleteData('accounts', id, session.user.id);
 
     if (!accountDeleted) return;
 
@@ -220,21 +230,17 @@ function App() {
     setAccounts((prev) => (prev.filter((a) => a.id !== id)));
   }
 
-  function addCategory(type, name) {
-    setCategories(prev => {
-      const updated = { ...prev };
-      updated[type] = [...prev[type], name];
-      localStorage.setItem('categories', JSON.stringify(updated));
-      return updated;
-    });
+  async function addCategory(category) {
+    const newCategory = await createData('categories', { user_id: session.user.id, ...category });
+    if (!newCategory) return;
+    setCategories((prev) => [...prev, category]);
+    return newCategory;
   }
 
-  function deleteCategory(type, name) {
-    setCategories(prev => {
-      const updated = { ...prev, [type]: prev[type].filter(c => c !== name) };
-      localStorage.setItem('categories', JSON.stringify(updated));
-      return updated;
-    });
+  async function deleteCategory(id) {
+    const deletedCategory = await deleteData('categories', id, session.user.id)
+    setCategories((prev) => prev.filter((p) => p.id !== id));
+    return deletedCategory;
   }
 
   if (authLoading) return <div>Loading...</div>
@@ -249,10 +255,10 @@ function App() {
                 <WelcomeScreen toggleTheme={toggleTheme} theme={theme} />
               } />
               <Route path='signup' element={
-                <SignUp />
+                <SignUp toggleTheme={toggleTheme} theme={theme}/>
               } />
               <Route path='login' element={
-                <Login />
+                <Login toggleTheme={toggleTheme} theme={theme}/>
               } />
             </>
           ) : (

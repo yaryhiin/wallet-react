@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { limitToDecimals, getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal'
 import styles from '../styles/FormLayout.module.scss'
@@ -8,16 +8,18 @@ import MessageModal from './MessageModal';
 
 const AddTransaction = ({ addTransaction, type, accounts, addCategory, categories, deleteCategory }) => {
 
-  const options = type === "expense" ? categories.expense : categories.income
+  const [options, setOptions] = useState([]);
 
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
 
-  function handleAddCategory(newCategory) {
-    addCategory(type, newCategory);
-    setShowModal(false);
+  async function handleAddCategory(newCategory) {
+    const updatedCategory = await addCategory({ type: type, name: newCategory });
+    if (!updatedCategory) return
+    setOptions((prev) => [...prev, updatedCategory]);
     setCategory(newCategory);
+    setShowModal(false);
   }
 
   const navigate = useNavigate();
@@ -32,11 +34,18 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
   const [method, setMethod] = useState('');
   const [date, setDate] = useState(formattedDate);
 
+  useEffect(() => {
+    setOptions(categories.filter((c) => c.type === type));
+  }, [categories, type]);
+
   const title = "Confirm Action";
   const text = `Are you sure you want to delete the category "${category}"? \n This action cannot be undone.`;
 
-  function handleDeleteCategory() {
-    deleteCategory(type, category);
+  async function handleDeleteCategory() {
+    const chosenCategory = options.find((o) => o.name === category);
+    const deletedCategory = await deleteCategory(chosenCategory.id);
+    if (!deletedCategory) return;
+    setOptions((prev) => prev.filter((p) => p.id !== chosenCategory.id));
     setShowMessageModal(false);
   }
 
@@ -55,6 +64,11 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
     }
 
     const accountWithMethod = accounts.find((account) => account.id === method);
+
+    if (!accountWithMethod) {
+      setErrors((prev) => ({ ...prev, method: true }));
+      return;
+    }
     addTransaction({ category, amount: amount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
 
     setAmount(0);
@@ -111,8 +125,8 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
               }}
             >
               <option value="" disabled>Select Category</option>
-              {options.map((method, index) => (
-                <option key={index} value={method}>{method}</option>
+              {options.map((c) => (
+                <option key={c.id} value={c.name}>{c.name}</option>
               ))}
               <option value="__add_new_category__">+ Add new category</option>
             </select>

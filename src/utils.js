@@ -61,11 +61,12 @@ export async function updateData(key, updatedData) {
     return data?.[0] || null;
 }
 
-export async function deleteData(key, itemId) {
+export async function deleteData(key, itemId, userId) {
     const { error } = await supabase
         .from(key)
         .delete()
-        .eq('id', itemId);
+        .eq('id', itemId)
+        .eq('user_id', userId);
 
     if (error) {
         console.error(`Error deleting data from ${key}:`, error.message);
@@ -89,18 +90,32 @@ export async function deleteTransactionsByAccount(accountId) {
     return true;
 }
 
-export async function createTransaction(transaction) {
+export async function createData(key, newData) {
     const { data, error } = await supabase
-        .from('transactions')
-        .insert(transaction)
+        .from(key)
+        .insert(newData)
         .select();
 
     if (error) {
-        console.error('Error creating transaction:', error);
+        console.error('Error creating data:', error);
         return null;
     }
 
     return data?.[0] || null;
+}
+
+export async function createCategories(categories) {
+    const { data, error } = await supabase
+        .from('categories')
+        .insert(categories)
+        .select();
+
+    if (error) {
+        console.error('Error creating categories:', error);
+        return null;
+    }
+
+    return data;
 }
 
 export function limitToDecimals(value, decimals) {

@@ -12,8 +12,6 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
   }
 
   const [errors, setErrors] = useState({});
-  const { id } = useParams();
-  const account = accounts.find(a => a.id === id);
 
   const [accountCurrency, setAccountCurrency] = useState([]);
 
@@ -34,21 +32,37 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
     { value: "usd", name: "USD" }
   ];
 
-  const [name, setName] = useState(account.name);
-  const [balance, setBalance] = useState(account.balance);
-  const [currency, setCurrency] = useState(account.currency);
-  const [icon, setIcon] = useState(account.icon);
+  const { id } = useParams();
 
+  const account = accounts.find((a) => String(a.id) === String(id));
+
+  const [name, setName] = useState('');
+  const [balance, setBalance] = useState('');
+  const [currency, setCurrency] = useState('');
+  const [icon, setIcon] = useState('');
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (!account) return;
+
+    setName(account.name);
+    setBalance(account.balance);
+    setCurrency(account.currency);
+    setIcon(account.icon);
+  }, [account]);
+
+  if (!account) {
+    return <p>Loading account...</p>;
+  }
   const title = "Confirm Action";
-  const text = `This account has ${account.balance} ${account.currency}. \n You sure you want to delete it?`;
+  const text = `This account has ${balance} ${currency}. \n You sure you want to delete it?`;
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     const newErrors = {};
     if (!name) newErrors.name = true;
-    if (!balance || balance < -999999999 || balance > 999999999) newErrors.balance = true;
+    if (balance === '' || balance < -999999999 || balance > 999999999) newErrors.balance = true;
     if (!currency) newErrors.currency = true;
     if (!icon) newErrors.icon = true;
 
@@ -102,7 +116,8 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
           <p className={styles.inputText}>Account name</p>
           <input
             type="text"
-            value={name}
+            value={!name ? '' : name}
+            placeholder="Enter name"
             className={cn(styles.input, errors.name && styles.error)}
             required
             onChange={(e) => setName(e.target.value)}
@@ -116,7 +131,8 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
             step="0.01"
             min="-999999999"
             max="999999999"
-            value={balance}
+            value={balance === 0 ? '' : balance}
+            placeholder="Enter balance"
             className={cn(styles.input, errors.balance && styles.error)}
             required
             onChange={(e) => setBalance(limitToDecimals(e.target.value, 2) || 0)}
@@ -152,7 +168,7 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
             ))}
           </select>
         </div>
-        {showModal && <MessageModal title={title} text={text} onDelete={handleDeleteAccount} onClose={() => setShowModal(false)}/>}
+        {showModal && <MessageModal title={title} text={text} onDelete={handleDeleteAccount} onClose={() => setShowModal(false)} />}
       </div>
       <div className={styles.buttonContainer}>
         <button className="backBtn button" onClick={onBack}>Back</button>

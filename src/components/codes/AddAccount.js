@@ -33,7 +33,7 @@ const AddAccount = ({ addAccount, back }) => {
     navigate('/');
   }
   const [name, setName] = useState('');
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState('');
   const [currency, setCurrency] = useState('');
   const [icon, setIcon] = useState('');
 
@@ -42,7 +42,7 @@ const AddAccount = ({ addAccount, back }) => {
 
     const newErrors = {};
     if (!name) newErrors.name = true;
-    if (!balance || balance < -999999999 || balance > 999999999) newErrors.balance = true;
+    if (balance === '' || balance < -999999999 || balance > 999999999) newErrors.balance = true;
     if (!currency) newErrors.currency = true;
     if (!icon) newErrors.icon = true;
 

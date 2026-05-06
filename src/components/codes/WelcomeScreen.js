@@ -1,8 +1,16 @@
 import styles from "../styles/WelcomeScreen.module.scss"
 import cn from 'classnames';
 import ThemeSwitch from "./ThemeSwitch";
+import { useNavigate } from "react-router-dom";
 
 const WelcomeScreen = ({ toggleTheme, theme }) => {
+    const navigate = useNavigate();
+    function signup() {
+        navigate('/signup');
+    }
+    function login() {
+        navigate('/login');
+    }
     return (
         <>
             <header className={styles.header}>
@@ -13,10 +21,10 @@ const WelcomeScreen = ({ toggleTheme, theme }) => {
                 <h3 className={styles.description}>Track expenses, income, transfers, multiple accounts and currencies — all in one simple web app.</h3>
                 <div className={styles.sessionBox}>
                     <div>
-                        <a href="/login" className={cn("button", styles.logIn)}>Log In</a>
+                        <button onClick={login} className={styles.logIn}>Log In</button>
                     </div>
                     <div>
-                        <a href="/signup" className={cn("button", styles.signUp)}>Sign Up</a>
+                        <button onClick={signup} className={styles.signUp}>Sign Up</button>
                     </div>
                 </div>
             </div>

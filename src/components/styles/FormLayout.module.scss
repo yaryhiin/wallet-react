@@ -1,3 +1,10 @@
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
 .errorMessage {
   display: block;
   color: var(--delete-btn-bg);

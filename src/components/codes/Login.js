@@ -4,8 +4,9 @@ import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 import { useNavigate } from "react-router-dom";
 import { getAuthErrorMessage } from "../../utils";
+import ThemeSwitch from "./ThemeSwitch";
 
-const Login = () => {
+const Login = ({ toggleTheme, theme }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -55,7 +56,11 @@ const Login = () => {
   }
 
   return (
-    <div className="container">
+    <>
+      <header className={styles.header}>
+                <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
+            </header>
+            <div className="container">
       <div className={styles.formContainer}>
         <h1 className={styles.heading}>Log In</h1>
         <div className={styles.inputBox}>
@@ -88,6 +93,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

@@ -26,26 +26,6 @@
     margin-bottom: 12px;
 }
 
-a{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  text-decoration: none;
-  color: inherit;
-
-  border: none;
-  background: none;
-  font: inherit;
-  line-height: normal;
-
-  cursor: pointer;
-  user-select: none;
-
-  appearance: none;
-  -webkit-appearance: none;
-}
-
 .sessionBox {
   display: flex;
   flex-direction: row;
@@ -61,6 +41,7 @@ a{
     cursor: pointer;
     font-size: 20px;
     font-weight: 600;
+    width: 150px;
 }
 
 .signUp {
@@ -71,7 +52,7 @@ a{
   }
 }
 
-.logIn, .logOut {
+.logIn {
   background-color: var(--back-btn-bg);
 
   &:hover {
@@ -79,3 +60,41 @@ a{
   }
 }
 
+@media (max-width: 600px) {
+  .header {
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .content {
+    min-height: 75vh;
+    padding: 0 20px;
+  }
+
+  .title {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .note {
+    font-size: 16px;
+    max-width: 340px;
+    margin-bottom: 8px;
+  }
+
+  .sessionBox {
+    flex-direction: column;
+    width: 100%;
+    max-width: 280px;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .logIn,
+  .signUp {
+    width: 100%;
+    margin-top: 0;
+    padding: 13px 20px;
+    font-size: 18px;
+  }
+}

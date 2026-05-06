@@ -6,7 +6,7 @@ import MessageModal from './MessageModal';
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
-const ChangeTransaction = ({accounts, transactions, changeTransaction, deleteTransaction, addCategory, categories, deleteCategory }) => {
+const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTransaction, addCategory, categories, deleteCategory }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/';
@@ -18,34 +18,55 @@ const ChangeTransaction = ({accounts, transactions, changeTransaction, deleteTra
   const [showModal, setShowModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
 
-  function handleAddCategory(newCategory) {
-    addCategory(type, newCategory);
-    setShowModal(false);
+  async function handleAddCategory(newCategory) {
+    const updatedCategory = await addCategory({ type: type, name: newCategory });
+    if (!updatedCategory) return
+    setOptions((prev) => [...prev, updatedCategory]);
     setCategory(newCategory);
+    setShowModal(false);
   }
 
   const { id } = useParams();
-  const transaction = transactions.find(t => t.id === id);
 
-  const [type, setType] = useState(transaction.type);
-  const [amount, setAmount] = useState(transaction.amount);
-  const [category, setCategory] = useState(transaction.category);
-  const [method, setMethod] = useState(transaction.method);
-  const [date, setDate] = useState(transaction.date);
+  const transaction = transactions.find(
+    (t) => String(t.id) === String(id)
+  );
 
-  const [options, setOptions] = useState(categories[type]);
+  const [type, setType] = useState('');
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState('');
+  const [method, setMethod] = useState('');
+  const [date, setDate] = useState('');
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    if (!transaction) return;
+
+    setType(transaction.type);
+    setAmount(transaction.amount);
+    setCategory(transaction.category);
+    setMethod(transaction.method);
+    setDate(transaction.date);
+  }, [transaction]);
+
+  useEffect(() => {
+    setOptions(categories.filter((c) => c.type === type));
+  }, [type, categories]);
+
+  if (!transaction) {
+    return <p>Loading transaction...</p>;
+  }
 
   const title = "Confirm Action";
   const text = `Are you sure you want to delete the category "${category}"? \n This action cannot be undone.`;
 
-  function handleDeleteCategory() {
-    deleteCategory(type, category);
+  async function handleDeleteCategory() {
+    const chosenCategory = options.find((o) => o.name === category);
+    const deletedCategory = await deleteCategory(chosenCategory.id);
+    if (!deletedCategory) return;
+    setOptions((prev) => prev.filter((p) => p.id !== chosenCategory.id));
     setShowMessageModal(false);
   }
-
-  useEffect(() => {
-    setOptions(categories[type]);
-  }, [type, categories]);
 
   let currency = transaction.currency;
 
@@ -121,7 +142,8 @@ const ChangeTransaction = ({accounts, transactions, changeTransaction, deleteTra
           <p className={styles.inputText}>Amount</p>
           <input
             className={cn(styles.input, errors.amount && styles.error)}
-            value={amount}
+            value={amount === 0 ? '' : amount}
+            placeholder="Enter amount"
             type="number"
             step="0.01"
             min="0"
@@ -147,8 +169,8 @@ const ChangeTransaction = ({accounts, transactions, changeTransaction, deleteTra
               }}
             >
               <option value="" disabled>Select Category</option>
-              {options.map((method, index) => (
-                <option key={index} value={method}>{method}</option>
+              {options.map((c) => (
+                <option key={c.id} value={c.name}>{c.name}</option>
               ))}
               <option value="__add_new_category__">+ Add new category</option>
             </select>

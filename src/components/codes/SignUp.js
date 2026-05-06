@@ -5,8 +5,9 @@ import cn from 'classnames';
 import { useNavigate } from "react-router-dom";
 import { getAuthErrorMessage } from "../../utils";
 import MessageModal from "./MessageModal";
+import ThemeSwitch from "./ThemeSwitch";
 
-const SignUp = () => {
+const SignUp = ({ toggleTheme, theme }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -80,49 +81,55 @@ const SignUp = () => {
     }
 
     return (
-        <div className="container">
-            <div className={styles.formContainer}>
-                <h1 className={styles.heading}>Sign Up</h1>
-                <div className={styles.inputBox}>
-                    <div className={styles.inputContainer}>
-                        <p className={styles.inputText}>Email</p>
-                        <input
-                            className={cn(styles.input, errors.email && styles.error)}
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+        <>
+
+            <header className={styles.header}>
+                <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
+            </header>
+            <div className="container">
+                <div className={styles.formContainer}>
+                    <h1 className={styles.heading}>Sign Up</h1>
+                    <div className={styles.inputBox}>
+                        <div className={styles.inputContainer}>
+                            <p className={styles.inputText}>Email</p>
+                            <input
+                                className={cn(styles.input, errors.email && styles.error)}
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div className={styles.inputContainer}>
+                            <p className={styles.inputText}>Password</p>
+                            <input
+                                className={cn(styles.input, errors.password && styles.error)}
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className={cn(styles.inputContainer, styles.fullWidth)}>
+                            <p className={styles.inputText}>Confirm Password</p>
+                            <input
+                                className={cn(styles.input, errors.confirmPassword && styles.error)}
+                                type="password"
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                            {authError && (<p className={cn(styles.errorMessage)}>{authError}</p>)}
+                        </div>
+                        {showModal && <MessageModal title={title} text={text} onDelete={home} onClose={() => { setShowModal(false); login() }} twoButton={false} />}
                     </div>
-                    <div className={styles.inputContainer}>
-                        <p className={styles.inputText}>Password</p>
-                        <input
-                            className={cn(styles.input, errors.password && styles.error)}
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                    <div className={styles.buttonContainer}>
+                        <button className="backBtn button" onClick={onBack}>Back</button>
+                        <button className={cn(styles.saveBtn, "button")} onClick={handleSignUp}>Sign Up</button>
                     </div>
-                    <div className={cn(styles.inputContainer, styles.fullWidth)}>
-                        <p className={styles.inputText}>Confirm Password</p>
-                        <input
-                            className={cn(styles.input, errors.confirmPassword && styles.error)}
-                            type="password"
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                        {authError && (<p className={cn(styles.errorMessage)}>{authError}</p>)}
-                    </div>
-                    {showModal && <MessageModal title={title} text={text} onDelete={home} onClose={() => { setShowModal(false); login() }} twoButton={false} />}
-                </div>
-                <div className={styles.buttonContainer}>
-                    <button className="backBtn button" onClick={onBack}>Back</button>
-                    <button className={cn(styles.saveBtn, "button")} onClick={handleSignUp}>Sign Up</button>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
