@@ -15,17 +15,24 @@ const Transfer = ({ transfer, accounts }) => {
 
   const [exchangeRate, setExchangeRate] = useState(0);
   const [amount, setAmount] = useState(0);
-  const [from, setFrom] = useState(accounts[0].id);
-  const [to, setTo] = useState(accounts[1].id);
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
   const [date, setDate] = useState(formattedDate);
   const [isFlipped, setIsFlipped] = useState(false);
 
   const [errors, setErrors] = useState({});
 
-  const fromAccount = accounts.find((account) => account.id === from)
-  const toAccount = accounts.find((account) => account.id === to)
+  const fromAccount = accounts.find((a) => String(a.id) === String(from))
+  const toAccount = accounts.find((a) => String(a.id) === String(to))
   const [fromCurrency, setFromCurrency] = useState(fromAccount ? fromAccount.currency : null);
   const [toCurrency, setToCurrency] = useState(toAccount ? toAccount.currency : null);
+
+  useEffect(() => {
+    if (accounts !== []) return;
+
+    setFrom(accounts[0].id);
+    setTo(accounts[1].id);
+  }, [accounts]);
 
   useEffect(() => {
     async function loadRate() {
@@ -47,6 +54,10 @@ const Transfer = ({ transfer, accounts }) => {
     setFromCurrency(fromAcc ? fromAcc.currency : null);
     setToCurrency(toAcc ? toAcc.currency : null);
   }, [from, to, accounts]);
+
+  if (!accounts) {
+    return <p>Loading transfer...</p>;
+  }
 
   function handleSwapCurrencies() {
     const oldFrom = fromCurrency;

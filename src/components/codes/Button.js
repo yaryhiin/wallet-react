@@ -7,7 +7,7 @@ import { useState } from 'react';
 const Button = ({ title, classN, onClick, link, accounts }) => {
     const [showModal, setShowModal] = useState(false);
     const titleModal = "Attention!";
-    const text = `To add ${link}, you need to have at least two accounts. \n You want to add an account now?`;
+    const text = `To make a transfer, you need at least two accounts.\nDo you want to add an account now?`;
     const navigate = useNavigate();
     function handleAddAccount() {
         setShowModal(false);
