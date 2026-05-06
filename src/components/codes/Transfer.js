@@ -58,7 +58,7 @@ const Transfer = ({ transfer, accounts }) => {
     console.log(fromCurrency, toCurrency);
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -78,7 +78,7 @@ const Transfer = ({ transfer, accounts }) => {
       ? 1 / exchangeRate
       : exchangeRate;
 
-    transfer(from, to, amount, date, limitToDecimals(adjustedExchangeRate, 4))
+    await transfer(from, to, amount, date, limitToDecimals(adjustedExchangeRate, 4))
 
     setAmount(0);
     setFrom(accounts[0].id);

@@ -37,7 +37,7 @@ const AddAccount = ({ addAccount, back }) => {
   const [currency, setCurrency] = useState('');
   const [icon, setIcon] = useState('');
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -51,7 +51,7 @@ const AddAccount = ({ addAccount, back }) => {
       return;
     }
 
-    addAccount({ name, balance, currency, icon })
+    await addAccount({ name, balance, currency, icon })
     setName('');
     setBalance();
     setCurrency('');

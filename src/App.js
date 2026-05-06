@@ -98,7 +98,7 @@ function App() {
   }
 
   async function addTransaction(transaction, targetAccount) {
-    const newTransaction = await createData({ user_id: session.user.id, ...transaction });
+    const newTransaction = await createData('transactions', { user_id: session.user.id, ...transaction });
     if (!newTransaction) return;
     setTransactions((prev) => ([...prev, newTransaction]));
     let transactionAmount = transaction.amount;
@@ -193,16 +193,16 @@ function App() {
       )
     );
 
-    const newTransaction1 = await createData({ user_id: session.user.id, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },)
-    const newTransaction2 = await createData({ user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date })
+    const newTransaction1 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },)
+    const newTransaction2 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date })
 
-    if (!newTransaction1 || newTransaction2) return;
+    if (!newTransaction1 || !newTransaction2) return;
 
     setTransactions((prev) => ([...prev, newTransaction1, newTransaction2]))
   }
 
   async function addAccount(account) {
-    const newAccount = await createData({ id: session.user.id, ...account });
+    const newAccount = await createData('accounts', { user_id: session.user.id, ...account });
 
     if (!newAccount) return;
 

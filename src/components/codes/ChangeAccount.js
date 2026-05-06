@@ -57,7 +57,7 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
   const title = "Confirm Action";
   const text = `This account has ${balance} ${currency}. \n You sure you want to delete it?`;
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -71,7 +71,7 @@ const ChangeAccount = ({ accounts, changeAccount, deleteAccount }) => {
       return;
     }
 
-    changeAccount({ id, name, balance, currency, icon })
+    await changeAccount({ id, name, balance, currency, icon })
     setName('');
     setBalance();
     setCurrency('');

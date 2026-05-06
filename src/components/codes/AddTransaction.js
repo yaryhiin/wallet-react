@@ -49,7 +49,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
     setShowMessageModal(false);
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -69,7 +69,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
       setErrors((prev) => ({ ...prev, method: true }));
       return;
     }
-    addTransaction({ category, amount: amount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
+    await addTransaction({ category, amount: amount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
 
     setAmount(0);
     setCategory('');

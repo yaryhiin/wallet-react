@@ -70,7 +70,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
 
   let currency = transaction.currency;
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -84,7 +84,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
       return;
     }
 
-    changeTransaction({ id, category, amount, currency, type, method, date })
+    await changeTransaction({ id, category, amount, currency, type, method, date })
 
     setType('');
     setAmount(0);
@@ -107,7 +107,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
     home();
   }
 
-  const onDelete = (e) => {
+  const onDelete = async (e) => {
     e.preventDefault();
 
     setType('');
@@ -116,7 +116,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
     setMethod(0);
     setDate('')
 
-    deleteTransaction(id);
+    await deleteTransaction(id);
 
     home();
   }
