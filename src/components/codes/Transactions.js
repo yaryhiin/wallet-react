@@ -1,13 +1,17 @@
 import styles from '../styles/Transactions.module.scss'
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils';
+// import { useState, useEffect } from 'react'
 
 const Transactions = ({ transactions, accounts }) => {
     const navigate = useNavigate();
     function home() {
         navigate('/');
     }
+    // const [sortingParameter, setSortingParameter] = useState('')
     const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // useEffect
     return (
         <div className={styles.allTransactionsBox}>
             <h1 className="title">All Transactions</h1>

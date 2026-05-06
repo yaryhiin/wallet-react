@@ -76,16 +76,14 @@ function App() {
         }
         setAccounts(accountsData);
         setTransactions(transactionsData);
+      } catch (error) {
+        console.error('Error loading data:', error);
       } finally {
         setDataLoading(false);
       }
     }
 
-    if (session) {
-      loadData();
-    } else {
-      setDataLoading(false);
-    }
+    loadData();
   }, [session])
 
   useEffect(() => {
@@ -245,6 +243,14 @@ function App() {
     return deletedCategory;
   }
 
+  const requireAccount = (element) => {
+    return accounts.length > 0 ? element : <Navigate to="/" replace />;
+  };
+
+  const requireTwoAccounts = (element) => {
+    return accounts.length > 1 ? element : <Navigate to="/" replace />;
+  };
+
   if (authLoading) return <div>Loading...</div>
   if (session && dataLoading) return <div>Loading...</div>
   return (
@@ -253,69 +259,128 @@ function App() {
         <Routes>
           {!session ? (
             <>
-              <Route path='/' element={
-                <WelcomeScreen toggleTheme={toggleTheme} theme={theme} />
-              } />
-              <Route path='signup' element={
-                <SignUp toggleTheme={toggleTheme} theme={theme} />
-              } />
-              <Route path='login' element={
-                <Login toggleTheme={toggleTheme} theme={theme} />
-              } />
+              <Route
+                path="/"
+                element={<WelcomeScreen toggleTheme={toggleTheme} theme={theme} />}
+              />
+
+              <Route
+                path="/signup"
+                element={<SignUp toggleTheme={toggleTheme} theme={theme} />}
+              />
+
+              <Route
+                path="/login"
+                element={<Login toggleTheme={toggleTheme} theme={theme} />}
+              />
+
+              <Route path="*" element={<Navigate to="/" replace />} />
             </>
           ) : (
             <>
               <Route
                 path="/"
                 element={
-                  accounts.length === 0 ? (
-                    <Layout toggleTheme={toggleTheme} theme={theme} >
+                  <Layout toggleTheme={toggleTheme} theme={theme}>
+                    {accounts.length === 0 ? (
                       <AddAccount addAccount={addAccount} back={false} />
-                    </ Layout>
-                  ) : (
-                    <Layout toggleTheme={toggleTheme} theme={theme}>
-                      <Accounts accounts={accounts} />
-                      <RecentTransactions transactions={transactions} accounts={accounts} />
-                      <Buttons accounts={accounts} />
-                    </Layout>
-                  )
+                    ) : (
+                      <>
+                        <Accounts accounts={accounts} />
+                        <RecentTransactions
+                          transactions={transactions}
+                          accounts={accounts}
+                        />
+                        <Buttons accounts={accounts} />
+                      </>
+                    )}
+                  </Layout>
                 }
               />
 
               <Route path="/signup" element={<Navigate to="/" replace />} />
               <Route path="/login" element={<Navigate to="/" replace />} />
 
-              {accounts.length > 0 &&
-                (<Route element={
-                  <Layout toggleTheme={toggleTheme} theme={theme} />
-                }>
-                  <Route path='/income' element={
-                    <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"income"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
-                  } />
-                  <Route path='/expense' element={
-                    <AddTransaction addTransaction={addTransaction} addCategory={addCategory} type={"expense"} accounts={accounts} categories={categories} deleteCategory={deleteCategory} />
-                  } />
-                  {accounts.length > 1 ? (
-                    <Route path='/transfer' element={
-                      <Transfer transfer={transfer} accounts={accounts} />
-                    } />
-                  ) : (
-                    <Route path="/transfer" element={<Navigate to="/" replace />} />
+              <Route element={<Layout toggleTheme={toggleTheme} theme={theme} />}>
+                <Route
+                  path="/income"
+                  element={requireAccount(
+                    <AddTransaction
+                      addTransaction={addTransaction}
+                      addCategory={addCategory}
+                      type="income"
+                      accounts={accounts}
+                      categories={categories}
+                      deleteCategory={deleteCategory}
+                    />
                   )}
+                />
 
-                  <Route path='/addAccount' element={
+                <Route
+                  path="/expense"
+                  element={requireAccount(
+                    <AddTransaction
+                      addTransaction={addTransaction}
+                      addCategory={addCategory}
+                      type="expense"
+                      accounts={accounts}
+                      categories={categories}
+                      deleteCategory={deleteCategory}
+                    />
+                  )}
+                />
+
+                <Route
+                  path="/transfer"
+                  element={requireTwoAccounts(
+                    <Transfer transfer={transfer} accounts={accounts} />
+                  )}
+                />
+
+                <Route
+                  path="/addAccount"
+                  element={
                     <AddAccount addAccount={addAccount} back={true} />
-                  } />
-                  <Route path='/changeAccount/:id' element={
-                    <ChangeAccount accounts={accounts} changeAccount={changeAccount} deleteAccount={deleteAccount} />
-                  } />
-                  <Route path='/changeTransaction/:id' element={
-                    <ChangeTransaction accounts={accounts} transactions={transactions} changeTransaction={changeTransaction} deleteTransaction={deleteTransaction} addCategory={addCategory} deleteCategory={deleteCategory} categories={categories} />
-                  } />
-                  <Route path='/transactions' element={
-                    <Transactions transactions={transactions} accounts={accounts} />
-                  } />
-                </Route>)}
+                  }
+                />
+
+                <Route
+                  path="/changeAccount/:id"
+                  element={requireAccount(
+                    <ChangeAccount
+                      accounts={accounts}
+                      changeAccount={changeAccount}
+                      deleteAccount={deleteAccount}
+                    />
+                  )}
+                />
+
+                <Route
+                  path="/changeTransaction/:id"
+                  element={requireAccount(
+                    <ChangeTransaction
+                      accounts={accounts}
+                      transactions={transactions}
+                      changeTransaction={changeTransaction}
+                      deleteTransaction={deleteTransaction}
+                      addCategory={addCategory}
+                      deleteCategory={deleteCategory}
+                      categories={categories}
+                    />
+                  )}
+                />
+
+                <Route
+                  path="/transactions"
+                  element={requireAccount(
+                    <Transactions
+                      transactions={transactions}
+                      accounts={accounts}
+                    />
+                  )}
+                />
+              </Route>
+
               <Route path="*" element={<Navigate to="/" replace />} />
             </>
           )}

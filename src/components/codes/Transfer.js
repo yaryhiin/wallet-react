@@ -22,13 +22,19 @@ const Transfer = ({ transfer, accounts }) => {
 
   const [errors, setErrors] = useState({});
 
-  const fromAccount = accounts.find((a) => String(a.id) === String(from))
-  const toAccount = accounts.find((a) => String(a.id) === String(to))
-  const [fromCurrency, setFromCurrency] = useState(fromAccount ? fromAccount.currency : null);
-  const [toCurrency, setToCurrency] = useState(toAccount ? toAccount.currency : null);
+  const [fromCurrency, setFromCurrency] = useState("");
+  const [toCurrency, setToCurrency] = useState("");
 
   useEffect(() => {
-    if (accounts !== []) return;
+    const fromAcc = accounts.find((account) => String(account.id) === String(from));
+    const toAcc = accounts.find((account) => String(account.id) === String(to));
+
+    setFromCurrency(fromAcc ? fromAcc.currency : null);
+    setToCurrency(toAcc ? toAcc.currency : null);
+  }, [from, to, accounts]);
+
+  useEffect(() => {
+    if (accounts.length < 2) return;
 
     setFrom(accounts[0].id);
     setTo(accounts[1].id);
@@ -55,7 +61,7 @@ const Transfer = ({ transfer, accounts }) => {
     setToCurrency(toAcc ? toAcc.currency : null);
   }, [from, to, accounts]);
 
-  if (!accounts) {
+  if (accounts.length < 2) {
     return <p>Loading transfer...</p>;
   }
 
@@ -160,7 +166,7 @@ const Transfer = ({ transfer, accounts }) => {
             1 {fromCurrency} =
             <input
               className={cn(styles.input, errors.exchangeRate && styles.error)}
-              value={exchangeRate ?? ""}
+              value={exchangeRate === 0 ? "" : exchangeRate}
               placeholder="Enter exchange rate"
               type="number"
               step="0.0001"
