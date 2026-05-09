@@ -1,17 +1,44 @@
 import styles from '../styles/Transactions.module.scss'
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../../utils';
-// import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const Transactions = ({ transactions, accounts }) => {
     const navigate = useNavigate();
     function home() {
         navigate('/');
     }
-    // const [sortingParameter, setSortingParameter] = useState('')
-    const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'asc' });
+    const arrow = sortConfig.direction === 'asc' ? '▴' : '▾'
+    const sortedTransactions = [...transactions].sort((a, b) => {
+        const { key, direction } = sortConfig;
+        let aValue = a[key];
+        let bValue = b[key];
 
-    // useEffect
+        if (key === 'date') {
+            aValue = new Date(a.date);
+            bValue = new Date(b.date)
+        } else if (key === 'amount') {
+            aValue = Number(a.amount);
+            bValue = Number(b.amount);
+        } else if (key === 'account') {
+            aValue = accounts.find((acc) => String(acc.id) === String(a.method))?.name || "";
+            bValue = accounts.find((acc) => String(acc.id) === String(b.method))?.name || "";
+        }
+
+        if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+        if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+
+        return 0;
+    });
+
+    function handleSort(key) {
+        setSortConfig((prev) => ({
+            key, direction:
+                prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
+        }))
+    }
+
     return (
         <div className={styles.allTransactionsBox}>
             <h1 className="title">All Transactions</h1>
@@ -19,11 +46,11 @@ const Transactions = ({ transactions, accounts }) => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Category</th>
-                            <th>Amount</th>
-                            <th>Currency</th>
-                            <th>Account</th>
-                            <th>Date</th>
+                            <th onClick={() => handleSort('category')}>Category{sortConfig.key === 'category' && arrow}</th>
+                            <th onClick={() => handleSort('amount')}>Amount{sortConfig.key === 'amount' && arrow}</th>
+                            <th onClick={() => handleSort('currency')}>Currency{sortConfig.key === 'currency' && arrow}</th>
+                            <th onClick={() => handleSort('account')}>Account{sortConfig.key === 'account' && arrow}</th>
+                            <th onClick={() => handleSort('date')}>Date{sortConfig.key === 'date' && arrow}</th>
                         </tr>
                     </thead>
 
