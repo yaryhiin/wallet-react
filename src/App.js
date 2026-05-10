@@ -60,6 +60,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!session) {
+      setDataLoading(false);
+      return;
+    }
     async function loadData() {
       setDataLoading(true);
       try {
