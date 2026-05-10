@@ -191,7 +191,7 @@ function App() {
       )
     );
 
-    const newTransaction1 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: -amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },)
+    const newTransaction1 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },)
     const newTransaction2 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date })
 
     if (!newTransaction1 || !newTransaction2) return;

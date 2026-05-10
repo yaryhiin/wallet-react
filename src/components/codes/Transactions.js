@@ -8,7 +8,7 @@ const Transactions = ({ transactions, accounts }) => {
     function home() {
         navigate('/');
     }
-    const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
     const arrow = sortConfig.direction === 'asc' ? '▴' : '▾'
     const sortedTransactions = [...transactions].sort((a, b) => {
         const { key, direction } = sortConfig;
@@ -65,7 +65,7 @@ const Transactions = ({ transactions, accounts }) => {
                                 {transaction.type === 'income' ?
                                     <td className={styles.transAmountIncome}>{transaction.amount}</td>
                                     :
-                                    <td className={styles.transAmountExpense}>{transaction.amount}</td>
+                                    <td className={styles.transAmountExpense}>-{transaction.amount}</td>
                                 }
                                 <td className={styles.transCurrency}>{transaction.currency}</td>
                                 <td>

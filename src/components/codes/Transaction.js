@@ -7,7 +7,7 @@ const Transaction = ({ transaction, accounts }) => {
     const transactionDate = formatDate(transaction.date);
 
     return (
-        <div className={cn( styles.transactionStyle)} >
+        <div className={cn(styles.transactionStyle)} >
             <Link to={`../changeTransaction/${transaction.id}`} state={{ from: '/' }}>
                 <div className={styles.transactionDetails}>
                     <div className={styles.leftDetails}>
@@ -22,7 +22,7 @@ const Transaction = ({ transaction, accounts }) => {
                             </div>
                             :
                             <div>
-                                <p className={styles.transAmountExpense}>{transaction.amount}</p>
+                                <p className={styles.transAmountExpense}>-{transaction.amount}</p>
                                 <p className={styles.transCurrencyExpense}>{transaction.currency}</p>
                             </div>}
                         <p className={styles.transDate}>{transactionDate}</p>
