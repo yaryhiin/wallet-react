@@ -26,8 +26,9 @@ const accounts = ({ accounts }) => {
       </div>
       <div className={styles.accounts}>
         {accounts.map((account) => (<Account key={account.id} account={account} />))}
-        {accounts.length < 4 && <AddAccountBtn />}
+        {accounts.length < 4 && <AddAccountBtn /> }
       </div>
+      {accounts.length === 4 && (<p className={styles.limitText}>Account limit reached: 4 / 4</p>)}
     </div>
   )
 }
