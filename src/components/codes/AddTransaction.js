@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { limitToDecimals, getFormattedLocalDateTime } from '../../utils';
+import { getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal'
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
@@ -29,7 +29,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
 
   const formattedDate = getFormattedLocalDateTime(new Date());
 
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
   const [category, setCategory] = useState('');
   const [method, setMethod] = useState('');
   const [date, setDate] = useState(formattedDate);
@@ -53,7 +53,10 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
     e.preventDefault();
 
     const newErrors = {};
-    if (!amount || amount <= 0 || amount > 999999999) newErrors.amount = true;
+
+    const numericAmount =
+      amount === "" ? 0 : Math.trunc(Number(amount) * 100) / 100;
+    if (!numericAmount || numericAmount <= 0 || numericAmount > 999999999) newErrors.amount = true;
     if (!category) newErrors.category = true;
     if (!method) newErrors.method = true;
     if (!date) newErrors.date = true;
@@ -69,9 +72,9 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
       setErrors((prev) => ({ ...prev, method: true }));
       return;
     }
-    await addTransaction({ category, amount: amount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
+    await addTransaction({ category, amount: numericAmount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
 
-    setAmount(0);
+    setAmount("");
     setCategory('');
     setMethod('');
     setDate(formattedDate);
@@ -82,7 +85,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
   const onBack = (e) => {
     e.preventDefault();
 
-    setAmount(0);
+    setAmount("");
     setCategory('');
     setMethod('');
     setDate(formattedDate);
@@ -98,14 +101,18 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
           <p className={styles.inputText}>Amount</p>
           <input
             className={cn(styles.input, errors.amount && styles.error)}
-            value={amount === 0 ? '' : amount}
+            value={amount}
             placeholder="Enter amount"
-            type="number"
-            step="0.01"
-            min="0"
-            max="999999999"
+            type="text"
+            inputMode="decimal"
             required
-            onChange={(e) => setAmount(limitToDecimals(e.target.value, 2) || 0)}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                setAmount(value);
+              }
+            }}
           />
         </div>
 

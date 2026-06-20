@@ -13,8 +13,8 @@ const Transfer = ({ transfer, accounts }) => {
 
   const formattedDate = getFormattedLocalDateTime(new Date());
 
-  const [exchangeRate, setExchangeRate] = useState(0);
-  const [amount, setAmount] = useState(0);
+  const [exchangeRate, setExchangeRate] = useState("");
+  const [amount, setAmount] = useState("");
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [date, setDate] = useState(formattedDate);
@@ -71,16 +71,16 @@ const Transfer = ({ transfer, accounts }) => {
 
     setFromCurrency(oldTo);
     setToCurrency(oldFrom);
-    console.log(oldFrom, oldTo);
-    console.log(fromCurrency, toCurrency);
   }
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
-    if (!amount || amount <= 0) newErrors.amount = true;
-    if (!exchangeRate) newErrors.exchangeRate = true;
+    const numericAmount = amount === "" ? 0 : Number(amount);
+    const numericRate = exchangeRate === "" ? 0 : Number(exchangeRate);
+    if (!numericAmount || numericAmount <= 0) newErrors.amount = true;
+    if (!numericRate) newErrors.exchangeRate = true;
     if (!from) newErrors.from = true;
     if (!to) newErrors.to = true;
     if (!date) newErrors.date = true;
@@ -92,12 +92,12 @@ const Transfer = ({ transfer, accounts }) => {
     }
 
     const adjustedExchangeRate = isFlipped
-      ? 1 / exchangeRate
-      : exchangeRate;
+      ? 1 / numericRate
+      : numericRate;
 
-    await transfer(from, to, amount, date, limitToDecimals(adjustedExchangeRate, 4))
+    await transfer(from, to, numericAmount, date, adjustedExchangeRate)
 
-    setAmount(0);
+    setAmount("");
     setFrom(accounts[0].id);
     setTo(accounts[1].id);
     setDate('');
@@ -108,7 +108,7 @@ const Transfer = ({ transfer, accounts }) => {
   const onBack = (e) => {
     e.preventDefault();
 
-    setAmount(0);
+    setAmount("");
     setFrom(accounts[0].id);
     setTo(accounts[1].id);
     setDate('');
@@ -125,10 +125,16 @@ const Transfer = ({ transfer, accounts }) => {
             className={cn(styles.input, errors.amount && styles.error)}
             value={amount === 0 ? '' : amount}
             placeholder="Enter amount"
-            type="number"
-            step="0.01"
+            type="text"
+            inputMode="decimal"
             required
-            onChange={(e) => setAmount(limitToDecimals(e.target.value, 2) || 0)}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                setAmount(value);
+              }
+            }}
           />
         </div>
 
@@ -168,10 +174,16 @@ const Transfer = ({ transfer, accounts }) => {
               className={cn(styles.input, errors.exchangeRate && styles.error)}
               value={exchangeRate === 0 ? "" : exchangeRate}
               placeholder="Enter exchange rate"
-              type="number"
-              step="0.0001"
+              type="text"
+              inputMode="decimal"
               required
-              onChange={(e) => setExchangeRate(limitToDecimals(e.target.value, 4) || 0)}
+              onChange={(e) => {
+                const value = e.target.value;
+
+                if (/^\d*\.?\d{0,4}$/.test(value)) {
+                  setExchangeRate(value);
+                }
+              }}
             /> {toCurrency}
             <button
               className={cn(styles.convertBtn, "button")}

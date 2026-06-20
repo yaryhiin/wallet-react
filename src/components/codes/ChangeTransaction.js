@@ -1,6 +1,6 @@
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { limitToDecimals, getFormattedLocalDateTime } from '../../utils';
+import { getFormattedLocalDateTime } from '../../utils';
 import Modal from './Modal';
 import MessageModal from './MessageModal';
 import styles from '../styles/FormLayout.module.scss'
@@ -74,7 +74,8 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
     e.preventDefault();
 
     const newErrors = {};
-    if (!amount || amount <= 0 || amount > 999999999) newErrors.amount = true;
+    const numericAmount = amount === "" ? 0 : Number(amount);
+    if (!numericAmount || numericAmount <= 0 || numericAmount > 999999999) newErrors.amount = true;
     if (!category) newErrors.category = true;
     if (!method) newErrors.method = true;
     if (!date) newErrors.date = true;
@@ -84,10 +85,10 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
       return;
     }
 
-    await changeTransaction({ id, category, amount, currency, type, method, date })
+    await changeTransaction({ id, category, amount: numericAmount, currency, type, method, date })
 
     setType('');
-    setAmount(0);
+    setAmount("");
     setCategory('');
     setMethod(0);
     setDate('');
@@ -99,7 +100,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
     e.preventDefault();
 
     setType('');
-    setAmount(0);
+    setAmount("");
     setCategory('');
     setMethod(0);
     setDate('');
@@ -111,7 +112,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
     e.preventDefault();
 
     setType('');
-    setAmount(0);
+    setAmount("");
     setCategory('');
     setMethod(0);
     setDate('')
@@ -142,14 +143,17 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
           <p className={styles.inputText}>Amount</p>
           <input
             className={cn(styles.input, errors.amount && styles.error)}
-            value={amount === 0 ? '' : amount}
-            placeholder="Enter amount"
-            type="number"
-            step="0.01"
-            min="0"
-            max="999999999"
+            value={amount}
+            type="text"
+            inputMode="decimal"
             required
-            onChange={(e) => setAmount(limitToDecimals(e.target.value, 2) || 0)}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                setAmount(value);
+              }
+            }}
           />
         </div>
 

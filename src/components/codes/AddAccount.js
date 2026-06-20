@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { limitToDecimals, fetchCurrencies } from '../../utils'
+import { fetchCurrencies } from '../../utils'
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
@@ -41,8 +41,9 @@ const AddAccount = ({ addAccount, back }) => {
     e.preventDefault();
 
     const newErrors = {};
+    const numericBalance = balance === "" ? 0 : Number(balance);
     if (!name) newErrors.name = true;
-    if (balance === '' || balance < -999999999 || balance > 999999999) newErrors.balance = true;
+    if (!numericBalance || numericBalance < -999999999 || numericBalance > 999999999) newErrors.balance = true;
     if (!currency) newErrors.currency = true;
     if (!icon) newErrors.icon = true;
 
@@ -51,9 +52,9 @@ const AddAccount = ({ addAccount, back }) => {
       return;
     }
 
-    await addAccount({ name, balance, currency, icon })
+    await addAccount({ name, balance: numericBalance, currency, icon })
     setName('');
-    setBalance();
+    setBalance("");
     setCurrency('');
     setIcon('');
 
@@ -64,7 +65,7 @@ const AddAccount = ({ addAccount, back }) => {
     e.preventDefault();
 
     setName('');
-    setBalance();
+    setBalance("");
     setCurrency('');
     setIcon('');
 
@@ -90,15 +91,19 @@ const AddAccount = ({ addAccount, back }) => {
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Balance</p>
           <input
-            type="number"
-            step="0.01"
-            min="-999999999"
-            max="999999999"
-            value={balance === 0 ? '' : balance}
+            value={balance}
             placeholder="Enter balance"
             className={cn(styles.input, errors.balance && styles.error)}
+            type="text"
+            inputMode="decimal"
             required
-            onChange={(e) => setBalance(limitToDecimals(e.target.value, 2) || 0)}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              if (/^\d*\.?\d{0,2}$/.test(value)) {
+                setBalance(value);
+              }
+            }}
           />
         </div>
 

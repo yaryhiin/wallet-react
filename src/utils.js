@@ -8,7 +8,7 @@ export function updateAccountBalance(accounts, id, change) {
 
     if (!updatedAccount) return null;
 
-    return { ...updatedAccount, balance: limitToDecimals(updatedAccount.balance + change, 2) }
+    return { ...updatedAccount, balance: updatedAccount.balance + change }
 }
 
 export async function getData(key) {
@@ -119,13 +119,17 @@ export async function createCategories(categories) {
 }
 
 export function limitToDecimals(value, decimals) {
-    if (value === "" || value === null) return "";
+    if (value === "" || value === null || value === undefined) return "";
 
-    const numberValue = Number(value);
+    const stringValue = String(value).trim();
+    if (stringValue === "") return "";
 
-    if (isNaN(numberValue)) return "";
+    const numberValue = Number(stringValue);
+    if (!Number.isFinite(numberValue)) return "";
 
-    const factor = 10 ** decimals;
+    const safeDecimals = Math.max(0, Math.trunc(Number(decimals)));
+    const factor = 10 ** safeDecimals;
+
     return Math.trunc(numberValue * factor) / factor;
 }
 
