@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { fetchCurrencies } from '../../utils'
 import styles from '../styles/FormLayout.module.scss'
 import cn from 'classnames';
 
 const AddAccount = ({ addAccount, back }) => {
-
+  const location = useLocation()
 
   const [accountCurrency, setAccountCurrency] = useState([]);
 
@@ -32,44 +32,48 @@ const AddAccount = ({ addAccount, back }) => {
   function home() {
     navigate('/');
   }
-  const [name, setName] = useState('');
-  const [balance, setBalance] = useState('');
-  const [currency, setCurrency] = useState('');
-  const [icon, setIcon] = useState('');
+  const [account, setAccount] = useState(getInitialAccount)
+
+  function getInitialAccount() {
+    const savedAccount = localStorage.getItem("account");
+    if (savedAccount) { return JSON.parse(savedAccount) } else {
+      localStorage.removeItem("account");
+      return { name: "", balance: "", currency: "", icon: "" }
+    }
+  }
+
+  useEffect(() => {
+    if (account && !location.pathname === "/") { localStorage.setItem("account", JSON.stringify(account)) }
+  }, [account, location.pathname])
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
-    const numericBalance = balance === "" ? 0 : Number(balance);
-    if (!name) newErrors.name = true;
+    const numericBalance = account.balance === "" ? 0 : Number(account.balance);
+    if (!account.name) newErrors.name = true;
     if (!numericBalance || numericBalance < -999999999 || numericBalance > 999999999) newErrors.balance = true;
-    if (!currency) newErrors.currency = true;
-    if (!icon) newErrors.icon = true;
+    if (!account.currency) newErrors.currency = true;
+    if (!account.icon) newErrors.icon = true;
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    await addAccount({ name, balance: numericBalance, currency, icon })
-    setName('');
-    setBalance("");
-    setCurrency('');
-    setIcon('');
+    await addAccount({ name: account.name, balance: numericBalance, currency: account.currency, icon: account.icon })
 
     home();
+    localStorage.removeItem("account");
   }
 
   const onBack = (e) => {
     e.preventDefault();
 
-    setName('');
-    setBalance("");
-    setCurrency('');
-    setIcon('');
+
 
     home();
+    localStorage.removeItem("account");
   }
 
   return (
@@ -80,18 +84,18 @@ const AddAccount = ({ addAccount, back }) => {
           <p className={styles.inputText}>Account name</p>
           <input
             type="text"
-            value={!name ? '' : name}
+            value={!account.name ? '' : account.name}
             placeholder="Enter name"
             className={cn(styles.input, errors.name && styles.error)}
             required
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setAccount((prev) => ({ ...prev, name: e.target.value }))}
           />
         </div>
 
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Balance</p>
           <input
-            value={balance}
+            value={account.balance}
             placeholder="Enter balance"
             className={cn(styles.input, errors.balance && styles.error)}
             type="text"
@@ -101,7 +105,7 @@ const AddAccount = ({ addAccount, back }) => {
               const value = e.target.value;
 
               if (/^\d*\.?\d{0,2}$/.test(value)) {
-                setBalance(value);
+                setAccount((prev) => ({ ...prev, balance: value }));
               }
             }}
           />
@@ -111,9 +115,9 @@ const AddAccount = ({ addAccount, back }) => {
           <p className={styles.inputText}>Currency</p>
           <select
             className={cn(styles.input, errors.currency && styles.error)}
-            value={currency}
+            value={account.currency}
             required
-            onChange={(e) => setCurrency(e.target.value)}
+            onChange={(e) => setAccount((prev) => ({ ...prev, currency: e.target.value }))}
           >
             <option value="" disabled>Select Currency</option>
             {accountCurrency.map((currency, index) => (
@@ -126,9 +130,9 @@ const AddAccount = ({ addAccount, back }) => {
           <p className={styles.inputText}>Icon</p>
           <select
             className={cn(styles.input, errors.icon && styles.error)}
-            value={icon}
+            value={account.icon}
             required
-            onChange={(e) => setIcon(e.target.value)}
+            onChange={(e) => setAccount((prev) => ({ ...prev, icon: e.target.value }))}
           >
             <option value="" disabled>Select Icon</option>
             {accountIcon.map((icon, index) => (

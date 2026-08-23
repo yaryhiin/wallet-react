@@ -15,10 +15,10 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
   const [showMessageModal, setShowMessageModal] = useState(false);
 
   async function handleAddCategory(newCategory) {
-    const updatedCategory = await addCategory({ type: type, name: newCategory });
+    const updatedCategory = await addCategory({ type, name: newCategory });
     if (!updatedCategory) return
     setOptions((prev) => [...prev, updatedCategory]);
-    setCategory(newCategory);
+    setTransaction((prev) => ({ ...prev, category: newCategory }));
     setShowModal(false);
   }
 
@@ -29,20 +29,36 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
 
   const formattedDate = getFormattedLocalDateTime(new Date());
 
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState('');
-  const [method, setMethod] = useState('');
-  const [date, setDate] = useState(formattedDate);
+  const [transaction, setTransaction] = useState(getInitialTransaction)
+
+  function getInitialTransaction() {
+    const savedTransaction = localStorage.getItem("transaction");
+    if (savedTransaction) {
+      return JSON.parse(savedTransaction)
+    } else {
+      localStorage.removeItem("transaction");
+      return {
+        amount: 0,
+        category: categories[0].name,
+        accountId: accounts[0].id,
+        date: formattedDate
+      }
+    }
+  }
 
   useEffect(() => {
     setOptions(categories.filter((c) => c.type === type));
   }, [categories, type]);
 
+  useEffect(() => {
+    if (transaction) localStorage.setItem("transaction", JSON.stringify(transaction))
+  }, [transaction])
+
   const title = "Confirm Action";
-  const text = `Are you sure you want to delete the category "${category}"? \n This action cannot be undone.`;
+  const text = `Are you sure you want to delete the category "${transaction.category}"? \n This action cannot be undone.`;
 
   async function handleDeleteCategory() {
-    const chosenCategory = options.find((o) => o.name === category);
+    const chosenCategory = options.find((o) => o.name === transaction.category);
     const deletedCategory = await deleteCategory(chosenCategory.id);
     if (!deletedCategory) return;
     setOptions((prev) => prev.filter((p) => p.id !== chosenCategory.id));
@@ -55,42 +71,38 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
     const newErrors = {};
 
     const numericAmount =
-      amount === "" ? 0 : Math.trunc(Number(amount) * 100) / 100;
+      transaction.amount === "" ? 0 : Math.trunc(Number(transaction.amount) * 100) / 100;
     if (!numericAmount || numericAmount <= 0 || numericAmount > 999999999) newErrors.amount = true;
-    if (!category) newErrors.category = true;
-    if (!method) newErrors.method = true;
-    if (!date) newErrors.date = true;
+    if (!transaction.category) newErrors.category = true;
+    if (!transaction.accountId) newErrors.accountId = true;
+    if (!transaction.date) newErrors.date = true;
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    const accountWithMethod = accounts.find((account) => account.id === method);
+    const accountWithMethod = accounts.find((account) => account.id === transaction.accountId);
 
     if (!accountWithMethod) {
-      setErrors((prev) => ({ ...prev, method: true }));
+      setErrors((prev) => ({ ...prev, accountId: true }));
       return;
     }
-    await addTransaction({ category, amount: numericAmount, currency: accountWithMethod.currency, type, method, date }, accountWithMethod)
+    await addTransaction({ category: transaction.category, amount: numericAmount, currency: accountWithMethod.currency, type, account_id: transaction.accountId, date: transaction.date }, accountWithMethod)
 
-    setAmount("");
-    setCategory('');
-    setMethod('');
-    setDate(formattedDate);
 
     home();
+    localStorage.removeItem("transaction")
   }
 
   const onBack = (e) => {
     e.preventDefault();
 
-    setAmount("");
-    setCategory('');
-    setMethod('');
-    setDate(formattedDate);
+
+
 
     home();
+    localStorage.removeItem("transaction");
   }
 
   return (
@@ -101,7 +113,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
           <p className={styles.inputText}>Amount</p>
           <input
             className={cn(styles.input, errors.amount && styles.error)}
-            value={amount}
+            value={transaction.amount}
             placeholder="Enter amount"
             type="text"
             inputMode="decimal"
@@ -110,7 +122,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
               const value = e.target.value;
 
               if (/^\d*\.?\d{0,2}$/.test(value)) {
-                setAmount(value);
+                setTransaction((prev) => ({ ...prev, amount: value }));
               }
             }}
           />
@@ -121,14 +133,14 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
           <div className={styles.fieldRow}>
             <select
               className={cn(styles.input, errors.category && styles.error)}
-              value={category}
+              value={transaction.category}
               required
               onChange={(e) => {
                 if (e.target.value === "__add_new_category__") {
                   setShowModal(true);
                   return;
                 }
-                setCategory(e.target.value)
+                setTransaction((prev) => ({ ...prev, category: e.target.value }))
               }}
             >
               <option value="" disabled>Select Category</option>
@@ -147,10 +159,10 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
         <div className={styles.inputContainer}>
           <p className={styles.inputText}>Method</p>
           <select
-            className={cn(styles.input, errors.method && styles.error)}
-            value={method}
+            className={cn(styles.input, errors.accountId && styles.error)}
+            value={transaction.accountId}
             required
-            onChange={(e) => setMethod(e.target.value)}
+            onChange={(e) => setTransaction((prev) => ({ ...prev, accountId: e.target.value }))}
           >
             <option value="" disabled>Select Method</option>
             {accounts.map((account) => (
@@ -164,9 +176,9 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
           <input
             type="datetime-local"
             className={cn(styles.input, errors.date && styles.error)}
-            value={date}
+            value={transaction.date}
             required
-            onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
+            onChange={(e) => setTransaction((prev) => ({ ...prev, date: getFormattedLocalDateTime(e.target.value) }))}
           />
         </div>
       </div>

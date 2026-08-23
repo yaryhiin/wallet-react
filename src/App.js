@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import { supabase } from './supabase'
 
-import { updateAccountBalance, limitToDecimals, getData, createData, createCategories, updateData, deleteData, deleteTransactionsByAccount } from './utils'
+import { updateAccountBalance, limitToDecimals, getData, createData, createCategories, updateData, deleteData } from './utils'
 
 import Accounts from './components/codes/Accounts'
 import Transactions from './components/codes/Transactions'
@@ -119,8 +119,8 @@ function App() {
     const prev = transactions.find(t => t.id === changed.id);
     if (!prev) return;
 
-    const accountOld = accounts.find(a => a.id === changed.method);
-    const accountNew = accounts.find(a => a.id === prev.method);
+    const accountOld = accounts.find(a => a.id === changed.account_id);
+    const accountNew = accounts.find(a => a.id === prev.account_id);
     if (prev.type === "income") {
       accountOld.balance -= prev.amount;
     } else {
@@ -146,7 +146,7 @@ function App() {
   async function deleteTransaction(id) {
     const deletedTransaction = transactions.find((t) => t.id === id);
 
-    const changedAccount = accounts.find(a => a.id === deletedTransaction.method)
+    const changedAccount = accounts.find(a => a.id === deletedTransaction.account_id)
 
     const updatedBalance =
       deletedTransaction.type === 'income'
@@ -195,8 +195,8 @@ function App() {
       )
     );
 
-    const newTransaction1 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: amount, currency: fromAccount.currency, type: 'expense', method: fromAccount.id, date: date },)
-    const newTransaction2 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', method: toAccount.id, date: date })
+    const newTransaction1 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: amount, currency: fromAccount.currency, type: 'expense', account_id: fromAccount.id, date: date },)
+    const newTransaction2 = await createData('transactions', { user_id: session.user.id, category: "Transfer", amount: amountExchanged, currency: toAccount.currency, type: 'income', account_id: toAccount.id, date: date })
 
     if (!newTransaction1 || !newTransaction2) return;
 
@@ -222,15 +222,11 @@ function App() {
   }
 
   async function deleteAccount(id) {
-    const transactionsDeleted = await deleteTransactionsByAccount(id);
-
-    if (!transactionsDeleted) return;
-
     const accountDeleted = await deleteData('accounts', id, session.user.id);
 
     if (!accountDeleted) return;
 
-    setTransactions((prev) => (prev.filter((t) => t.method !== id)));
+    setTransactions((prev) => (prev.filter((t) => t.account_id !== id)));
     setAccounts((prev) => (prev.filter((a) => a.id !== id)));
   }
 
@@ -246,11 +242,6 @@ function App() {
     setCategories((prev) => prev.filter((p) => p.id !== id));
     return deletedCategory;
   }
-
-  const requireAccount = (element) => {
-    return accounts.length > 0 ? element : <Navigate to="/" replace />;
-  };
-
   const requireTwoAccounts = (element) => {
     return accounts.length > 1 ? element : <Navigate to="/" replace />;
   };
@@ -308,7 +299,7 @@ function App() {
               <Route element={<Layout toggleTheme={toggleTheme} theme={theme} />}>
                 <Route
                   path="/income"
-                  element={requireAccount(
+                  element={
                     <AddTransaction
                       addTransaction={addTransaction}
                       addCategory={addCategory}
@@ -317,12 +308,12 @@ function App() {
                       categories={categories}
                       deleteCategory={deleteCategory}
                     />
-                  )}
+                  }
                 />
 
                 <Route
                   path="/expense"
-                  element={requireAccount(
+                  element={
                     <AddTransaction
                       addTransaction={addTransaction}
                       addCategory={addCategory}
@@ -331,7 +322,7 @@ function App() {
                       categories={categories}
                       deleteCategory={deleteCategory}
                     />
-                  )}
+                  }
                 />
 
                 <Route
@@ -350,18 +341,18 @@ function App() {
 
                 <Route
                   path="/changeAccount/:id"
-                  element={requireAccount(
+                  element={
                     <ChangeAccount
                       accounts={accounts}
                       changeAccount={changeAccount}
                       deleteAccount={deleteAccount}
                     />
-                  )}
+                  }
                 />
 
                 <Route
                   path="/changeTransaction/:id"
-                  element={requireAccount(
+                  element={
                     <ChangeTransaction
                       accounts={accounts}
                       transactions={transactions}
@@ -371,17 +362,17 @@ function App() {
                       deleteCategory={deleteCategory}
                       categories={categories}
                     />
-                  )}
+                  }
                 />
 
                 <Route
                   path="/transactions"
-                  element={requireAccount(
+                  element={
                     <Transactions
                       transactions={transactions}
                       accounts={accounts}
                     />
-                  )}
+                  }
                 />
               </Route>
 

@@ -76,20 +76,6 @@ export async function deleteData(key, itemId, userId) {
     return true;
 }
 
-export async function deleteTransactionsByAccount(accountId) {
-    const { error } = await supabase
-        .from('transactions')
-        .delete()
-        .eq('method', accountId);
-
-    if (error) {
-        console.error(`Error deleting related transactions:`, error.message);
-        return false;
-    }
-
-    return true;
-}
-
 export async function createData(key, newData) {
     const { data, error } = await supabase
         .from(key)
