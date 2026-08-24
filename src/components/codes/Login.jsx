@@ -7,8 +7,8 @@ import { getAuthErrorMessage } from "../../utils";
 import ThemeSwitch from "./ThemeSwitch";
 import { useTranslation } from "react-i18next";
 
-const Login = ({ toggleTheme, theme }) => {
-  const { t } = useTranslation();
+const Login = ({ toggleTheme, theme, language, setLanguage }) => {
+  const { i18n, t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -60,8 +60,20 @@ const Login = ({ toggleTheme, theme }) => {
 
   return (
     <>
-      <header className={styles.header}>
-        <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
+      <header className={`header ${styles.header}`}>
+        <div>
+          <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
+          <select
+            value={language}
+            onChange={(e) => {
+              i18n.changeLanguage(e.target.value);
+              setLanguage(e.target.value);
+            }}
+          >
+            <option value="en">English</option>
+            <option value="pl">Polska</option>
+          </select>
+        </div>
       </header>
       <div className="container">
         <div className={styles.formContainer}>

@@ -3,8 +3,8 @@ import ThemeSwitch from "./ThemeSwitch";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const WelcomeScreen = ({ toggleTheme, theme }) => {
-  const { t } = useTranslation();
+const WelcomeScreen = ({ toggleTheme, theme, language, setLanguage }) => {
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
   function signup() {
     navigate("/signup");
@@ -14,8 +14,20 @@ const WelcomeScreen = ({ toggleTheme, theme }) => {
   }
   return (
     <>
-      <header className={styles.header}>
-        <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
+      <header className={`header ${styles.header}`}>
+        <div>
+          <ThemeSwitch toggleTheme={toggleTheme} theme={theme} />
+          <select
+            value={language}
+            onChange={(e) => {
+              i18n.changeLanguage(e.target.value);
+              setLanguage(e.target.value);
+            }}
+          >
+            <option value="en">English</option>
+            <option value="pl">Polska</option>
+          </select>
+        </div>
       </header>
       <div className={styles.content}>
         <h1 className={styles.title}>{t("welcome.title")}</h1>

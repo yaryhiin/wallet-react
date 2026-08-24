@@ -383,18 +383,37 @@ function App() {
               <Route
                 path="/"
                 element={
-                  <WelcomeScreen toggleTheme={toggleTheme} theme={theme} />
+                  <WelcomeScreen
+                    toggleTheme={toggleTheme}
+                    theme={theme}
+                    language={language}
+                    setLanguage={setLanguage}
+                  />
                 }
               />
 
               <Route
                 path="/signup"
-                element={<SignUp toggleTheme={toggleTheme} theme={theme} />}
+                element={
+                  <SignUp
+                    toggleTheme={toggleTheme}
+                    theme={theme}
+                    language={language}
+                    setLanguage={setLanguage}
+                  />
+                }
               />
 
               <Route
                 path="/login"
-                element={<Login toggleTheme={toggleTheme} theme={theme} />}
+                element={
+                  <Login
+                    toggleTheme={toggleTheme}
+                    theme={theme}
+                    language={language}
+                    setLanguage={setLanguage}
+                  />
+                }
               />
 
               <Route path="*" element={<Navigate to="/" replace />} />
