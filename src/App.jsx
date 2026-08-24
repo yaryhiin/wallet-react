@@ -368,9 +368,6 @@ function App() {
     setCategories((prev) => prev.filter((p) => p.id !== id));
     return deletedCategory;
   }
-  const requireTwoAccounts = (element) => {
-    return accounts.length > 1 ? element : <Navigate to="/" replace />;
-  };
 
   if (authLoading) return <div>Loading...</div>;
   if (session && dataLoading) return <div>Loading...</div>;
@@ -490,9 +487,7 @@ function App() {
 
                 <Route
                   path="/transfer"
-                  element={requireTwoAccounts(
-                    <Transfer transfer={transfer} accounts={accounts} />,
-                  )}
+                  element={<Transfer transfer={transfer} accounts={accounts} />}
                 />
 
                 <Route

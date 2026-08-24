@@ -18,12 +18,24 @@ const Transfer = ({ transfer, accounts }) => {
 
   const formattedDate = getFormattedLocalDateTime(new Date());
 
-  const [exchangeRate, setExchangeRate] = useState("");
-  const [amount, setAmount] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [date, setDate] = useState(formattedDate);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [transaction, setTransaction] = useState(getInitialTransaction);
+
+  function getInitialTransaction() {
+    const savedTransaction = localStorage.getItem("transfer");
+    if (savedTransaction) {
+      return JSON.parse(savedTransaction);
+    } else {
+      localStorage.removeItem("transfer");
+      return {
+        amount: "",
+        exchangeRate: "",
+        from: "",
+        to: "",
+        date: formattedDate,
+        isFlipped: false,
+      };
+    }
+  }
 
   const [errors, setErrors] = useState({});
 
@@ -32,20 +44,30 @@ const Transfer = ({ transfer, accounts }) => {
 
   useEffect(() => {
     const fromAcc = accounts.find(
-      (account) => String(account.id) === String(from),
+      (account) => String(account.id) === String(transaction.from),
     );
-    const toAcc = accounts.find((account) => String(account.id) === String(to));
+    const toAcc = accounts.find(
+      (account) => String(account.id) === String(transaction.to),
+    );
 
     setFromCurrency(fromAcc ? fromAcc.currency : null);
     setToCurrency(toAcc ? toAcc.currency : null);
-  }, [from, to, accounts]);
+  }, [transaction.from, transaction.to, accounts]);
 
   useEffect(() => {
     if (accounts.length < 2) return;
 
-    setFrom(accounts[0].id);
-    setTo(accounts[1].id);
+    setTransaction((prev) => ({
+      ...prev,
+      from: accounts[0].id,
+      to: accounts[1].id,
+    }));
   }, [accounts]);
+
+  useEffect(() => {
+    if (transaction)
+      localStorage.setItem("transfer", JSON.stringify(transaction));
+  }, [transaction]);
 
   useEffect(() => {
     async function loadRate() {
@@ -53,8 +75,11 @@ const Transfer = ({ transfer, accounts }) => {
 
       const fetchedRate = await fetchRate(fromCurrency, toCurrency);
 
-      if (fetchedRate !== null) {
-        setExchangeRate(limitToDecimals(fetchedRate, 4));
+      if (fetchedRate !== null && !transaction.exchangeRate) {
+        setTransaction((prev) => ({
+          ...prev,
+          exchangeRate: limitToDecimals(fetchedRate, 4),
+        }));
       }
     }
 
@@ -62,11 +87,11 @@ const Transfer = ({ transfer, accounts }) => {
   }, [fromCurrency, toCurrency]);
 
   useEffect(() => {
-    const fromAcc = accounts.find((account) => account.id === from);
-    const toAcc = accounts.find((account) => account.id === to);
+    const fromAcc = accounts.find((account) => account.id === transaction.from);
+    const toAcc = accounts.find((account) => account.id === transaction.to);
     setFromCurrency(fromAcc ? fromAcc.currency : null);
     setToCurrency(toAcc ? toAcc.currency : null);
-  }, [from, to, accounts]);
+  }, [transaction.from, transaction.to, accounts]);
 
   if (accounts.length < 2) {
     return <p>{t("transaction.loading")}</p>;
@@ -84,14 +109,16 @@ const Transfer = ({ transfer, accounts }) => {
     e.preventDefault();
 
     const newErrors = {};
-    const numericAmount = amount === "" ? 0 : Number(amount);
-    const numericRate = exchangeRate === "" ? 0 : Number(exchangeRate);
+    const numericAmount =
+      transaction.amount === "" ? 0 : Number(transaction.amount);
+    const numericRate =
+      transaction.exchangeRate === "" ? 0 : Number(transaction.exchangeRate);
     if (!numericAmount || numericAmount <= 0) newErrors.amount = true;
     if (!numericRate) newErrors.exchangeRate = true;
-    if (!from) newErrors.from = true;
-    if (!to) newErrors.to = true;
-    if (!date) newErrors.date = true;
-    if (from === to) {
+    if (!transaction.from) newErrors.from = true;
+    if (!transaction.to) newErrors.to = true;
+    if (!transaction.date) newErrors.date = true;
+    if (transaction.from === transaction.to) {
       newErrors.to = true;
       newErrors.from = true;
     }
@@ -101,27 +128,27 @@ const Transfer = ({ transfer, accounts }) => {
       return;
     }
 
-    const adjustedExchangeRate = isFlipped ? 1 / numericRate : numericRate;
+    const adjustedExchangeRate = transaction.isFlipped
+      ? 1 / numericRate
+      : numericRate;
 
-    await transfer(from, to, numericAmount, date, adjustedExchangeRate);
-
-    setAmount("");
-    setFrom(accounts[0].id);
-    setTo(accounts[1].id);
-    setDate("");
+    await transfer(
+      transaction.from,
+      transaction.to,
+      numericAmount,
+      transaction.date,
+      adjustedExchangeRate,
+    );
 
     home();
+    localStorage.removeItem("transfer");
   };
 
   const onBack = (e) => {
     e.preventDefault();
 
-    setAmount("");
-    setFrom(accounts[0].id);
-    setTo(accounts[1].id);
-    setDate("");
-
     home();
+    localStorage.removeItem("transfer");
   };
 
   return (
@@ -131,12 +158,12 @@ const Transfer = ({ transfer, accounts }) => {
           <p className={styles.inputText}>{t("transaction.amount.title")}</p>
           <input
             className={cn(styles.input, errors.amount && styles.error)}
-            value={amount === 0 ? "" : amount}
+            value={transaction.amount === 0 ? "" : transaction.amount}
             placeholder={t("transaction.amount.placeHolder")}
             type="number"
             required
             onChange={(e) => {
-              setAmount(e.target.value);
+              setTransaction((prev) => ({ ...prev, amount: e.target.value }));
             }}
           />
         </div>
@@ -145,9 +172,11 @@ const Transfer = ({ transfer, accounts }) => {
           <p className={styles.inputText}>{t("transaction.from")}</p>
           <select
             className={cn(styles.input, errors.from && styles.error)}
-            value={from}
+            value={transaction.from}
             required
-            onChange={(e) => setFrom(e.target.value)}
+            onChange={(e) =>
+              setTransaction((prev) => ({ ...prev, from: e.target.value }))
+            }
           >
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>
@@ -161,9 +190,11 @@ const Transfer = ({ transfer, accounts }) => {
           <p className={styles.inputText}>{t("transaction.to")}</p>
           <select
             className={cn(styles.input, errors.to && styles.error)}
-            value={to}
+            value={transaction.to}
             required
-            onChange={(e) => setTo(e.target.value)}
+            onChange={(e) =>
+              setTransaction((prev) => ({ ...prev, to: e.target.value }))
+            }
           >
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>
@@ -179,19 +210,27 @@ const Transfer = ({ transfer, accounts }) => {
             1 {fromCurrency} =
             <input
               className={cn(styles.input, errors.exchangeRate && styles.error)}
-              value={exchangeRate === 0 ? "" : exchangeRate}
+              value={
+                transaction.exchangeRate === 0 ? "" : transaction.exchangeRate
+              }
               placeholder={t("transaction.rate.placeHolder")}
               type="number"
               required
               onChange={(e) => {
-                setExchangeRate(e.target.value);
+                setTransaction((prev) => ({
+                  ...prev,
+                  exchangeRate: e.target.value,
+                }));
               }}
             />{" "}
             {toCurrency}
             <button
               className={cn(styles.convertBtn, "button")}
               onClick={() => {
-                setIsFlipped((prev) => !prev);
+                setTransaction((prev) => ({
+                  ...prev,
+                  isFlipped: !prev.isFlipped,
+                }));
                 handleSwapCurrencies();
               }}
             >
@@ -205,9 +244,14 @@ const Transfer = ({ transfer, accounts }) => {
           <input
             type="datetime-local"
             className={cn(styles.input, errors.date && styles.error)}
-            value={date}
+            value={transaction.date}
             required
-            onChange={(e) => setDate(getFormattedLocalDateTime(e.target.value))}
+            onChange={(e) =>
+              setTransaction((prev) => ({
+                ...prev,
+                date: getFormattedLocalDateTime(e.target.value),
+              }))
+            }
           />
         </div>
       </div>
