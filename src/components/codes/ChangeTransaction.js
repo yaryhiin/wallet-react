@@ -94,7 +94,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
     await changeTransaction({ id, category: transaction.category, amount: numericAmount, currency, type: transaction.type, account_id: transaction.accountId, date: transaction.date })
 
 
-    
+
     home();
     localStorage.removeItem("transaction");
   }
@@ -102,7 +102,7 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
   const onBack = (e) => {
     e.preventDefault();
 
-    
+
 
     home();
     localStorage.removeItem("transaction");
@@ -141,15 +141,10 @@ const ChangeTransaction = ({ accounts, transactions, changeTransaction, deleteTr
           <input
             className={cn(styles.input, errors.amount && styles.error)}
             value={transaction.amount}
-            type="text"
-            inputMode="decimal"
+            type="number"
             required
             onChange={(e) => {
-              const value = e.target.value;
-
-              if (/^\d*\.?\d{0,2}$/.test(value)) {
-                setTransaction((prev) => ({ ...prev, amount: value }));
-              }
+              setTransaction((prev) => ({ ...prev, amount: e.target.value }));
             }}
           />
         </div>

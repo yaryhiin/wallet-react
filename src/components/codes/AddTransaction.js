@@ -38,7 +38,7 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
     } else {
       localStorage.removeItem("transaction");
       return {
-        amount: 0,
+        amount: "",
         category: categories[0].name,
         accountId: accounts[0].id,
         date: formattedDate
@@ -115,15 +115,11 @@ const AddTransaction = ({ addTransaction, type, accounts, addCategory, categorie
             className={cn(styles.input, errors.amount && styles.error)}
             value={transaction.amount}
             placeholder="Enter amount"
-            type="text"
-            inputMode="decimal"
+            type="number"
             required
             onChange={(e) => {
-              const value = e.target.value;
+              setTransaction((prev) => ({ ...prev, amount: e.target.value }));
 
-              if (/^\d*\.?\d{0,2}$/.test(value)) {
-                setTransaction((prev) => ({ ...prev, amount: value }));
-              }
             }}
           />
         </div>

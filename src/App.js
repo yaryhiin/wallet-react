@@ -74,9 +74,15 @@ function App() {
           const newCategories = [...newExpenseCategories, ...newIncomeCategories];
           const updatedCategories = await createCategories(newCategories);
           if (!updatedCategories) return;
-          setCategories(updatedCategories);
+          setCategories(updatedCategories.filter(
+            (user, index, arr) =>
+              index === arr.findIndex(item => item.name === user.name)
+          ));
         } else {
-          setCategories(categoriesData);
+          setCategories(categoriesData.filter(
+            (user, index, arr) =>
+              index === arr.findIndex(item => item.name === user.name)
+          ));
         }
         setAccounts(accountsData);
         setTransactions(transactionsData);
@@ -305,7 +311,7 @@ function App() {
                       addCategory={addCategory}
                       type="income"
                       accounts={accounts}
-                      categories={categories}
+                      categories={categories.filter((c) => c.type === "income")}
                       deleteCategory={deleteCategory}
                     />
                   }
@@ -319,7 +325,7 @@ function App() {
                       addCategory={addCategory}
                       type="expense"
                       accounts={accounts}
-                      categories={categories}
+                      categories={categories.filter((c) => c.type === "expense")}
                       deleteCategory={deleteCategory}
                     />
                   }

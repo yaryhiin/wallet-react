@@ -22,8 +22,8 @@ const Transactions = ({ transactions, accounts }) => {
             aValue = Number(a.amount);
             bValue = Number(b.amount);
         } else if (key === 'account') {
-            aValue = accounts.find((acc) => String(acc.id) === String(a.method))?.name || "";
-            bValue = accounts.find((acc) => String(acc.id) === String(b.method))?.name || "";
+            aValue = accounts.find((acc) => String(acc.id) === String(a.account_id))?.name || "";
+            bValue = accounts.find((acc) => String(acc.id) === String(b.account_id))?.name || "";
         }
 
         if (aValue > bValue) return direction === 'asc' ? 1 : -1;
@@ -69,7 +69,7 @@ const Transactions = ({ transactions, accounts }) => {
                                 }
                                 <td className={styles.transCurrency}>{transaction.currency}</td>
                                 <td>
-                                    {accounts.find((account) => String(account.id) === String(transaction.method))?.name || 'Unknown Account'}
+                                    {accounts.find((account) => String(account.id) === String(transaction.account_id))?.name || 'Unknown Account'}
                                 </td>
                                 <td>{formatDate(transaction.date)}</td>
                             </tr>

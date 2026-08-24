@@ -98,15 +98,12 @@ const AddAccount = ({ addAccount, back }) => {
             value={account.balance}
             placeholder="Enter balance"
             className={cn(styles.input, errors.balance && styles.error)}
-            type="text"
-            inputMode="decimal"
+            type="number"
             required
             onChange={(e) => {
-              const value = e.target.value;
 
-              if (/^\d*\.?\d{0,2}$/.test(value)) {
-                setAccount((prev) => ({ ...prev, balance: value }));
-              }
+              setAccount((prev) => ({ ...prev, balance: e.target.value }));
+
             }}
           />
         </div>
