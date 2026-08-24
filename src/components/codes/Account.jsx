@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import styles from '../styles/Accounts.module.scss'
 import cn from 'classnames';
 
-const account = ({ account }) => {
+const Account = ({ account }) => {
   return (
     <Link to={`/changeAccount/${account.id}`}>
       <div className={cn(styles.accountStyle, "button")}>
@@ -21,4 +21,4 @@ const account = ({ account }) => {
   )
 }
 
-export default account
+export default Account

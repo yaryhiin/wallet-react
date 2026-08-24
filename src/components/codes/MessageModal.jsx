@@ -1,8 +1,10 @@
 import React from 'react'
 import styles from '../styles/Modal.module.scss'
 import cn from 'classnames';
+import { useTranslation } from "react-i18next";
 
 const MessageModal = ({ twoButton = true, title, text, onDelete, onClose }) => {
+    const { t } = useTranslation();
     return (
         <div className={styles.modal}>
             <div className={styles.modalContent}>
@@ -11,11 +13,11 @@ const MessageModal = ({ twoButton = true, title, text, onDelete, onClose }) => {
                 <div className={styles.buttons}>
                     {twoButton &&
                         <button className={cn(styles.backBtn, "button")} onClick={onDelete}>
-                            Yes
+                            {t("common.yes")}
                         </button>
                     }
                     <button className={cn(styles.addBtn, "button")} onClick={onClose}>
-                        Back
+                        {t("common.back")}
                     </button>
                 </div>
             </div>

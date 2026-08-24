@@ -1,22 +1,27 @@
-import { useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import { limitToDecimals, getFormattedLocalDateTime, fetchRate } from '../../utils';
-import styles from '../styles/FormLayout.module.scss'
-import cn from 'classnames';
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {
+  limitToDecimals,
+  getFormattedLocalDateTime,
+  fetchRate,
+} from "../../utils";
+import styles from "../styles/FormLayout.module.scss";
+import cn from "classnames";
+import { useTranslation } from "react-i18next";
 
 const Transfer = ({ transfer, accounts }) => {
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   function home() {
-    navigate('/');
+    navigate("/");
   }
 
   const formattedDate = getFormattedLocalDateTime(new Date());
 
   const [exchangeRate, setExchangeRate] = useState("");
   const [amount, setAmount] = useState("");
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [date, setDate] = useState(formattedDate);
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -26,7 +31,9 @@ const Transfer = ({ transfer, accounts }) => {
   const [toCurrency, setToCurrency] = useState("");
 
   useEffect(() => {
-    const fromAcc = accounts.find((account) => String(account.id) === String(from));
+    const fromAcc = accounts.find(
+      (account) => String(account.id) === String(from),
+    );
     const toAcc = accounts.find((account) => String(account.id) === String(to));
 
     setFromCurrency(fromAcc ? fromAcc.currency : null);
@@ -62,7 +69,7 @@ const Transfer = ({ transfer, accounts }) => {
   }, [from, to, accounts]);
 
   if (accounts.length < 2) {
-    return <p>Loading transfer...</p>;
+    return <p>{t("transaction.loading")}</p>;
   }
 
   function handleSwapCurrencies() {
@@ -84,26 +91,27 @@ const Transfer = ({ transfer, accounts }) => {
     if (!from) newErrors.from = true;
     if (!to) newErrors.to = true;
     if (!date) newErrors.date = true;
-    if (from === to) { newErrors.to = true; newErrors.from = true; }
+    if (from === to) {
+      newErrors.to = true;
+      newErrors.from = true;
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    const adjustedExchangeRate = isFlipped
-      ? 1 / numericRate
-      : numericRate;
+    const adjustedExchangeRate = isFlipped ? 1 / numericRate : numericRate;
 
-    await transfer(from, to, numericAmount, date, adjustedExchangeRate)
+    await transfer(from, to, numericAmount, date, adjustedExchangeRate);
 
     setAmount("");
     setFrom(accounts[0].id);
     setTo(accounts[1].id);
-    setDate('');
+    setDate("");
 
     home();
-  }
+  };
 
   const onBack = (e) => {
     e.preventDefault();
@@ -111,35 +119,30 @@ const Transfer = ({ transfer, accounts }) => {
     setAmount("");
     setFrom(accounts[0].id);
     setTo(accounts[1].id);
-    setDate('');
+    setDate("");
 
     home();
-  }
+  };
 
   return (
     <div className={styles.formContainer}>
       <div className={styles.inputBox}>
         <div className={styles.inputContainer}>
-          <p className={styles.inputText}>Amount</p>
+          <p className={styles.inputText}>{t("transaction.amount.title")}</p>
           <input
             className={cn(styles.input, errors.amount && styles.error)}
-            value={amount === 0 ? '' : amount}
-            placeholder="Enter amount"
-            type="text"
-            inputMode="decimal"
+            value={amount === 0 ? "" : amount}
+            placeholder={t("transaction.amount.placeHolder")}
+            type="number"
             required
             onChange={(e) => {
-              const value = e.target.value;
-
-              if (/^\d*\.?\d{0,2}$/.test(value)) {
-                setAmount(value);
-              }
+              setAmount(e.target.value);
             }}
           />
         </div>
 
         <div className={styles.inputContainer}>
-          <p className={styles.inputText}>From</p>
+          <p className={styles.inputText}>{t("transaction.from")}</p>
           <select
             className={cn(styles.input, errors.from && styles.error)}
             value={from}
@@ -147,13 +150,15 @@ const Transfer = ({ transfer, accounts }) => {
             onChange={(e) => setFrom(e.target.value)}
           >
             {accounts.map((account) => (
-              <option key={account.id} value={account.id}>{account.name}</option>
+              <option key={account.id} value={account.id}>
+                {account.name}
+              </option>
             ))}
           </select>
         </div>
 
         <div className={styles.inputContainer}>
-          <p className={styles.inputText}>To</p>
+          <p className={styles.inputText}>{t("transaction.to")}</p>
           <select
             className={cn(styles.input, errors.to && styles.error)}
             value={to}
@@ -161,41 +166,42 @@ const Transfer = ({ transfer, accounts }) => {
             onChange={(e) => setTo(e.target.value)}
           >
             {accounts.map((account) => (
-              <option key={account.id} value={account.id}>{account.name}</option>
+              <option key={account.id} value={account.id}>
+                {account.name}
+              </option>
             ))}
           </select>
         </div>
 
         <div className={styles.inputContainer}>
-          <p className={styles.inputText}>Exchange Rate</p>
+          <p className={styles.inputText}>{t("transaction.rate.title")}</p>
           <div className={styles.fieldRow}>
             1 {fromCurrency} =
             <input
               className={cn(styles.input, errors.exchangeRate && styles.error)}
               value={exchangeRate === 0 ? "" : exchangeRate}
-              placeholder="Enter exchange rate"
-              type="text"
-              inputMode="decimal"
+              placeholder={t("transaction.rate.placeHolder")}
+              type="number"
               required
               onChange={(e) => {
-                const value = e.target.value;
-
-                if (/^\d*\.?\d{0,4}$/.test(value)) {
-                  setExchangeRate(value);
-                }
+                setExchangeRate(e.target.value);
               }}
-            /> {toCurrency}
+            />{" "}
+            {toCurrency}
             <button
               className={cn(styles.convertBtn, "button")}
-              onClick={() => { setIsFlipped(prev => !prev); handleSwapCurrencies(); }}
+              onClick={() => {
+                setIsFlipped((prev) => !prev);
+                handleSwapCurrencies();
+              }}
             >
               🔄
             </button>
-          </ div>
+          </div>
         </div>
 
         <div className={cn(styles.inputContainer, styles.fullWidth)}>
-          <p className={styles.inputText}>Date</p>
+          <p className={styles.inputText}>{t("transaction.date")}</p>
           <input
             type="datetime-local"
             className={cn(styles.input, errors.date && styles.error)}
@@ -206,11 +212,15 @@ const Transfer = ({ transfer, accounts }) => {
         </div>
       </div>
       <div className={styles.buttonContainer}>
-        <button className="backBtn button" onClick={onBack}>Back</button>
-        <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>Save</button>
+        <button className="backBtn button" onClick={onBack}>
+          {t("common.back")}
+        </button>
+        <button className={cn(styles.saveBtn, "button")} onClick={onSubmit}>
+          {t("common.save")}
+        </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Transfer
+export default Transfer;

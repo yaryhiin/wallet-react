@@ -1,0 +1,110 @@
+{
+  "common": {
+    "back": "Wstecz",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "yes": "Tak",
+    "add": "Dodaj"
+  },
+  "welcome": {
+    "title": "Witamy w aplikacji Wallet",
+    "text": "Śledź wydatki, przychody, przelewy, wiele kont i walut — wszystko w jednej prostej aplikacji internetowej."
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "signup": "Zarejestruj się",
+    "email": "E-mail",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "logout": "Wyloguj się"
+  },
+  "theme": {
+    "dark": "Ciemny",
+    "light": "Jasny"
+  },
+  "modal": {
+    "category": {
+      "title": "Potwierdź działanie",
+      "text": "Czy na pewno chcesz usunąć tę kategorię? \n Tej operacji nie można cofnąć."
+    },
+    "transfer": {
+      "title": "Uwaga!",
+      "text": "Aby wykonać przelew, potrzebujesz co najmniej dwóch kont.\n Czy chcesz teraz dodać konto?"
+    },
+    "account": {
+      "title": "Potwierdź działanie",
+      "part1": "To konto ma",
+      "part2": ". \n Czy na pewno chcesz je usunąć?"
+    },
+    "created": {
+      "title": "Konto utworzone",
+      "text": "Sprawdź swoją skrzynkę e-mail i kliknij link potwierdzający. \n Jeśli masz już konto, spróbuj się zalogować."
+    }
+  },
+  "account": {
+    "accounts": "Konta",
+    "totalBal": "Łączne saldo:",
+    "accLimit": "Osiągnięto limit kont: 4 / 4",
+    "addAcc": "Dodaj konto",
+    "changeAcc": "Edytuj konto",
+    "name": {
+      "title": "Nazwa konta",
+      "placeHolder": "Wpisz nazwę"
+    },
+    "bal": {
+      "title": "Saldo",
+      "placeHolder": "Wpisz saldo"
+    },
+    "cur": "Waluta",
+    "selectCur": "Wybierz walutę",
+    "icon": "Ikona",
+    "selectIcon": "Wybierz ikonę",
+    "loading": "Ładowanie konta..."
+  },
+  "transaction": {
+    "cur": "Waluta",
+    "addTrans": "Dodaj transakcję",
+    "changeTrans": "Edytuj transakcję",
+    "all": "Wszystkie transakcje",
+    "viewAll": "Zobacz wszystkie transakcje",
+    "addNewCategory": {
+      "title": "Dodaj nową kategorię",
+      "placeHolder": "Nazwa kategorii"
+    },
+    "recent": "Ostatnie transakcje",
+    "emptyState": {
+      "title": "Brak transakcji.",
+      "text": "Twoja ostatnia aktywność pojawi się tutaj."
+    },
+    "amount": {
+      "title": "Kwota",
+      "placeHolder": "Wpisz kwotę"
+    },
+    "from": "Z",
+    "to": "Do",
+    "rate": {
+      "title": "Kurs wymiany",
+      "placeHolder": "Wpisz kurs wymiany"
+    },
+    "type": {
+      "title": "Typ",
+      "income": "Przychód",
+      "expense": "Wydatek"
+    },
+    "category": "Kategoria",
+    "selectCategory": "Wybierz kategorię",
+    "method": "Metoda",
+    "selectMethod": "Wybierz metodę",
+    "date": "Data",
+    "loading": "Ładowanie transakcji..."
+  },
+  "icons": {
+    "card_blue": "Niebieska karta",
+    "card_pink": "Różowa karta",
+    "cash": "Gotówka",
+    "crypto": "Krypto",
+    "bank": "Bank",
+    "euro": "Euro",
+    "usd": "USD"
+  }
+}

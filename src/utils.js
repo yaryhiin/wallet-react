@@ -1,5 +1,6 @@
 import { isAuthApiError } from '@supabase/supabase-js';
 import { supabase } from './supabase';
+import i18n from "./i18n";
 
 export function updateAccountBalance(accounts, id, change) {
     const updatedAccount = accounts.find((account) =>
@@ -132,8 +133,15 @@ export const getFormattedLocalDateTime = (dateStr) => {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
+
+
+const locales = {
+    en: "en-CA",
+    pl: "pl-PL"
+};
+
 export const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('en-CA', {
+    return new Date(dateString).toLocaleString(locales[i18n.language] ?? "en-CA", {
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
