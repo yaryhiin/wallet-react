@@ -75,7 +75,7 @@ const Transfer = ({ transfer, accounts }) => {
 
       const fetchedRate = await fetchRate(fromCurrency, toCurrency);
 
-      if (fetchedRate !== null && !transaction.exchangeRate) {
+      if (fetchedRate !== null) {
         setTransaction((prev) => ({
           ...prev,
           exchangeRate: limitToDecimals(fetchedRate, 4),
