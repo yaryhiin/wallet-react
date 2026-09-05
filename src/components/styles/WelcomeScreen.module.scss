@@ -1,29 +1,29 @@
 .header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .content {
-    min-height: 70vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 16px;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 16px;
 }
 
 .title {
-    font-size: clamp(24px, 6vw, 36px);
-    margin-bottom: 16px;
+  font-size: clamp(24px, 6vw, 36px);
+  margin-bottom: 16px;
 }
 
 .note {
-    font-size: clamp(14px, 4vw, 18px);
-    max-width: 500px;
-    line-height: 1.5;
-    margin-bottom: 12px;
+  font-size: clamp(14px, 4vw, 18px);
+  max-width: 500px;
+  line-height: 1.5;
+  margin-bottom: 12px;
 }
 
 .sessionBox {
@@ -32,17 +32,18 @@
   gap: 10px;
 }
 
-.logIn, .signUp {
+.logIn,
+.signUp {
   margin-top: 28px;
-    padding: 10px 18px;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    width: fit-content;
-    height: 40px;
+  padding: 10px 18px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  width: fit-content;
+  height: 40px;
 }
 
 .signUp {
@@ -58,6 +59,23 @@
 
   &:hover {
     background-color: var(--back-btn-hover-bg);
+  }
+}
+
+.footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+
+  p {
+    margin: 5px;
+  }
+
+  a,
+  a:active,
+  a:visited {
+    color: var(--text-muted);
   }
 }
 

@@ -49,6 +49,23 @@ a{
   outline: 2px solid rgba(0,0,0,0.08);
 }
 
+.footer {
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+
+  p {
+    margin: 5px;
+  }
+
+  a,
+  a:active,
+  a:visited {
+    color: var(--text-muted);
+  }
+}
+
 @media (max-width: 600px) {
   .logOut {
     width: 60px;
